@@ -1,0 +1,51 @@
+\documentclass[a4paper,12pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[pdftex]{color,graphicx}
+\usepackage[english]{babel}
+\usepackage[rflt]{floatflt}
+\usepackage{tocloft}
+\usepackage{tabularx}
+\usepackage{thesis}
+\usepackage[T1]{fontenc}
+\usepackage{cite}
+
+\myauthor{Karsten Köhler}
+\mytopic{Semantic segmentation of terrain data using high-resolution orthophotos}
+
+\begin{document}
+    \mytitle
+
+    \frontmatter
+    \tableofcontents
+    \input{content/abstract}
+    \newpage
+
+    \mainmatter
+
+%    \begin{figure}[h]
+%        \centering
+%        \includegraphics[width=0.55\textwidth]{images/max_pooling}
+%        \caption{Funktionsweise von MaxPooling \cite{SU18}}
+%        \label{fig:max_pooling}
+%    \end{figure}
+
+%    \lstinputlisting[caption={Some test code}, language=Python]{../python/code.py}
+
+%   \cite[p. 1234]{ref}
+
+    \input{content/introduction/introduction}
+    \input{content/literature_review/literature_review}
+    \input{content/data_analysis/data_analysis}
+    \input{content/conclusion/conclusion}
+
+    \appendix
+    \input{appendix/appendix}
+
+    \clearpage
+    \phantomsection
+    \addcontentsline{toc}{section}{References}
+    \bibliography{references}{}
+    \bibliographystyle{plain}
+
+    \declarationofauthorship{\textcolor{red}{31.10.2020}}
+\end{document}

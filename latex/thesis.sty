@@ -1,0 +1,130 @@
+\ProvidesPackage{thesis}
+\usepackage[pdftex]{color,graphicx}
+\usepackage{fancyhdr}
+\usepackage{amssymb}
+\usepackage{eurosym}
+\usepackage{background}
+\usepackage{multirow}
+\usepackage{amsmath}
+\usepackage{ifthen}
+\usepackage{icomma}
+\usepackage{float}
+\usepackage[hidelinks]{hyperref}
+\linespread{1.3}
+
+\def\myauthor#1{\def\MyAuthor{#1}}
+\def\mytopic#1{\def\MyThema{#1}}
+
+\newcommand{\mytitle}{
+  \thispagestyle{empty}
+  \begin{center}%
+    \includegraphics[width=0.9\textwidth]{images/fernuni_title}
+    \vskip 1.5cm
+    \large{Master Thesis}
+    \rule{\textwidth}{0.2pt}
+    \vskip 0.1cm
+    {\textbf{\LARGE \MyThema} }
+    \rule{\textwidth}{0.2pt}
+    \vskip 0.5cm
+    {\Large \textbf \MyAuthor}\\
+    \vskip 7cm
+
+    \small
+    \textit{A thesis submitted in fulfillment of the requirements \\
+      for the degree of Master of Science \\
+      at the \\
+      \textbf{Faculty of Mathematics and Computer Science} \\
+    }
+  \end{center}
+  \vspace*{\stretch{1}}
+    \begin{tabular}{ll}
+        Examining Board: & Prof.\ Dr.\ Wolfram Schiffmann \\
+                         & Andreas Klos
+    \end{tabular}
+  \vfil\null
+  \clearpage
+}
+
+\newcommand{\declarationofauthorship}[1]{
+  \newpage
+  \thispagestyle{empty}
+  \vspace*{\stretch{1}}
+  \begin{center}
+    \fbox{\begin{minipage}{\textwidth}
+Ich erkläre, dass ich die vorliegende Abschlussarbeit mit dem Thema \emph{\MyThema}
+selbstständig und ohne unzulässige Inanspruchnahme Dritter verfasst habe. Ich habe dabei nur die angegebenen Quellen und Hilfsmittel verwendet und die aus diesen wörtlich, inhaltlich oder sinngemäß entnommenen Stellen als solche den wissenschaftlichen Anforderungen entsprechend kenntlich gemacht. Die Versicherung selbstständiger Arbeit gilt auch für Zeichnungen, Skizzen oder graphische Darstellungen. Die Arbeit wurde bisher in gleicher oder ähnlicher Form weder derselben noch einer anderen Prüfungsbehörde vorgelegt und auch noch nicht veröffentlicht. Mit der Abgabe der elektronischen Fassung der endgültigen Version der Arbeit nehme ich zur Kenntnis, dass diese mit Hilfe eines Plagiatserkennungsdienstes auf enthaltene Plagiate überprüft und ausschließlich für Prüfungszwecke gespeichert wird.
+%
+Außerdem räume ich dem Lehrgebiet das Recht ein, die Arbeit für eigene Lehr- und Forschungstätigkeiten auszuwerten und unter Angabe des Autors geeignet zu publizieren.
+
+\ \\
+      \vskip 1cm
+      \begin{tabular}{ll}
+        \noindent Hagen, den #1 \hspace{2cm} {} & \rule{70mm}{.1pt}\\
+        {} & \MyAuthor
+      \end{tabular}
+    \end{minipage}}
+  \end{center}
+}
+
+\newcommand{\frontmatter}{
+  \thispagestyle{empty}
+  \fancyhf{}
+  \lhead{\rightmark}
+  \cfoot{\thepage}
+  \pagenumbering{roman}
+}
+
+\newcommand{\mainmatter}{
+  %\pagestyle{empty}
+  \fancyhf{}
+  \lhead{\rightmark}
+  \cfoot{\thepage}
+  \pagenumbering{arabic}
+}
+
+\let\origappendix\appendix
+\renewcommand\appendix{\clearpage\pagenumbering{roman}\origappendix}
+
+\clubpenalty10000
+\widowpenalty10000
+\displaywidowpenalty=10000
+
+\oddsidemargin 1cm
+\evensidemargin 1cm
+\textwidth 15cm
+\topmargin -1.25cm
+\textheight 24.37cm
+
+\usepackage[compact]{titlesec}
+\titlespacing{\section}{0pt}{*0}{*0}
+\titlespacing{\subsection}{0pt}{*0}{*0}
+\titlespacing{\subsubsection}{0pt}{*0}{*0}
+\setlength{\parindent}{0em}
+\setlength{\parskip}{0.5\baselineskip}
+
+\usepackage{listings}
+\definecolor{colorcodegrey}{rgb}{0.4,0.4,0.4}
+
+\lstset{
+    breakatwhitespace=true,
+    breaklines=true,
+    aboveskip=20pt,
+    captionpos=b,
+    frame=trbl,
+    frameround=tttt,
+    framesep=4pt,
+    postbreak=\raisebox{0ex}[0ex][0ex]{\ensuremath{\color{black}\hookrightarrow\space}},
+    commentstyle=\color{colorcodegrey},
+    columns=fixed,
+    keywordstyle=\textbf,
+    numbers=left,
+    numbersep=5pt,
+    numberstyle=\scriptsize\color{colorcodegrey},
+    tabsize=2,
+    title=\lstname,
+    float
+}
+
+\setlength\cftparskip{-5pt}
+\setlength\cftbeforesecskip{15pt}
+\setlength\cftaftertoctitleskip{5pt}
