@@ -1,10 +1,4 @@
 \section{Literature Review}
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.9\textwidth]{images/u-net-architecture}
-    \caption{U-Net Architecture \cite{unet15}}
-    \label{fig:unet_architecture}
-\end{figure}
 
 \subsection{Convolution}
 \cite{DLbook16}
@@ -38,6 +32,33 @@ Pooling layer are not trainable, because they compute a given function on the in
 network architecture consists of a contracting path and an expansive path. contraction follows the typical architecture of convolutional network. repeated application of 3x3 convolutions, followed by ReLU and 2x2 max pooling. stride 2 for downsampling, features double for each contraction.
 expansive path is upsampling followed by 2x2 convolution. also concatenation of the cropped feature map from the corresponding feature map from contraction path.
 final layer is 1x1 convolution to map feature vector to desired number of classes. Demonstrated results with the EM segmentation challenge (\cite{isbi_challenge}), where they achieved very good results.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/u-net-architecture}
+    \caption{U-Net Architecture \cite{unet15}}
+    \label{fig:unet_architecture}
+\end{figure}
+
+
+\subsection{DenseNet Architecture}
+\cite{densenet18}
+NN architectures tended to get deeper and deeper. This brings problem of vanishing gradients because input data flows through so many layers. Different approaches to solve this. Authors of paper decided to connect all layers with matching feature map sizes. Features are combined by concatenation. This leads to many connections in a deep network, thus called Dense Convolutional Network (DenseNet).
+
+Authors see layers as state of the network. For layer state to be accessible by next layers, the layer needs to pass the state. With their architecture, they differentiate between information coming from earlier layers and information being mined in the current layer. They keep layer narrow, each layer only adds small pieces of new information, existing information is not changed. All of that leads to having fewer parameters than traditional architectures.
+
+Improved flow of gradients throughout the network. Every layer has access to original input signal and gradients from the loss function. Allows for even deeper architectures and prevents vanishing gradients. Make it easier to train the network.
+
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/dense-net-architecture}
+    \caption{Densely Connected Convolutional Architecture \cite{densenet18}}
+    \label{fig:densenet_architecture}
+\end{figure}
+
+\subsection{Architecture Comparison}
+Interesting for architecture comparison: \cite{imseg_architecures}
 
 
 \newpage
