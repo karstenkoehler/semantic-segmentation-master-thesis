@@ -1,6 +1,10 @@
 \section{Literature Review}
 
-\subsection{Convolution}
+\subsection{Types of Machine Learning Methods}
+
+\subsection{Convolutional Neural Networks}
+
+\subsubsection{Convolution}
 \cite{DLbook16}
 326: convolutional neural networks (CNN) are specialized kind of neural network for data with grid-like topology, for example images as 2D pixel grid. CNN are basically NN that use at least one convolutional layer.
 
@@ -10,7 +14,7 @@
 
 334f: due to parameter sharing, convolution operation is equivariant to translation. Meaning, if you move parts of the input convolution will still give you the same output, just with the moved detection. This is especially helpful for working with images, as object might be in different locations of the image, but should still be realized.
 
-\subsection{Pooling}
+\subsubsection{Pooling}
 \cite{DLbook16}
 335: Pooling replaces output of certain location with a summary of the nearby outputs. Max Pooling reports the maximum value inside a rectangular neighborhood. Other functions: (weighted) average or $L^2$ norm.
 
@@ -27,7 +31,12 @@ Module 2: pooling layers between conv layers are common architecture. thereby yo
 
 Pooling layer are not trainable, because they compute a given function on the input elements. This function is oftentimes MAX function, also other variation like AVG oder L2-norm are used. However, pooling is configurable for the hyperparameters kernel size and stride.
 
-\subsection{U-Net architecture}
+\subsubsection{Others}
+Batch Normalization, ReLU Activation, etc
+
+\subsection{Reference Architectures}
+
+\subsubsection{U-Net architecture}
 \cite{unet15}
 network architecture consists of a contracting path and an expansive path. contraction follows the typical architecture of convolutional network. repeated application of 3x3 convolutions, followed by ReLU and 2x2 max pooling. stride 2 for downsampling, features double for each contraction.
 expansive path is upsampling followed by 2x2 convolution. also concatenation of the cropped feature map from the corresponding feature map from contraction path.
@@ -40,8 +49,7 @@ final layer is 1x1 convolution to map feature vector to desired number of classe
     \label{fig:unet_architecture}
 \end{figure}
 
-
-\subsection{DenseNet Architecture}
+\subsubsection{DenseNet Architecture}
 \cite{densenet18}
 NN architectures tended to get deeper and deeper. This brings problem of vanishing gradients because input data flows through so many layers. Different approaches to solve this. Authors of paper decided to connect all layers with matching feature map sizes. Features are combined by concatenation. This leads to many connections in a deep network, thus called Dense Convolutional Network (DenseNet).
 
@@ -57,7 +65,7 @@ Improved flow of gradients throughout the network. Every layer has access to ori
     \label{fig:densenet_architecture}
 \end{figure}
 
-\subsection{Architecture Comparison}
+\subsubsection{Architecture Comparison}
 Interesting for architecture comparison: \cite{imseg_architecures}
 
 
