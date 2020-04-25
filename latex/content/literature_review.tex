@@ -9,11 +9,34 @@
 \end{itemize}
 
 \subsection{Convolutional Neural Networks}
+One subclass of neural networks is called Convolutional Neural Network (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. In traditional neural networks the layers are often densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of input data into account. The following sections explain the commonly used operations in CNNs.
 
 \subsubsection{Convolution}
-\cite{DLbook16}
-326: convolutional neural networks (CNN) are specialized kind of neural network for data with grid-like topology, for example images as 2D pixel grid. CNN are basically NN that use at least one convolutional layer.
+Convolution is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value. The concept is shown in figure~\ref{fig:convolution}. The notation $n_{k, i, j}$ represents a neuron at row $i$ and column $j$ in layer $k$. For a convolutional layer, neuron $n_{k, i, j}$ is connected to all neurons $n_{k-1, i, j}$ to $n_{k-1, i + f_w -1, j + f_h -1}$. The neurons in layer $k-1$ are therefore called receptive field of $n_{k, i, j}$ with a kernel width of $f_w$ and kernel height of $f_h$.~\cite[p.~361f]{praxiseinstieg_ml17}
 
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/convolution_template}
+    \caption{Receptive field of a convolution operation}
+    \label{fig:convolution}
+\end{figure}
+
+There are different ways to handle the edges of the grid. If no special action is taken, the output layer will be smaller in terms of edge length. For this reason \emph{zero padding} is often used to enlarge the input layer before convolution is performed. With an appropriate padding it is possible to preserve the width and height of the layer. Another parameter that affect the size of the output layer is called \emph{stride}, that controls the distance between to neighbouring receptive fields.~\cite[p.~361]{praxiseinstieg_ml17}
+
+The trainable parameters in a convolution layer are the weights and biases used for the matrix multiplication introduced earlier. One specific set of weights and biases is called a \emph{filter}. It is responsible for detecting one single feature of the input layer. The output of a filter is thus referred to as \emph{feature map}. To inspect multiple features of the input, a convolution layer usually consists of multiple filters that are trained and calculated independently. In the end, the output of a convolution layer are multiple feature maps, each highlighting one single feature of the input.~\cite[p.~363f]{praxiseinstieg_ml17}
+
+As stated by Goodfellow et al.\ in~\cite{DLbook16} the convolution operation has some properties that are highly valuable to build an efficient and powerful neural network:
+\begin{enumerate}
+    \item It leverages sparse interactions between the layers of a neural network.
+    \item Many parameters are shared and reused throughout a whole layer.
+    \item The operation is equivariant to translation of the input.
+\end{enumerate}
+
+
+
+
+
+\cite{DLbook16}
 330: NN use only matrix multiplication. meaning every output unit of one layer interacts with the all input units of the next layer. convolution leverages sparse interactions. for example images can have millions of pixels, but to detect edges it is enough to only look at a few pixels at a time. thus we can have a kernel smaller than the image size resulting in fewer parameters. This reduces memory requirements of the model and increases statistical efficiency.
 
 331, 333: another advantage is parameter sharing. with matrix multiplication you usually have a weight matrix, where each value is used only once. convolution operation uses parameter sharing, because one kernel is applied multiple times on the same image. and since kernel is smaller than image, it again reduces number of parameters by a significant amount.
