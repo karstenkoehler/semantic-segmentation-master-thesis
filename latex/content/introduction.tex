@@ -18,12 +18,11 @@ emergency landing fields are always the last option, because of high risks. Ther
 With Emergency Landing Field Identification (ELFI) it is possible to automatically determine landing fields using LIDAR elevation data. very high resolution, grid size under 1m, but still not enough to spot fences, creeks, power lines. additional use of image data allows analyzing surface conditions. Idea is, to use CNN with image segmentation.
 
 \subsection{Objectives}
-improve emergency landing field identification using NN models, extending existing segmentation architectures. use orthographic photos data set of Cologne with very high resolution.
+The main objective of this thesis is to examine new ways of identifying and analyzing emergency landing fields with convolutional neural networks. The former methods are based exclusively on binary classification. With that, ELFI can only suggest potential areas and provide information such as inclination. To further support the pilot's decision making, this thesis investigates on how to make more information available to the pilot by making use of high resolution orthographic photos. The District Government of Cologne provides a large data set with digital orthographic imagery of Cologne and surroundings\footnote{\url{https://www.geoportal.nrw/}}.
 
-First goal is to do semantic segmentation on land cover. Identify different classes of land usage like buildings, forest, agriculture. results will be visualized and compared to real situation. also saved in postgres database with postGIS extension. this allows for future use of the data. with that a first filtering of suitable emergency landing fields can be applied, because certain land areas are more suitable than others.
+To achieve the objective, we perform a semantic segmentation of the image data with convolutional neural networks. This process enables to distinguish between different zones like buildings, forest or water in an image. The results are saved in a spatial database and then visualized for the reader. Afterwards it is discussed how those results can be used for landing field identification and what value they have for assisting a pilot.
 
-% TODO make sure the wording is correct (regression model)
-Build on those results, a second step analyzes vegetation density. only areas that are identified as agriculture/field will be looked at, so much smaller dataset. idea is to have a regression model that maps vegetation density to floats between 0 and 1. Also save this in postGIS database. Visualize results and discuss thresholds for detecting landing fields. Different airplanes can have different requirements and limits for this.
+In a second step, all areas that are clearly not suitable for an emergency landing (like cities and forests) are dropped. For this part of the thesis, the focus is on potential landing areas to further evaluate their suitability for an emergency landing. A major point of interest is the vegetation density, which is to be analyzed using a regression model. The results are again stored in a spatial database and visualized for discussion.
 
 \subsection{Outline}
 
