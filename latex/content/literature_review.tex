@@ -81,14 +81,9 @@ The U-Net architecture contains neither fully connected layers nor do they use p
 
 
 \subsubsection{DenseNet Architecture}
-\WIP{
-\cite{densenet18}
-NN architectures tended to get deeper and deeper. This brings problem of vanishing gradients because input data flows through so many layers. Different approaches to solve this. Authors of paper decided to connect all layers with matching feature map sizes. Features are combined by concatenation. This leads to many connections in a deep network, thus called Dense Convolutional Network (DenseNet).
+As the depth of CNN architectures tends to increase, a new challenge arose regarding the training of those networks. Since the hidden layer can be very far away from the input and output layers, the values and gradients passed between the layers can get lost on the way. In an attempt to solve this, Huang et al.\ came up with the idea to directly connect all layers with matching feature map sizes. They published their architecture under the name \emph{DenseNet} in~\cite{densenet18}.
 
-Authors see layers as state of the network. For layer state to be accessible by next layers, the layer needs to pass the state. With their architecture, they differentiate between information coming from earlier layers and information being mined in the current layer. They keep layer narrow, each layer only adds small pieces of new information, existing information is not changed. All of that leads to having fewer parameters than traditional architectures.
-
-Improved flow of gradients throughout the network. Every layer has access to original input signal and gradients from the loss function. Allows for even deeper architectures and prevents vanishing gradients. Make it easier to train the network.
-}
+Huang et al.\ see the values passed between layers as a state. To access the state of one of the early layers in the network with a subsequent layer, all the layers in between have to pass the state unchanged, thus creating redundancy. With the DenseNet architecture, the state of all previous layers is explicitly passed to subsequent layers. This means, the network now differentiates between information that originates from an earlier layer and new information found in the current layer. It allows to keep the convolution layers narrow, because each layer only adds information, but never changes information that was previously acquired. This concept leads to having fewer trainable parameters and an improved flow of gradients, which both reduce the effort for training the network.~\cite{densenet18}
 
 \begin{figure}[h]
     \centering
@@ -96,6 +91,8 @@ Improved flow of gradients throughout the network. Every layer has access to ori
     \caption{Densely Connected Convolutional Architecture \cite{densenet18}}
     \label{fig:densenet_architecture}
 \end{figure}
+
+To add the connections between the layers, the authors simply concatenate the feature maps. Thus, it is not possible to connect layers which feature maps are of different size. To still be able to use pooling layers to condense the information in the network, the authors introduce a component called \emph{dense block} as illustrated in figure~\ref{fig:densenet_architecture}. Inside of a dense block, they apply dense connections between the convolution layers. In between two consecutive dense blocks, there is a \emph{transition layer}, which is formed by a convolution and an average pooling layer. Ultimately, the overall architecture of a DenseNet consists of several independent dense blocks separated by transition layers, eventually concluded by a fully-connected layer.
 
 \subsection{Architecture Comparison}
 Interesting for architecture comparison: \cite{imseg_architecures}
