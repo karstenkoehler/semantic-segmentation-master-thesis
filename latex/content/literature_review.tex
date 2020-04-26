@@ -64,16 +64,11 @@ Because the function to use is predefined, pooling layers do not contain any tra
 \subsection{Reference Architectures}
 \begin{itemize}
     \item make clear why it is convenient to use reference architectures
-    \item
-    \item
 \end{itemize}
+
 \subsubsection{U-Net architecture}
-\WIP{
-\cite{unet15}
-network architecture consists of a contracting path and an expansive path. contraction follows the typical architecture of convolutional network. repeated application of 3x3 convolutions, followed by ReLU and 2x2 max pooling. stride 2 for downsampling, features double for each contraction.
-expansive path is upsampling followed by 2x2 convolution. also concatenation of the cropped feature map from the corresponding feature map from contraction path.
-final layer is 1x1 convolution to map feature vector to desired number of classes. Demonstrated results with the EM segmentation challenge (\cite{isbi_challenge}), where they achieved very good results.
-}
+%TODO: go more into detail on the training and the results they achieved
+In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} which they recommended for binary segmentation of biomedical images~\cite{unet15}. As can be seen in figure~\ref{fig:unet_architecture}, this name derives from the U-shape of the network model. It consists of a contracting path in the beginning, in which convolution and pooling layers are used to condense the input. The second half forms an expansive part, that uses convolution and upsampling layers to go back to the scale of the original image. Note that the outputs of the convolution layers in the contracting path are cropped and then concatenated to the input layers with the corresponding size in the expansive path. By doing that, the expansive layers still retain enough information from the original input to deliver a precise segmentation.
 
 \begin{figure}[h]
     \centering
@@ -81,6 +76,9 @@ final layer is 1x1 convolution to map feature vector to desired number of classe
     \caption{U-Net Architecture \cite{unet15}}
     \label{fig:unet_architecture}
 \end{figure}
+
+The U-Net architecture contains neither fully connected layers nor do they use padding for the edges. Thus, the segmentation map has a lower resolution that the original image, because it only contains pixels for which the full context is available. By using a tiling strategy with overlapping tiles, this approach can produce seamless segmentation maps for input images of arbitrary size. For the edges of the input image, Ronneberger et al.\ suggest a mirroring strategy to extrapolate the missing context.~\cite{unet15}
+
 
 \subsubsection{DenseNet Architecture}
 \WIP{
