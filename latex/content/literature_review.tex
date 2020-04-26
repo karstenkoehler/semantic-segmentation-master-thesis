@@ -66,7 +66,7 @@ Because the function to use is predefined, pooling layers do not contain any tra
     \item make clear why it is convenient to use reference architectures
 \end{itemize}
 
-\subsubsection{U-Net architecture}
+\subsubsection{U-Net Architecture}
 %TODO: go more into detail on the training and the results they achieved
 In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} which they recommended for binary segmentation of biomedical images~\cite{unet15}. As can be seen in figure~\ref{fig:unet_architecture}, this name derives from the U-shape of the network model. It consists of a contracting path in the beginning, in which convolution and pooling layers are used to condense the input. The second half forms an expansive part, that uses convolution and upsampling layers to go back to the scale of the original image. Note that the outputs of the convolution layers in the contracting path are cropped and then concatenated to the input layers with the corresponding size in the expansive path. By doing that, the expansive layers still retain enough information from the original input to deliver a precise segmentation.
 
@@ -87,7 +87,7 @@ Huang et al.\ see the values passed between layers as a state. To access the sta
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/dense-net-architecture}
+    \includegraphics[width=0.7\textwidth]{images/dense-net-architecture}
     \caption{Densely Connected Convolutional Architecture \cite{densenet18}}
     \label{fig:densenet_architecture}
 \end{figure}
