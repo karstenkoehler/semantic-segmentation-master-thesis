@@ -3,7 +3,7 @@ The failure of an aircraft's engine during a flight is a very serious event, eve
 
 There are various facts to be considered weather a specific runway is a viable option for an emergency landing. For example the distance to the runway is one of the more obvious parameters, but also things like wind conditions and gliding characteristics of the aircraft are important. However, the runway not only has to be within reach. Another condition is that you are able to approach the runway in a correct angle and with the correct altitude, either with a direct path or with some additional holding patterns. All in all, a good pilot has to take all these things into account while being in such a stressing situation.
 
-It is no surprise that nowadays there are companies and researchers working on tools to support the decision-making process in many ways. One project called Emergency Landing Assistant (ELA) is developed at the FernUniversität Hagen in Germany~\cite{feu_fas}. The ELA uses various parameters like sink rates in both straight and curved flight paths, wind speed and direction and also different settings like flap positions. With that it calculates a recommended flight path to a nearby runway which is updated in real-time according to situational changes. Because of the precise simulation of real-world physics, this path is tends to be much more accurate than a pilot's assessment, which is mostly based on experience and gut feeling.
+It is no surprise that nowadays there are companies and researchers working on tools to support the decision-making process in many ways. One project called Emergency Landing Assistant (ELA) is developed at the FernUniversität Hagen in Germany~\cite{feu_fas}. The ELA uses various parameters like sink rates in both straight and curved flight paths, wind speed and direction and also different settings like flap positions. With that it calculates a recommended flight path to a nearby runway which is updated in real-time according to situational changes. Because of the precise simulation of real-world physics, this path tends to be much more accurate than a pilot's assessment, which is mostly based on experience and gut feeling.
 
 Sometimes there is just no suitable runway that happens to be in reach for the emergency landing. As a last option to get down without crashing, the pilot has to find a spot in the landscape where he can safely touch down the airplane. Because this is such a high risk maneuver, it is only considered if there is really no other option. To reduce the risk of a crash it is essential to find an flat area with few obstacles. For that case, the ELA contains a module called Emergency Landing Field Identification (ELFI), which assists in finding zones suitable for an emergency landing in the wild~\cite{feu_elfi}. This thesis will work on improving said module using deep learning techniques with a publicly available data set.
 
@@ -23,7 +23,7 @@ With Emergency Landing Field Identification (ELFI) it is possible to automatical
 
 
 \subsection{Objectives}
-The main objective of this thesis is to examine new ways of identifying and analyzing emergency landing fields with convolutional neural networks. The former methods are based exclusively on binary classification. With that, ELFI can only suggest potential areas and provide information such as inclination. To further support the pilot's decision making, this thesis investigates on how to make more information available to the pilot by making use of high resolution orthographic photos. The District Government of Cologne provides a large data set with digital orthographic imagery of Cologne and surroundings\footnote{\url{https://www.geoportal.nrw/}}.
+The main objective of this thesis is to examine new ways of identifying and analyzing emergency landing fields with convolutional neural networks. The former methods are based exclusively on binary classification. With that, ELFI can only suggest potential areas and provide information such as inclination. To further support the pilot's decision making, this thesis investigates how to make more information available to the pilot by making use of high resolution orthographic photos. The District Government of Cologne provides a large data set with digital orthographic imagery of Cologne and surroundings\footnote{\url{https://www.geoportal.nrw/}}.
 
 To achieve the objective, we perform a semantic segmentation of the image data with convolutional neural networks. This process enables to distinguish between different zones like buildings, forest or water in an image. The results are saved in a spatial database and then visualized for the reader. Afterwards it is discussed how those results can be used for landing field identification and what value they have for assisting a pilot.
 
@@ -32,7 +32,7 @@ In a second step, all areas that are clearly not suitable for an emergency landi
 \subsection{Outline}
 
 \begin{itemize}
-    \item Brief summary of all chapters and their content. This section will be written at the very end of the thesis
+    \item Brief summary of all chapters and their content. This section will be written at the very end of the thesis.
 \end{itemize}
 
 \newpage

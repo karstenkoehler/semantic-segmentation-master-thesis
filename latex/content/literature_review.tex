@@ -1,15 +1,18 @@
 \section{Literature Review}
-
-\subsection{Types of Machine Learning Methods}
 \begin{itemize}
-    \item compare supervised vs unsupervised learning
-    \item supervised learning will be used for land zone segmentation and vegetation analysis
-    \item unsupervised learning might be used for dimensionality reduction in form of autoencoders
-    \item this chapter only makes sense if unsupervised learning is put to good use
+    \item explain what a neural network is in general
+    \item brief summary on how the learning works (backpropagation)
+\end{itemize}
+
+\subsection{Types of Deep Learning Methods}
+\begin{itemize}
+    \item compare training methods for deep learning (supervised, unsupervised, reinforcement learning)
+    \item emphasize requirements and advantages of the different methods
+    \item raise ideas how the methods can be used throughout the thesis
 \end{itemize}
 
 \subsection{Convolutional Neural Networks}
-One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. In traditional neural networks the layers are often densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of input data into account. The following sections explain the commonly used operations in CNNs.
+One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. In traditional neural networks the layers are often densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of the input data into account. The following sections explain the commonly used operations in CNNs.
 
 \subsubsection{Convolution}
 % TODO: be more precise with input/output of neurons
@@ -59,7 +62,11 @@ Because the function to use is predefined, pooling layers do not contain any tra
 \end{itemize}
 
 \subsection{Reference Architectures}
-
+\begin{itemize}
+    \item make clear why it is convenient to use reference architectures
+    \item
+    \item
+\end{itemize}
 \subsubsection{U-Net architecture}
 \WIP{
 \cite{unet15}
