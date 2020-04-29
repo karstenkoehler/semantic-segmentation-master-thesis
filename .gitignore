@@ -12,3 +12,6 @@ data
 *.pdf
 *.toc
 *.synctex.gz
+
+*.blend
+*.xcf
