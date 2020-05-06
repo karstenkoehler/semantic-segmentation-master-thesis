@@ -88,11 +88,32 @@ Huang et al.\ see the values passed between layers as a state. To access the sta
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/dense-net-architecture}
-    \caption{Densely Connected Convolutional Architecture \cite{densenet18}}
+    \caption{Densely Connected Convolutional Architecture~\cite{densenet18}}
     \label{fig:densenet_architecture}
 \end{figure}
 
 To add the connections between the layers, the authors simply concatenate the feature maps. Thus, it is not possible to connect layers which feature maps are of different size. To still be able to use pooling layers to condense the information in the network, the authors introduce a component called \emph{dense block} as illustrated in figure~\ref{fig:densenet_architecture}. Inside of a dense block, they apply dense connections between the convolution layers. In between two consecutive dense blocks, there is a \emph{transition layer}, which is formed by a convolution and an average pooling layer. Ultimately, the overall architecture of a DenseNet consists of several independent dense blocks separated by transition layers, eventually concluded by a fully-connected layer.
+
+\subsubsection{Mask R-CNN}
+\WIP{
+\cite{rcnn14}
+image classification not sufficient for segmentation, because of missing localization. CNN combined with region proposals leads to R-CNN. Is not a fixed architecture, but more a meta algorithm whose implementation can vary. Architecture consists of three modules: category independent region proposals with selective search (fast mode). This outputs regions of interest (RoI). Affine image warping to make all regions same size, then passed through CNN architecture. This extracts fixed-length feature vector for each region. Then, support vector machines used to compute probabilities for every class. Overall Output is class prediction and offset for proposed region. visualized in figure~\ref{fig:rcnn_architecture}
+
+This architecture had performance issues, training/test took very long. first improved in \cite{f-rcnn14} by first computing feature maps. Then use RoI pooling (special kind of max pooling) to identify RoIs in feature map. This way, a lot of time is saved because convnet is only used once.
+
+After that, selective search was the limiting factor in speed, so \cite{ff-rcnn14} examined a new way to get region proposals. This leads to region proposal networks (RPN), which shares convolutional layers with CNN. Thus the cost to compute region proposals is very small during test time. Allows for object detecting near real-time.
+}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/rcnn}
+    \caption{R-CNN architecture~\cite{rcnn14}}
+    \label{fig:rcnn_architecture}
+\end{figure}
+
+\WIP{
+Still, Faster R-CNN has only Object localization. Another extension called Mask R-CNN~\cite{mask-rcnn14} introduced segmentation for R-CNN. Uses identical first stage with RPN. Then adds another path for mask prediction besides the class and bounding box predictions. In contrast to other architectures, class prediction and mask predication are independent. Binary Masks are predicted for every class without competition.
+}
 
 \subsection{Architecture Comparison}
 Interesting for architecture comparison: \cite{imseg_architecures}
