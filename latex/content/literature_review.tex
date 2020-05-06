@@ -55,6 +55,19 @@ Because the function to use is predefined, pooling layers do not contain any tra
     \label{fig:pooling}
 \end{figure}
 
+\WIP{\cite{spp15}
+special kind of pooling used in CNNs called spatial pyramid pooling (SPP). Used to overcome a common issue in image processing which is size and aspect ratio. Convolution and pooling layer are not impaired by varying image sizes, but FC layers at the end are. Thus, images have to be scaled/warped to fit given input size.
+
+SPP usually applied instead of last conv layer before FC layers. maintains spatial information by having spatial bins in proportion to image size. multiple levels are used (thus pyramid). level 0 is doing global max pooling, resulting in 1 value for every feature map. level 1 has 4 bins (2x2 structure) and level 2 has 16 bins (4x4 structure). all they do is max pooling inside every bin. this leads to fixed-length outputs for arbitrary input sizes. Figure~\ref{fig:spp_pooling} shows SPP layer in action.
+}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/spp_pooling}
+    \caption{Spatial pyramid pooling}
+    \label{fig:spp_pooling}
+\end{figure}
+
 \subsubsection{Other Important Concepts}
 \begin{itemize}
     \item Batch Normalization
