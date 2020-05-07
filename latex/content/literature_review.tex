@@ -58,7 +58,7 @@ Because the function to use is predefined, pooling layers do not contain any tra
 \WIP{\cite{spp15}
 special kind of pooling used in CNNs called spatial pyramid pooling (SPP). Used to overcome a common issue in image processing which is size and aspect ratio. Convolution and pooling layer are not impaired by varying image sizes, but FC layers at the end are. Thus, images have to be scaled/warped to fit given input size.
 
-SPP usually applied instead of last conv layer before FC layers. maintains spatial information by having spatial bins in proportion to image size. multiple levels are used (thus pyramid). level 0 is doing global max pooling, resulting in 1 value for every feature map. level 1 has 4 bins (2x2 structure) and level 2 has 16 bins (4x4 structure). all they do is max pooling inside every bin. this leads to fixed-length outputs for arbitrary input sizes. Figure~\ref{fig:spp_pooling} shows SPP layer in action.
+SPP usually applied instead of last pooling layer before FC layers. maintains spatial information by having spatial bins in proportion to image size. multiple levels are used (thus pyramid). level 0 is doing global max pooling, resulting in 1 value for every feature map. level 1 has 4 bins (2x2 structure) and level 2 has 16 bins (4x4 structure). all they do is max pooling inside every bin. this leads to fixed-length outputs for arbitrary input sizes. Figure~\ref{fig:spp_pooling} shows SPP layer in action.
 }
 
 \begin{figure}[h]
@@ -112,7 +112,7 @@ To add the connections between the layers, the authors simply concatenate the fe
 \cite{rcnn14}
 image classification not sufficient for segmentation, because of missing localization. CNN combined with region proposals leads to R-CNN. Is not a fixed architecture, but more a meta algorithm whose implementation can vary. Architecture consists of three modules: category independent region proposals with selective search (fast mode). This outputs regions of interest (RoI). Affine image warping to make all regions same size, then passed through CNN architecture. This extracts fixed-length feature vector for each region. Then, support vector machines used to compute probabilities for every class. Overall Output is class prediction and offset for proposed region. visualized in figure~\ref{fig:rcnn_architecture}
 
-This architecture had performance issues, training/test took very long. first improved in \cite{f-rcnn14} by first computing feature maps. Then use RoI pooling (special kind of max pooling) to identify RoIs in feature map. This way, a lot of time is saved because convnet is only used once.
+This architecture had performance issues, training/test took very long. first improved in \cite{f-rcnn14} by first computing feature maps. Then identify RoIs directly in feature map and use RoI pooling (special kind of SPP pooling, only one pyramid layer) to generate fixed-size output layer. Then again, FC layers for classification and bounding box regression. This way, a lot of time is saved because convnet is only used once.
 
 After that, selective search was the limiting factor in speed, so \cite{ff-rcnn14} examined a new way to get region proposals. This leads to region proposal networks (RPN), which shares convolutional layers with CNN. Thus the cost to compute region proposals is very small during test time. Allows for object detecting near real-time.
 }
@@ -125,7 +125,9 @@ After that, selective search was the limiting factor in speed, so \cite{ff-rcnn1
 \end{figure}
 
 \WIP{
-Still, Faster R-CNN has only Object localization. Another extension called Mask R-CNN~\cite{mask-rcnn14} introduced segmentation for R-CNN. Uses identical first stage with RPN. Then adds another path for mask prediction besides the class and bounding box predictions. In contrast to other architectures, class prediction and mask predication are independent. Binary Masks are predicted for every class without competition.
+Still, Faster R-CNN has only Object localization. Another extension called Mask R-CNN~\cite{mask-rcnn14} introduced instance segmentation for R-CNN. Uses identical first stage with RPN. Then adds another path for mask prediction besides the class and bounding box predictions. In contrast to other architectures, class prediction and mask predication are independent. Binary Masks are predicted for every class without competition.
+
+RoI pooling is not sufficient for masking, because of quantization described in \cite{f-rcnn14}. it is okay for classification, but introduces misalignment on pixel level which makes it unusable for segmentation. Thus, \cite{mask-rcnn14} came up with RoI Align layer, that has no quantization by avoiding rounding and using bilinear interpolation.
 }
 
 \subsection{Architecture Comparison}
