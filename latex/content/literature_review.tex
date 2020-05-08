@@ -11,8 +11,37 @@
     \item raise ideas how the methods can be used throughout the thesis
 \end{itemize}
 
+\subsection{Computer Vision Tasks}
+% TODO add information about dataset benchmarks
+\WIP{
+different tasks for detecting and labeling objects in images. brief summary of the tasks.
+
+
+\cite[p.~98]{DLbook16}
+One of easiest tasks is image classification. present an image, NN outputs to which of $k$ categories the input image belongs to. Can also output probability distribution with likelihood for each category. For training this requires a set of images labelled with the corresponding category. Example dataset, popular for beginners, is \cite{mnist10}. Usually tackled with CNN approaches described in \ref{sec:cnn}.
+
+\cite{rcnn14}
+extension for classification is object detection/localization. not only generate a label for an image, but also show bounding box for classification output. with that it is also possible to detect multiple different objects in one image. thus, output is set of classes, each with corresponding bounding box. example dataset presented in \cite{imgnet09}. Common approaches include bounding box regression like \cite{obj_detection13} or using region proposals as explained later in \ref{sec:mask-rcnn}
+
+\cite{weakseg15}
+next level is semantic segmentation. Now every pixel of an image is assigned a semantic label. with that you know the exact spatial layout of the objects in the image. this is the task we're interested in. In-depth explanation of reference architectures follows in \ref{sec:ref_archs}. popular dataset and challenge described in \cite{pascal_voc15}.
+
+\cite{mask-rcnn14}
+not only labelling pixels. instance segmentation generates a mask for each object separately. If multiple objects of same category in image, output will have multiple masks (one for each object). New challenges, for example hidden parts of object leads to a gap in the mask. But it should still recognize that it is the same instance. Very difficult task, not tackled in this thesis. popular approach is Mask R-CNN \cite{mask-rcnn14} which combines semantic segmentation with object localization. example dataset is described in \cite{coco15}.
+}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/cv_tasks}
+    \caption{Computer Vision Tasks \cite{coco15}}
+    \label{fig:cv_tasks}
+\end{figure}
+
 \subsection{Convolutional Neural Networks}
+\label{sec:cnn}
+
 One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. In traditional neural networks the layers are often densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of the input data into account. The following sections explain the commonly used operations in CNNs.
+% TODO: name general architecture with conv, pool and fc layers
 
 \subsubsection{Convolution}
 % TODO: be more precise with input/output of neurons
@@ -75,6 +104,7 @@ SPP usually applied instead of last pooling layer before FC layers. maintains sp
 \end{itemize}
 
 \subsection{Reference Architectures}
+\label{sec:ref_archs}
 \begin{itemize}
     \item make clear why it is convenient to use reference architectures
 \end{itemize}
@@ -108,6 +138,8 @@ Huang et al.\ see the values passed between layers as a state. To access the sta
 To add the connections between the layers, the authors simply concatenate the feature maps. Thus, it is not possible to connect layers which feature maps are of different size. To still be able to use pooling layers to condense the information in the network, the authors introduce a component called \emph{dense block} as illustrated in figure~\ref{fig:densenet_architecture}. Inside of a dense block, they apply dense connections between the convolution layers. In between two consecutive dense blocks, there is a \emph{transition layer}, which is formed by a convolution and an average pooling layer. Ultimately, the overall architecture of a DenseNet consists of several independent dense blocks separated by transition layers, eventually concluded by a fully-connected layer.
 
 \subsubsection{Mask R-CNN}
+\label{sec:mask-rcnn}
+
 \WIP{
 \cite{rcnn14}
 image classification not sufficient for segmentation, because of missing localization. CNN combined with region proposals leads to R-CNN. Is not a fixed architecture, but more a meta algorithm whose implementation can vary. Architecture consists of three modules: category independent region proposals with selective search (fast mode). This outputs regions of interest (RoI). Affine image warping to make all regions same size, then passed through CNN architecture. This extracts fixed-length feature vector for each region. Then, support vector machines used to compute probabilities for every class. Overall Output is class prediction and offset for proposed region. visualized in figure~\ref{fig:rcnn_architecture}
