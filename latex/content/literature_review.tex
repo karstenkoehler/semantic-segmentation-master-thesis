@@ -72,6 +72,7 @@ One subclass of neural networks is called \emph{Convolutional Neural Network} (C
 % TODO: name general architecture with conv, pool and fc layers
 
 \subsubsection{Convolution}
+\label{sec:convolution}
 % TODO: be more precise with input/output of neurons
 \emph{Convolution} is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value. The concept is shown in figure~\ref{fig:convolution}. The notation $n_{k,~i,~j}$ represents a neuron at row~$i$ and column~$j$ in layer~$k$. For a convolutional layer, neuron $n_{k,~i,~j}$ is connected to all neurons $n_{k-1,~i,~j}$ to $n_{k-1,~i + f_w -1,~j + f_h -1}$. The neurons in layer~$k-1$ are therefore called receptive field of $n_{k,~i,~j}$ with a kernel width of $f_w$ and kernel height of $f_h$.~\cite[p.~361 f]{praxiseinstieg_ml17}
 
@@ -100,6 +101,7 @@ As stated by Goodfellow et al.\ in~\cite{DLbook16} the convolution operation has
 \end{comment}
 
 \subsubsection{Pooling}
+\label{sec:pooling}
 Unlike convolution, which is used to extract features from the input, \emph{pooling} removes information from the data to reduce the number of parameters and also to prevent overfitting. The procedure of pooling is similar to convolution. However, it does not use matrix multiplication but instead performs a predefined mathematical function on the input matrix. While any function can be used for the pooling operation, most of the times it is the $\max$ function. Thus, it reduces the available information but still keeps the most important activations.~\cite[p.~369 f]{praxiseinstieg_ml17}
 
 Because the function to use is predefined, pooling layers do not contain any trainable parameters. But still they are configurable with the same hyperparameters as convolution layers, namely kernel size, stride and padding. In addition, you can not only do pooling along the two axis of the input, but also along the third axis, which are the feature maps.~\cite[p.~370]{praxiseinstieg_ml17}
@@ -136,6 +138,12 @@ SPP usually applied instead of last pooling layer before FC layers. maintains sp
 \begin{itemize}
     \item make clear why it is convenient to use reference architectures
 \end{itemize}
+
+\WIP{\cite{fcn15}
+CNN play key role in computer vision tasks. NN in general computes nonlinear function, fcn computes nonlinear filter. therefor, can handle any input size and produce corresponding output size (keep spatial dimensions). Authors take existing classification architectures and transform them to fcn approach. last fully-connected layers are replaces by convolutional layers. output is then a coarse classification heatmap (smaller than input image).
+
+to go back to full resolution, authors describe upsampling (deconvolution). This is convolution as described in \ref{sec:convolution}, but with fractional stride. this leads from coarse to dense prediction for pixels. Following architectures utilize the idea of FCN and upsampling to make dense predictions for segmentation maps.
+}
 
 \subsubsection{U-Net Architecture}
 %TODO: go more into detail on the training and the results they achieved
