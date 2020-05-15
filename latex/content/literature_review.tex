@@ -12,22 +12,26 @@
 \end{itemize}
 
 \subsection{Computer Vision Tasks}
-% TODO add information about dataset benchmarks
 \WIP{
 different tasks for detecting and labeling objects in images. brief summary of the tasks.
 
 
 \cite[p.~98]{DLbook16}
-One of easiest tasks is image classification. present an image, NN outputs to which of $k$ categories the input image belongs to. Can also output probability distribution with likelihood for each category. For training this requires a set of images labelled with the corresponding category. Example dataset, popular for beginners, is \cite{mnist10}. Usually tackled with CNN approaches described in \ref{sec:cnn}. \ref{fig:cv_task_imgclass}
+One of easiest tasks is image classification. present an image, NN outputs to which of $k$ categories the input image belongs to. Can also output probability distribution with likelihood for each category. For training this requires a set of images labelled with the corresponding category. Example dataset, popular for beginners, is \cite{mnist10}. Usually tackled with CNN approaches described in \ref{sec:cnn}. metric is relative classification error rate in test set. \ref{fig:cv_task_imgclass}
 
 \cite{rcnn14}
-extension for classification is object detection/localization. not only generate a label for an image, but also show bounding box for classification output. with that it is also possible to detect multiple different objects in one image. thus, output is set of classes, each with corresponding bounding box. example dataset presented in \cite{imgnet09}. Common approaches include bounding box regression like \cite{obj_detection13} or using region proposals as explained later in \ref{sec:mask-rcnn} \ref{fig:cv_task_objloc}
+extension for classification is object detection/localization. not only generate a label for an image, but also show bounding box for classification output. with that it is also possible to detect multiple different objects in one image. thus, output is set of classes, each with corresponding bounding box. example dataset presented in \cite{imgnet09}. error is calculated by matching classification and level of overlapping for bounding boxes. Common approaches include bounding box regression like \cite{obj_detection13} or using region proposals as explained later in \ref{sec:mask-rcnn} \ref{fig:cv_task_objloc}
 
 \cite{weakseg15}
-next level is semantic segmentation. Now every pixel of an image is assigned a semantic label. with that you know the exact spatial layout of the objects in the image. this is the task we're interested in. In-depth explanation of reference architectures follows in \ref{sec:ref_archs}. popular dataset and challenge described in \cite{pascal_voc15}. \ref{fig:cv_task_semseg}
+next level is semantic segmentation. Now every pixel of an image is assigned a semantic label. with that you know the exact spatial layout of the objects in the image. this is the task we're interested in. In-depth explanation of reference architectures follows in \ref{sec:ref_archs}. popular dataset and challenge described in \cite{pascal_voc15}. performance measured in intersection over union, ratio of shared pixels. calculated like in \ref{eq:iou}. \ref{fig:cv_task_semseg}
+
+\begin{equation}
+    \label{eq:iou}
+    \text{IoU} = \frac{\text{target} \cap \text{prediction}}{\text{target} \cup \text{prediction}}
+\end{equation}
 
 \cite{mask-rcnn14}
-not only labelling pixels. instance segmentation generates a mask for each object separately. If multiple objects of same category in image, output will have multiple masks (one for each object). New challenges, for example hidden parts of object leads to a gap in the mask. But it should still recognize that it is the same instance. Very difficult task, not tackled in this thesis. popular approach is Mask R-CNN \cite{mask-rcnn14} which combines semantic segmentation with object localization. example dataset is described in \cite{coco15}. \ref{fig:cv_task_inseg}
+not only labelling pixels. instance segmentation generates a mask for each object separately. If multiple objects of same category in image, output will have multiple masks (one for each object). New challenges, for example hidden parts of object leads to a gap in the mask. But it should still recognize that it is the same instance. Very difficult task, not tackled in this thesis. popular approach is Mask R-CNN \cite{mask-rcnn14} which combines semantic segmentation with object localization. example dataset is described in \cite{coco15}. also uses IoU, but on per instance basis. \ref{fig:cv_task_inseg}
 }
 
 \begin{figure}[h]
