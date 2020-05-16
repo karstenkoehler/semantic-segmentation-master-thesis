@@ -12,6 +12,7 @@ data
 *.pdf
 *.toc
 *.synctex.gz
+*.synctex(busy)
 
 *.blend
 *.xcf
