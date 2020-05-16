@@ -12,29 +12,22 @@
 \end{itemize}
 
 \subsection{Computer Vision Tasks}
-\WIP{
-different tasks for detecting and labeling objects in images. brief summary of the tasks.
+There are many different tasks in computer vision for detecting and labelling objects in images. This section will give a brief summary of common tasks in the field. In addition, popular data sets with their scoring methods and suitable approaches to solving the problems are presented.
 
+One of the easier tasks is called \emph{image classification}~\cite[p.~98]{DLbook16}. It is about choosing a matching category from a set of predetermined categories for a single image. To achieve that, recent approaches use convolutional neural networks as described in section~\ref{sec:cnn}. The output is a probability distribution which indicates the likelihood that the image will fit into a category. The category with the highest probability score can then be selected as the final label for the image. A popular data set for this task is the \emph{MNIST handwritten digits database}, that can be found in~\cite{mnist10}. To measure the performance of the solutions, the challenge recommends to compare the relative error rate of wrong labels in the test set.
 
-\cite[p.~98]{DLbook16}
-One of easiest tasks is image classification. present an image, NN outputs to which of $k$ categories the input image belongs to. Can also output probability distribution with likelihood for each category. For training this requires a set of images labelled with the corresponding category. Example dataset, popular for beginners, is \cite{mnist10}. Usually tackled with CNN approaches described in \ref{sec:cnn}. metric is relative classification error rate in test set. \ref{fig:cv_task_imgclass}
+The next level is to not only assign a label to an image, but also detect where the object in the image is located. Thus, this task is referred to as \emph{object localization}~\cite{rcnn14}. In addition to the category label, the output is extended by a rectangular bounding box that encloses the spatial extent of the object. This change allows to detect multiple objects in the same image, each with a category label and a (possibly overlapping) bounding box. There are different ways to solve this task, like for example bounding box regression~\cite{obj_detection13} or region proposal networks~\cite{ff-rcnn14}. The \emph{ImageNet} data set presented in~\cite{imgnet09} provides millions of images with prepared object categories and bounding boxes. The performance measurement for this data set is calculated by matching the proposed objects for an image and evaluating overlapping area in the bounding boxes.
 
-\cite{rcnn14}
-extension for classification is object detection/localization. not only generate a label for an image, but also show bounding box for classification output. with that it is also possible to detect multiple different objects in one image. thus, output is set of classes, each with corresponding bounding box. example dataset presented in \cite{imgnet09}. error is calculated by matching classification and level of overlapping for bounding boxes. Common approaches include bounding box regression like \cite{obj_detection13} or using region proposals as explained later in \ref{sec:mask-rcnn} \ref{fig:cv_task_objloc}
-
-\cite{weakseg15}
-next level is semantic segmentation. Now every pixel of an image is assigned a semantic label. with that you know the exact spatial layout of the objects in the image. this is the task we're interested in. In-depth explanation of reference architectures follows in \ref{sec:ref_archs}. popular dataset and challenge described in \cite{pascal_voc15}. performance measured in intersection over union, ratio of shared pixels. calculated like in \ref{eq:iou}. \ref{fig:cv_task_semseg}
+Rectangular boxes are not very accurate for expressing the spatial extents of an object. Therefore, another task called \emph{semantic segmentation}~\cite{weakseg15} deals with pixel-level classification of an image. This determines a precise mask telling for each pixel of the image the object it belongs to. Since this is is one of the main tasks of this thesis, an in-depth discussion of modern solutions to this task follows in section~\ref{sec:ref_archs}. One data set to measure the performance of the various approaches is the Pascal Visual Object Classes as laid out in~\cite{pascal_voc15}. The scoring is done by calculating the \emph{intersection over union} (IoU), which gives the percentage of overlap for the predicted mask compared to the actual mask (see equation~\ref{eq:iou}).
 
 \begin{equation}
     \label{eq:iou}
     \text{IoU} = \frac{\text{target} \cap \text{prediction}}{\text{target} \cup \text{prediction}}
 \end{equation}
 
-\cite{mask-rcnn14}
-not only labelling pixels. instance segmentation generates a mask for each object separately. If multiple objects of same category in image, output will have multiple masks (one for each object). New challenges, for example hidden parts of object leads to a gap in the mask. But it should still recognize that it is the same instance. Very difficult task, not tackled in this thesis. popular approach is Mask R-CNN \cite{mask-rcnn14} which combines semantic segmentation with object localization. example dataset is described in \cite{coco15}. also uses IoU, but on per instance basis. \ref{fig:cv_task_inseg}
-}
+The last task to mention here for the sake of completeness is called \emph{instance segmentation}~\cite{mask-rcnn14}. Whereas previously only one category had to be assigned to each pixel, a distinction is now also made between pixels that belong to the same object category but different instances of an object. This task is quite challenging, as for example parts of an instance can be hidden by another instance of the same category, which leads to gaps in the mask. \emph{Mask R-CNN}~\cite{mask-rcnn14} is a widely used meta-algorithm for solving this task. It combines region proposals used for object localization with semantic segmentation processes. A great data set for this challenge is the \emph{Microsoft Common Objects in Context} set, which can be found in~\cite{coco15}.
 
-\begin{figure}[h]
+\begin{figure}
     \newcommand{\imgWidth}{0.4\textwidth}
     \centering
     \hfill
@@ -65,9 +58,11 @@ not only labelling pixels. instance segmentation generates a mask for each objec
     \end{subfigure}
     \hfill
 
-    \caption{Computer Vision Tasks}
+    \caption{Computer Vision Tasks~\cite{coco15}}
     \label{fig:cv_tasks}
 \end{figure}
+
+To give a brief summary, figure~\ref{fig:cv_tasks} depicts a visual representation of all the tasks mentioned above.
 
 \subsection{Convolutional Neural Networks}
 \label{sec:cnn}
