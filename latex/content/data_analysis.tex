@@ -1,9 +1,17 @@
 \section{Data Analysis}
-\begin{itemize}
-    \item announce the dataset being used
-\end{itemize}
+\WIP{
+data set is provided by the Ministry of the Interior of the State of North Rhine-Westphalia in Germany. they host a platform called GEOportal, accessible in https://www.geoportal.nrw/. they have all kinds of data like topographical maps, elevation information or orthographic footage. all of it is available for download and any use is permitted according to the dl-de/zero-2-0 licence (Data licence Germany, Any use is permitted without restrictions or conditions, see full text on https://www.govdata.de/dl-de/zero-2-0)
+}
 
 \subsection{Getting the dataset}
+\WIP{
+for the thesis we need colored DOP footage. Various ways to get the data. they provide a Web Map Tile Service for DOPs, accessible on https://www.wmts.nrw.de/geobasis/wmts_nw_dop. Can be viewed with geographic information system (GIS) applications, for example QGIS. For easy access they also provide an online viewer on https://www.tim-online.nrw.de/tim-online2/.
+
+There is a separate download section where you can choose the area and products you need and download as whole bundle. For the DOPs they use the JPEG2000 data format. this allows for high compression resulting in download size of about 11,6 GB. Provide the data in tiles, meaning there are several files each containing the data for one square tile. tile contain georeferencing information, meaning GIS applications can show the DOP at the correct position on earth's surface. Files contain 4 raster bands, RGB for color + one band with near-infrared spectral measurement (NIR) data. this is great, because we also need that later on.
+
+% TODO: what is a DOP? what is NIR data?
+}
+
 \begin{itemize}
     \item introduce the APIs that are provided
     \item discuss and compare the data formats that were offered
