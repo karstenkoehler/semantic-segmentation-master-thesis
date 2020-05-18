@@ -4,7 +4,35 @@
     \item brief summary on how the learning works (backpropagation)
 \end{itemize}
 
-\subsection{Types of Deep Learning Methods}
+\subsection{Deep Learning Basics}
+
+\WIP{
+\cite[p.~214f]{dlma14}
+deep learning emerged as new field of machine learning. using many layers with non-linear information processing.
+supervised learning provides discriminative power for pattern classification. need labelled data (ground truth) to train, meaning you need to provide examples for input with respective output. good for learning classification tasks.
+unsupervised learning does not need labels. it intends to capture high-order correlation of the data. can be used to extract sparse representations or generate new data of same type.
+
+\cite[p.~4]{dl_overview14}
+standard neural network consists of simple computational units called neurons.
+
+\cite[pp.~125f]{nn_intro96}
+traditional neural network is a function to map input vector to specific output vector. consists of neurons (or perceptrons), which calculates weighted sum of its inputs, applies activation function and outputs single scalar value. for NN, neurons form directed graph where edges define the weights between output and input of next neuron. training process is essentially updating the weights to achieve better matching prediction.
+
+\cite[pp.~125f]{nn_intro96}
+from topological point of view neurons are usually grouped into layers. first layer that receives input is called input layer. last layer to make prediction is called output layer. in between is arbitrary amount of hidden layers. architectures tend to increase number of hidden layers, thus creating the term of deep learning. topology of network is often referred to as architecture.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/generic_layered_architecture}
+    \caption{A generic layered architecture~\cite[p.~126]{nn_intro96}}
+    \label{fig:layered_architecture}
+\end{figure}
+
+\cite[pp.~163ff]{nn_intro96}
+training of NNs require error function to measure deviation from prediction to desired output. error is then to be minimized during training to create best-matching predictions. Achieved by backpropagation algorithm which searches for minimum of error function using gradient descent. first a forward pass through the NN is done to get all outputs and activations from all neurons. then you calculate for each individual neuron the effect it has for the total error. based on that you can adjust the weights between neurons to reduce the overall error.
+}
+
+
 \begin{itemize}
     \item compare training methods for deep learning (supervised, unsupervised, reinforcement learning)
     \item emphasize requirements and advantages of the different methods
