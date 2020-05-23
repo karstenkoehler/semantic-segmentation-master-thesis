@@ -5,21 +5,7 @@
 \end{itemize}
 
 \subsection{Deep Learning Basics}
-
-\WIP{
-\cite[p.~214f]{dlma14}
-deep learning emerged as new field of machine learning. using many layers with non-linear information processing.
-supervised learning provides discriminative power for pattern classification. need labelled data (ground truth) to train, meaning you need to provide examples for input with respective output. good for learning classification tasks.
-unsupervised learning does not need labels. it intends to capture high-order correlation of the data. can be used to extract sparse representations or generate new data of same type.
-
-\cite[p.~4]{dl_overview14}
-standard neural network consists of simple computational units called neurons.
-
-\cite[pp.~125f]{nn_intro96}
-traditional neural network is a function to map input vector to specific output vector. consists of neurons (or perceptrons), which calculates weighted sum of its inputs, applies activation function and outputs single scalar value. for NN, neurons form directed graph where edges define the weights between output and input of next neuron. training process is essentially updating the weights to achieve better matching prediction.
-
-\cite[pp.~125f]{nn_intro96}
-from topological point of view neurons are usually grouped into layers. first layer that receives input is called input layer. last layer to make prediction is called output layer. in between is arbitrary amount of hidden layers. architectures tend to increase number of hidden layers, thus creating the term of deep learning. topology of network is often referred to as architecture.
+\emph{Deep Learning} is a new field of machine learning that makes use of \emph{Deep Neural Networks} (DNN)~\cite[pp.~125f]{nn_intro96}. In an abstract point of view, a DNN is just a mathematical function to map a given input vector to an output vector. It is assembled from densely-connected units called \emph{neurons} (or \emph{perceptrons}). Usually, the neurons are grouped into layers~\cite[p.~125]{nn_intro96} (see figure~\ref{fig:layered_architecture}). The first layer of the DNN has direct access to the input vector, thus it is called the \emph{input layer}. In contrast, the last layer of the DNN produces the output vector and is therefore called \emph{output layer}. In between, there is an arbitrary number of \emph{hidden layers} that make up for the depth of the neural network.
 
 \begin{figure}[h]
     \centering
@@ -27,6 +13,26 @@ from topological point of view neurons are usually grouped into layers. first la
     \caption{A generic layered architecture~\cite[p.~126]{nn_intro96}}
     \label{fig:layered_architecture}
 \end{figure}
+
+Each neuron is itself a small computational unit that applies several mathematical operations, namely an \emph{input function} and an \emph{activation function}. Traditionally, the neurons of subsequent layers are densely connected, meaning a neuron of layer $k$ receives the output values from all neurons in layer $k-1$. Based on those values, the input function calculates the \emph{net input} for the neuron. In most cases this is done by using weights on the connections to perform a weighted sum over all values. The net input is then passed through the activation function whose main purpose is to break the linearity of the DNN. For the activation function there are plenty of options to choose from. An overview of commonly used function can be found in~\cite{act_funcs18} and includes for example a binary step function, a sigmoid function or rectified linear units (ReLU). Figure~\ref{fig:perceptron} depicts all the calculations done inside of a neuron.
+
+% TODO: find/create better matching illustration
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/perceptron}
+    \caption{Perceptron}
+    \label{fig:perceptron}
+\end{figure}
+
+
+
+\WIP{
+\cite[p.~214f]{dlma14}
+supervised learning provides discriminative power for pattern classification. need labelled data (ground truth) to train, meaning you need to provide examples for input with respective output. good for learning classification tasks.
+unsupervised learning does not need labels. it intends to capture high-order correlation of the data. can be used to extract sparse representations or generate new data of same type.
+
+\cite[pp.~125f]{nn_intro96}
+training process is essentially updating the weights to achieve better matching prediction.
 
 \cite[pp.~163ff]{nn_intro96}
 training of NNs require error function to measure deviation from prediction to desired output. error is then to be minimized during training to create best-matching predictions. Achieved by backpropagation algorithm which searches for minimum of error function using gradient descent. first a forward pass through the NN is done to get all outputs and activations from all neurons. then you calculate for each individual neuron the effect it has for the total error. based on that you can adjust the weights between neurons to reduce the overall error.
