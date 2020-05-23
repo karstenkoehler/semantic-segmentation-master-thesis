@@ -24,20 +24,18 @@ Each neuron is itself a small computational unit that applies several mathematic
     \label{fig:perceptron}
 \end{figure}
 
+To adapt a DNN model for a specific task, the weights for all the connections have to be initialized with proper values. Since there are so many weights, it is not feasible to choose the values by hand, but rather use a process called \emph{training}. During training the DNN model is fed with examples of input vectors with their respective output vectors. Meanwhile the weights are adjusted so that the model reflects the relations between the input and the output vectors. This is a computationally intensive process that requires a large amount of training data.
 
+One of the most commonly used algorithms to perform the training is the \emph{backpropagation algorithm}~\cite[pp.~151ff]{nn_intro96}. It relies on an \emph{error function} (sometimes also called \emph{loss function}), which is meant to calculate the deviation between the model's current output vector and the desired output vector. The backpropagation algorithm
+ then searches for a minimum of the error function by adjusting the model's weights according to an \emph{optimization strategy}. Which algorithms to choose for both the error function and the optimizing strategy is highly dependent on the task to solve and on the quality requirements for the final predictions.
+
+It does so by doing a standard forward pass through the model with one chunk of data to calculate the output vector and the activations from all the neurons. After that, the predicted output vector is compared to the desired output vector using the error function to get the total error rate. Based on the total error and the activations of the neurons, the backpropagation algorithm now determines the effect each single neuron contributes to the total error rate. In the end, the weights are adjusted in such a way, that the total error rate is likely to decrease.
 
 \WIP{
 \cite[p.~214f]{dlma14}
 supervised learning provides discriminative power for pattern classification. need labelled data (ground truth) to train, meaning you need to provide examples for input with respective output. good for learning classification tasks.
 unsupervised learning does not need labels. it intends to capture high-order correlation of the data. can be used to extract sparse representations or generate new data of same type.
-
-\cite[pp.~125f]{nn_intro96}
-training process is essentially updating the weights to achieve better matching prediction.
-
-\cite[pp.~163ff]{nn_intro96}
-training of NNs require error function to measure deviation from prediction to desired output. error is then to be minimized during training to create best-matching predictions. Achieved by backpropagation algorithm which searches for minimum of error function using gradient descent. first a forward pass through the NN is done to get all outputs and activations from all neurons. then you calculate for each individual neuron the effect it has for the total error. based on that you can adjust the weights between neurons to reduce the overall error.
 }
-
 
 \begin{itemize}
     \item compare training methods for deep learning (supervised, unsupervised, reinforcement learning)
