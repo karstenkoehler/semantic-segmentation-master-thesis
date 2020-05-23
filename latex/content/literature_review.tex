@@ -160,6 +160,13 @@ SPP usually applied instead of last pooling layer before FC layers. maintains sp
     \item ReLU Activation
 \end{itemize}
 
+\WIP{
+reducing labelling effort with \cite{scribble16}. only provide scribbles instead of pixel-level segmentation masks.
+
+\cite{decoupled15}
+semi-supervised learning approach. combine small number of strong annotations with large number of weak annotations. few images with full segmentation masks are enough, but need many images with labelled classes. authors separate classification from segmentation network. can make use of existing classification networks. add a bridge layer to extract activation map from classification network. this is fed into segmentation network, which uses upsampling to output pixel-level segmentation mask.
+}
+
 \subsection{Reference Architectures}
 \label{sec:ref_archs}
 \begin{itemize}
