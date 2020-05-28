@@ -26,6 +26,7 @@ Each neuron is itself a small computational unit that applies several mathematic
     \label{fig:perceptron}
 \end{figure}
 
+\subsubsection{Training with Backpropagation}
 To adapt a DNN model for a specific task, the weights for all the connections have to be initialized with proper values. Since there are so many weights, it is not feasible to choose the values by hand, but rather use a process called \emph{training}. During training the DNN model is fed with examples of input vectors with their respective output vectors. Meanwhile the weights are adjusted so that the model reflects the relations between the input and the output vectors. This is a computationally intensive process that requires a large amount of training data.
 
 One of the most commonly used algorithms to perform the training is the \emph{backpropagation algorithm}~\cite[pp.~151ff]{nn_intro96}. It relies on an \emph{error function} (sometimes also called \emph{loss function}), which is meant to calculate the deviation between the model's current output vector and the desired output vector. The backpropagation algorithm
@@ -33,14 +34,12 @@ One of the most commonly used algorithms to perform the training is the \emph{ba
 
 It does so by doing a standard forward pass through the model with one chunk of data to calculate the output vector and the activations from all the neurons. After that, the predicted output vector is compared to the desired output vector using the error function to get the total error rate. Based on the total error and the activations of the neurons, the backpropagation algorithm now determines the effect each single neuron contributes to the total error rate. In the end, the weights are adjusted in such a way, that the total error rate is likely to decrease.
 
-\WIP{
-\cite[p.~214f]{dlma14}
-supervised learning provides discriminative power for pattern classification. need labelled data (ground truth) to train, meaning you need to provide examples for input with respective output. good for learning classification tasks.
-unsupervised learning does not need labels. it intends to capture high-order correlation of the data. can be used to extract sparse representations or generate new data of same type.
+\subsubsection{Common Paradigms for Deep Learning}
+In general, there are three major paradigms to categorize DNNs based on their learning behaviour~\cite[p.~214f]{dlma14}. First, \emph{supervised learning} means the network is trained using predefined pairs of input and output. This means during training, the expected output (also called \emph{label} or \emph{ground truth}) is directly exposed to the network. Supervised learning fits great for classification tasks, because you can guide the discriminative power of the network right away with the provided labels. In most cases, it needs lots of labelled data to learn from, which usually requires manual work. The architectures presented in sections~\ref{sec:unet} and~\ref{sec:densenet} make use of this learning method.
 
-% TODO: raise ideas how the methods can be used throughout the thesis
-}
+\emph{Unsupervised learning}, however, does not need any labels for the training process. It is commonly used for tasks like representation learning, trying to compress the input data in a more compact format with only minimal loss in information. Generally speaking, the purpose of unsupervised learning is to find correlations in the data set, that help forming a deeper understanding of the data. It can also be used to perform unsupervised information clustering or segmentation, as discussed later in section~\ref{sec:w-net}.
 
+The last category is called \emph{reinforcement learning} and is suited for tasks that require interaction with the environment. Based on the actions the network takes, it is either rewarded or punished. For the purpose of this thesis reinforcement learning will not be further explored.
 
 \subsection{Computer Vision Tasks}
 There are many different tasks in computer vision for detecting and labelling objects in images. This section will give a brief summary of common tasks in the field. In addition, popular data sets with their scoring methods and suitable approaches to solving the problems are presented.
@@ -185,6 +184,7 @@ to go back to full resolution, authors describe upsampling (deconvolution). This
 }
 
 \subsubsection{U-Net Architecture}
+\label{sec:unet}
 %TODO: go more into detail on the training and the results they achieved
 In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} which they recommended for binary segmentation of biomedical images~\cite{unet15}. As can be seen in figure~\ref{fig:unet_architecture}, this name derives from the U-shape of the network model. It consists of a contracting path in the beginning, in which convolution and pooling layers are used to condense the input. The second half forms an expansive part, that uses convolution and upsampling layers to go back to the scale of the original image. Note that the outputs of the convolution layers in the contracting path are cropped and then concatenated to the input layers with the corresponding size in the expansive path. By doing that, the expansive layers still retain enough information from the original input to deliver a precise segmentation.
 
@@ -197,8 +197,8 @@ In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} whic
 
 The U-Net architecture contains neither fully connected layers nor do they use padding for the edges. Thus, the segmentation map has a lower resolution that the original image, because it only contains pixels for which the full context is available. By using a tiling strategy with overlapping tiles, this approach can produce seamless segmentation maps for input images of arbitrary size. For the edges of the input image, Ronneberger et al.\ suggest a mirroring strategy to extrapolate the missing context.~\cite{unet15}
 
-
 \subsubsection{DenseNet Architecture}
+\label{sec:densenet}
 As the depth of CNN architectures tends to increase, a new challenge arose regarding the training of those networks. Since the hidden layer can be very far away from the input and output layers, the values and gradients passed between the layers can get lost on the way. In an attempt to solve this, Huang et al.\ came up with the idea to directly connect all layers with matching feature map sizes. They published their architecture under the name \emph{DenseNet} in~\cite{densenet18}.
 
 Huang et al.\ see the values passed between layers as a state. To access the state of one of the early layers in the network with a subsequent layer, all the layers in between have to pass the state unchanged, thus creating redundancy. With the DenseNet architecture, the state of all previous layers is explicitly passed to subsequent layers. This means, the network now differentiates between information that originates from an earlier layer and new information found in the current layer. It allows to keep the convolution layers narrow, because each layer only adds information, but never changes information that was previously acquired. This concept leads to having fewer trainable parameters and an improved flow of gradients, which both reduce the effort for training the network.~\cite{densenet18}
