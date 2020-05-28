@@ -10,7 +10,6 @@ for the thesis we need colored DOP footage. Various ways to get the data. they p
 There is a separate download section where you can choose the area and products you need and download as whole bundle. For the DOPs they use the JPEG2000 data format. this allows for high compression resulting in download size of about 11,6 GB. Provide the data in tiles, meaning there are several files each containing the data for one square tile. tile contain georeferencing information, meaning GIS applications can show the DOP at the correct position on earth's surface. Files contain 4 raster bands, RGB for color + one band with near-infrared spectral measurement (NIR) data. this is great, because we also need that later on.
 
 % TODO: what is a DOP? what is NIR data?
-}
 
 \begin{itemize}
     \item introduce the APIs that are provided
@@ -20,12 +19,15 @@ There is a separate download section where you can choose the area and products 
     \item show some example images from the dataset
     \item demonstrate the limits of practical feasibility
 \end{itemize}
+}
 
 \subsection{Preparing the dataset}
+\WIP{
 \begin{itemize}
     \item walk through the transformation steps after download
     \item setting up a spatial database (PostgreSQL + postGIS?)
     \item raise general ideas how the labels can be represented for training/visualization
 \end{itemize}
+}
 
 \newpage
