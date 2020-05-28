@@ -104,6 +104,7 @@ One subclass of neural networks is called \emph{Convolutional Neural Network} (C
 
 \subsubsection{Convolution}
 \label{sec:convolution}
+% TODO: explain depthwise/pointwise convolution difference \cite{depthwise_conv17}
 % TODO: be more precise with input/output of neurons
 \emph{Convolution} is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value. The concept is shown in figure~\ref{fig:convolution}. The notation $n_{k,~i,~j}$ represents a neuron at row~$i$ and column~$j$ in layer~$k$. For a convolutional layer, neuron $n_{k,~i,~j}$ is connected to all neurons $n_{k-1,~i,~j}$ to $n_{k-1,~i + f_w -1,~j + f_h -1}$. The neurons in layer~$k-1$ are therefore called receptive field of $n_{k,~i,~j}$ with a kernel width of $f_w$ and kernel height of $f_h$.~\cite[p.~361 f]{praxiseinstieg_ml17}
 
@@ -210,6 +211,27 @@ Huang et al.\ see the values passed between layers as a state. To access the sta
 \end{figure}
 
 To add the connections between the layers, the authors simply concatenate the feature maps. Thus, it is not possible to connect layers which feature maps are of different size. To still be able to use pooling layers to condense the information in the network, the authors introduce a component called \emph{dense block} as illustrated in figure~\ref{fig:densenet_architecture}. Inside of a dense block, they apply dense connections between the convolution layers. In between two consecutive dense blocks, there is a \emph{transition layer}, which is formed by a convolution and an average pooling layer. Ultimately, the overall architecture of a DenseNet consists of several independent dense blocks separated by transition layers, eventually concluded by a fully-connected layer.
+
+\subsubsection{W-Net}
+\label{sec:w-net}
+
+\WIP{
+\cite{wnet17}
+U-net and dense-net both use supervised learning. Also approaches with unsupervised learning exist, one called W-Net. Extension to U-Net architecture, basically two U-Nets concatenated, thus resulting in W shape. First FCN encodes image to k-way soft segmentation. second FCN goes the other way: from segmentation back to reconstructed image. Goal is to minimize reconstruction error and normalized cut loss function of encoding layer. Very similar to autoencoder architectures (provide paper for that).
+
+Network architecture illustrated in figure~\ref{fig:wnet_architecture}. First part is $U_{Enc}$, encodes image to segmentation. Very similar to U-Net, contracting path in the beginning, expansive path after that. input of layers with same spatial extents is bypassed to expansive path to enable precise feature localization. Since $U_{Enc}$ does segmentation, output of it is one-hot encoded segmentation map. Last layer is 1x1 conv layer with softmax activation. The number of classes is determined by number of feature maps in output layer (denoted by $K$ in the figure). $U_{Dec}$ is very similar. But it reads input with $K$ feature maps and outputs 3 feature maps representing RGB values in original image.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.7\textwidth]{images/w-net-architecture}
+    \caption{W-Net architecture~\cite{wnet17}}
+    \label{fig:wnet_architecture}
+\end{figure}
+
+Important difference to U-Nets is the use of depthwise separable conv layers introduced in \cite{depthwise_conv17}. depthwise separable convolution consist of depthwise convolution and pointwise convolution. Reason is to separate between spatial correlations and cross-channel correlations independently. Increases efficiency of the network with same number of parameters.
+
+Authors apply postprocessing to output of W-Net to achieve better object delineation and smoothness. At first they use fully connected Conditional Random Field (CRF) \cite{crf17}. This allows for more confidence regarding boundaries of objects and removing small spurious regions. Second step is to reduce over-segmentation with hierarchical image segmentation. Importance of boundaries in over-segmented partitions is computed based on spectral clustering \cite{hierarchy_imgseg11}. This will merge some predicted segments to yield final segmentation results.
+}
 
 \subsubsection{Mask R-CNN}
 \label{sec:mask-rcnn}
