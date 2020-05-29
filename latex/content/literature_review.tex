@@ -237,6 +237,10 @@ Authors apply postprocessing to output of W-Net to achieve better object delinea
 \label{sec:mask-rcnn}
 
 \WIP{
+\begin{itemize}
+    \item Is it worth considering Mask R-CNN?
+\end{itemize}
+
 \cite{rcnn14}
 image classification not sufficient for segmentation, because of missing localization. CNN combined with region proposals leads to R-CNN. Is not a fixed architecture, but more a meta algorithm whose implementation can vary. Architecture consists of three modules: category independent region proposals with selective search (fast mode). This outputs regions of interest (RoI). Affine image warping to make all regions same size, then passed through CNN architecture. This extracts fixed-length feature vector for each region. Then, support vector machines used to compute probabilities for every class. Overall Output is class prediction and offset for proposed region. visualized in figure~\ref{fig:rcnn_architecture}
 
