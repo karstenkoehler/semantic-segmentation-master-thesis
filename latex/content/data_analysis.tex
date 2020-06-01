@@ -7,12 +7,10 @@ data set is provided by the Ministry of the Interior of the State of North Rhine
 \WIP{
 for the thesis we need colored DOP footage. Various ways to get the data. they provide a Web Map Tile Service for DOPs, accessible on \url{https://www.wmts.nrw.de/geobasis/wmts_nw_dop}. Can be viewed with geographic information system (GIS) applications, for example QGIS. For easy access they also provide an online viewer on \url{https://www.tim-online.nrw.de/tim-online2/}.
 
+% TODO: what is a DOP? what is NIR data?
 There is a separate download section where you can choose the area and products you need and download as whole bundle. For the DOPs they use the JPEG2000 data format. this allows for high compression resulting in download size of about 11,6 GB. Provide the data in tiles, meaning there are several files each containing the data for one square tile. tile contain georeferencing information, meaning GIS applications can show the DOP at the correct position on earth's surface. Files contain 4 raster bands, RGB for color + one band with near-infrared spectral measurement (NIR) data. this is great, because we also need that later on.
 
-% TODO: what is a DOP? what is NIR data?
-
 \begin{itemize}
-    \item introduce the APIs that are provided
     \item discuss and compare the data formats that were offered
     \item explain the available map types and how they could be used for the thesis
     \item describe the download script
@@ -23,9 +21,24 @@ There is a separate download section where you can choose the area and products 
 
 \subsection{Preparing the dataset}
 \WIP{
+first step: import data into postGIS database. allows for easy access in different tile sizes and data formats. also to have all data in one single source system. PostGIS has import tools, but don't support JPEG 2000. one intermediate step needed with GDAL. GDAL (Geospatial Data Abstraction Library) is a tool to convert and process various geospatial data formats. Supports JPEG 2000 and allows to transform to GeoTiff data format. Tiff is great data format, because it allows for extensions with metadata. in case of GeoTiff it contains georeferencing information. File can still be read by all applications supporting baseline Tiff format. PostGIS has tools to import GeoTiff as raster. Using a bash script with CLI tool \texttt{gdal\_translate} to convert file format. See listing~\ref{lst:jp2_to_tif}.
+
+PostgreSQL database with postGIS extension enabled. Create tables with statements in listing~\ref{lst:sql_create}. Two separate tables for DOPs and NIR data, because will be used for different purposes later on.
+
+% TODO: explain raster2pgsql
+% TODO: index and constraints
+}
+
+\lstinputlisting[caption={Transform JPEG 2000 to GeoTiff}, label={lst:jp2_to_tif}, language=Bash]{../scripts/jp2_to_tif.sh}
+\lstinputlisting[caption={Create PostgreSQL tables}, label={lst:sql_create}, language=SQL]{../scripts/create.sql}
+\lstinputlisting[caption={Import Tiff files into postGIS raster}, label={lst:tif_to_raster}, language=Bash]{../scripts/tif_to_raster.sh}
+\lstinputlisting[caption={Create Index and Constraints}, label={lst:sql_constraints}, language=SQL]{../scripts/constraints.sql}
+
+\subsection{Preparing the labels}
+\WIP{
 \begin{itemize}
-    \item walk through the transformation steps after download
-    \item setting up a spatial database (PostgreSQL + postGIS?)
+    \item describe download process
+    \item explain transformations (import to postgres, export as image)
     \item raise general ideas how the labels can be represented for training/visualization
 \end{itemize}
 }
