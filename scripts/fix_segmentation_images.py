@@ -3,9 +3,9 @@ import cv2
 import numpy as np
 import scipy.spatial as sp
 import time
-import psycopg2
 
-available_colors = [
+base_dir = os.path.join("E:", "data", "segmentation_labels_fixed")
+valid_colors = [
     (240, 126, 11),  # water
     (3, 0, 208),  # buildings
     (132, 240, 235),  # agriculture
@@ -13,7 +13,20 @@ available_colors = [
     (39, 255, 154),  # urban greens
     (193, 193, 193),  # traffic
 ]
-tree = sp.KDTree(available_colors)
+tree = sp.KDTree(valid_colors)
+
+
+def validate_image(image):
+    # quickly check if the whole image belongs to one valid segment
+    if tuple(image[0][0]) in valid_colors and np.all(image == image[0][0]):
+        return True
+
+    # check if each pixel is assigned to a valid category
+    segments = []
+    for col in valid_colors:
+        segments += [image == col]
+
+    return np.all(np.logical_or.reduce(segments))
 
 
 def fix_image_pixels(image):
@@ -21,7 +34,7 @@ def fix_image_pixels(image):
     for py in range(0, h):
         for px in range(0, w):
             input_color = tuple(image[py][px].tolist())
-            if input_color in available_colors:
+            if input_color in valid_colors:
                 continue
 
             if px > 0:
@@ -30,57 +43,37 @@ def fix_image_pixels(image):
                 image[py][px] = image[py - 1][px]
             else:
                 _, closest_index = tree.query(input_color)
-                image[py][px] = available_colors[closest_index]
+                image[py][px] = valid_colors[closest_index]
     return image
 
 
-def fix_and_save_image(gid, base_dir=os.path.join("E:", "data", "segmentation_labels_fixed")):
-    file_path = os.path.join(base_dir, f"{gid}.png")
+def fix_and_save_image(file_name, base_dir=os.path.join("E:", "data", "segmentation_labels_fixed")):
+    file_path = os.path.join(base_dir, file_name)
     image = cv2.imread(file_path)
     image = fix_image_pixels(image)
     cv2.imwrite(file_path, image)
 
 
-def chunks(lst, n):
-    for i in range(0, len(lst), n):
-        yield lst[i:i + n]
-
-
-def select_tile_gids_with_multiple_intersections(low, high):
-    return """SELECT geom_tiles.gid FROM geom_tiles, geom_segments
-    WHERE geom_tiles.gid BETWEEN {0} AND {1} AND ST_Intersects(geom_tiles.geom, geom_segments.geom)
-    GROUP BY geom_tiles.gid HAVING COUNT(geom_tiles.gid) > 1;""".format(low, high)
-
-
-def get_gids_to_fix(chunk_size=3000):
-    print("fetching all tile GIDs that need to be fixed")
-    db = psycopg2.connect("dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'")
-    gids_to_fix = []
-    with db.cursor() as cur:
-        cur.execute("SELECT gid FROM geom_tiles ORDER BY gid")
-        gids = [int(gid[0]) for gid in cur.fetchall()]
-        gid_count = len(gids)
-
-        for chunk in chunks(gids, chunk_size):
-            low, high = min(chunk), max(chunk)
-            cur.execute(select_tile_gids_with_multiple_intersections(low, high))
-            gids_to_fix += [int(gid[0]) for gid in cur.fetchall()]
-            print(f"processed {high}/{gid_count} tiles")
-
-    print(f"found {len(gids_to_fix)} tiles that need fixing")
-    db.close()
-    return gids_to_fix
-
-
 if __name__ == '__main__':
     start = time.time()
 
-    gids = get_gids_to_fix()
-    fixed = 0
-    for chunk in chunks(gids, 100):
-        for gid in chunk:
-            fix_and_save_image(gid)
-            fixed += 1
-        print(f"fixed {fixed}/{len(gids)} images")
+    for _, _, files in os.walk(base_dir):
+        print(f"{len(files)} files to check")
+        invalid_pixel_count = 0
+        invalid_files = set()
 
-    print(time.time() - start)
+        count = 0
+        for f in files:
+            count += 1
+            image = cv2.imread(os.path.join(base_dir, f))
+            if not validate_image(image):
+                invalid_pixel_count += 1
+                invalid_files.add(f)
+
+            if count % 1000 == 0:
+                print(f"{count}/{len(files)} - ({time.time() - start:.2f})")
+
+        print(f"found {invalid_pixel_count} invalid pixels in {len(invalid_files)} files:")
+        for file_name in invalid_files:
+            fix_and_save_image(file_name)
+            print(f"fixed {file_name}")
