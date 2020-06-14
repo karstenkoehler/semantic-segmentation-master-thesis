@@ -83,7 +83,7 @@ def clean_up_database(files):
 
 
 if __name__ == '__main__':
-    base_path = os.path.join("E:", "data", "raw_dlm")
+    base_path = os.path.join("E:", "data", "dlm_segmentation_shapes")
     files = ["ver01_f", "gew01_f", "ver03_f", "veg03_f", "veg01_f", "veg02_f", "sie02_f"]
 
     db = psycopg2.connect("dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'")
