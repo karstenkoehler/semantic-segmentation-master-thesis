@@ -36,6 +36,13 @@ def add_constraints(table_name, raster_column="rast"):
         cur.execute(stmt)
 
 
+def create_boundary_table():
+    stmt = "CREATE TABLE geom_bounds AS (SELECT 1 gid, ST_Union(ST_Envelope(rast)) geom FROM dop_nir);"
+    print(stmt)
+    with db.cursor() as cur:
+        cur.execute(stmt)
+
+
 if __name__ == '__main__':
     base_dir = os.path.join("E:", "data", "dop_nir_tif")
     start = time.time()
@@ -45,7 +52,7 @@ if __name__ == '__main__':
 
     create_table("dop_rgb")
     create_table("dop_nir")
-    print(f"created tables - {time.time()-start:.2f}")
+    print(f"created tables - {time.time() - start:.2f}")
 
     count = 0
     for _, _, files in os.walk(base_dir):
@@ -54,14 +61,17 @@ if __name__ == '__main__':
             raster_to_pgsql(file_path, "1-3", "dop_rgb")
             raster_to_pgsql(file_path, "4", "dop_nir")
             count += 1
-            print(f"{count}/{len(files)} - {time.time()-start:.2f}")
+            print(f"{count}/{len(files)} - {time.time() - start:.2f}")
 
     create_index("dop_rgb")
     create_index("dop_nir")
-    print(f"created indices - {time.time()-start:.2f}")
+    print(f"created indices - {time.time() - start:.2f}")
 
     add_constraints("dop_rgb")
     add_constraints("dop_nir")
-    print(f"added constraints - {time.time()-start:.2f}")
+    print(f"added constraints - {time.time() - start:.2f}")
+
+    create_boundary_table()
+    print(f"added constraints - {time.time() - start:.2f}")
 
     db.close()
