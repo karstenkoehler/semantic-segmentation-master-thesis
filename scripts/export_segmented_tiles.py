@@ -1,28 +1,47 @@
 import psycopg2
 import os
 import time
+import queue
 
 
-def get_polygons(table_suffix=""):
-    db = psycopg2.connect("dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'")
+class TileRenderWorker(QgsTask):
+    def __init__(self, worker_id):
+        super().__init__()
+        self.worker_id = worker_id
+
+    def run(self):
+        base_dir = os.path.join("E:", "data", "unet")
+        segmentation_layer = get_segmentation_layer()
+        dop_layer = get_dop_rgb_layer()
+
+        while True:
+            try:
+                (gid, image_box, label_box) = global_queue.get(block=True, timeout=5)
+
+                image_path = os.path.join(base_dir, "images", f"{gid}.png")
+                label_path = os.path.join(base_dir, "labels", f"{gid}.png")
+
+                render_and_save_image(image_box, dop_layer, 572, image_path)
+                render_and_save_image(label_box, segmentation_layer, 388, label_path)
+                global_queue.task_done()
+
+            except queue.Empty:
+                return True
+
+    def finished(self, result):
+        QgsMessageLog.logMessage(f"worker {self.worker_id} finished")
+
+
+def add_tiles_to_global_queue(table_suffix=""):
     with db.cursor() as cur:
         cur.execute(f"SELECT gid, ST_AsText(geom_image), ST_AsText(geom_label) FROM geom_tiles_{table_suffix}")
-        value = cur.fetchone()
-        while value:
-            yield value
+
+        while True:
             value = cur.fetchone()
-    db.close()
+            if value is None:
+                break
 
-
-def add_layer():
-    uri = QgsDataSourceUri()
-    # set host name, port, database name, username and password
-    uri.setConnection("localhost", "5432", "dop10rgbi_nrw", "postgres", "root")
-    # set database schema, table name, geometry column and optionally
-    # subset (WHERE clause)
-    uri.setDataSource("public", "geom_bounds", "geom")
-
-    vlayer = QgsVectorLayer(uri.uri(False), "testlayer", "postgres")
+            global_queue.put(tuple(value))
 
 
 def get_segmentation_layer():
@@ -56,17 +75,15 @@ def render_and_save_image(bounding_box, layers, image_size, save_path):
     img.save(save_path, "png")
 
 
-base_dir = os.path.join("E:", "data", "unet")
-segmentation_layer = get_segmentation_layer()
-dop_layer = get_dop_rgb_layer()
+global_queue = queue.Queue(maxsize=150)
+db = psycopg2.connect("dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'")
 
-count = 0
+for i in range(5):
+    worker = TileRenderWorker(i)
+    QgsApplication.taskManager().addTask(worker)
+
 start = time.time()
-for gid, image_box, label_box in get_polygons("unet"):
-    image_path = os.path.join(base_dir, "images", f"{gid}.png")
-    label_path = os.path.join(base_dir, "labels", f"{gid}.png")
-
-    render_and_save_image(image_box, dop_layer, 572, image_path)
-    render_and_save_image(label_box, segmentation_layer, 388, label_path)
-    if count % 100:
-        print(f"{count} - {time.time() - start}s", flush=True)
+add_tiles_to_global_queue(table_suffix="unet")
+global_queue.join()
+db.close()
+QgsMessageLog.logMessage(f"done - {time.time() - start:.2f}")
