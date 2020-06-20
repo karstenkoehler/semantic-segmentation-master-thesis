@@ -1,3 +1,8 @@
+import os
+import psycopg2
+import random
+import cv2
+
 from datetime import datetime
 
 from keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, Cropping2D, concatenate
@@ -6,10 +11,10 @@ from keras.optimizers import Adam
 from keras.callbacks import TensorBoard
 from keras.models import Model
 
-import tensorflow as tf
+import numpy as np
 
 
-def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=[]):
+def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
     # contracting path
     input_size = (572, 572, 3)
     input = Input(input_size)
@@ -62,14 +67,60 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossent
     return model
 
 
-metrics = [Accuracy(), MeanIoU(num_classes=6)]
-model = define_and_compile_model(metrics=metrics)
-model.summary()
+def chunks(gids, n):
+    for i in range(0, len(gids), n):
+        yield gids[i:i + n]
 
-logdir = "tf-logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-tensorboard_callback = TensorBoard(log_dir=logdir)
 
-# TODO: provide training data
-train_images = tf.fill([3, 572, 572, 3], 9)
-train_labels = tf.fill([3, 388, 388, 6], 0.5)
-model.fit(train_images, train_labels, epochs=1, steps_per_epoch=1, callbacks=[tensorboard_callback])
+def get_training_gids():
+    db_connection = "dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'"
+    with psycopg2.connect(db_connection) as db:
+        with db.cursor() as cur:
+            stmt = "SELECT gid FROM geom_tiles_unet WHERE NOT test_set;;"
+            cur.execute(stmt)
+            return [int(row[0]) for row in cur.fetchall()]
+
+
+def one_hot_encoding(label):
+    encoded = []
+    for val in [62, 104, 118, 193, 200, 226]:
+        encoded.append((label == val) * 1.0)
+    return np.stack(encoded, axis=2)
+
+
+def data_generator(batch_size=2):
+    random.seed(42)
+    image_base_dir = os.path.join("E:", "data", "unet", "images")
+    label_base_dir = os.path.join("E:", "data", "unet", "labels")
+    gids = get_training_gids()
+
+    # number of batches per epoch
+    yield len(gids) // batch_size
+
+    while True:
+        random.shuffle(gids)
+        for chunk in chunks(gids, batch_size):
+            images, labels = [], []
+            for gid in chunk:
+                image = cv2.imread(os.path.join(image_base_dir, f"{gid}.png"), cv2.IMREAD_COLOR)
+                images.append(image / 255)
+
+                label = cv2.imread(os.path.join(label_base_dir, f"{gid}.png"), cv2.IMREAD_GRAYSCALE)
+                labels.append(one_hot_encoding(label))
+
+            # (None, 572, 572, 3)  --  (None, 388, 388, 6)
+            yield np.array(images), np.array(labels)
+
+
+if __name__ == '__main__':
+    gen = data_generator()
+    steps_per_epoch = next(gen)
+
+    metrics = [Accuracy(), MeanIoU(num_classes=6)]
+    model = define_and_compile_model(metrics=metrics)
+    # model.summary()
+
+    logdir = "tf-logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
+    tensorboard_callback = TensorBoard(log_dir=logdir)
+
+    model.fit(gen, epochs=1, steps_per_epoch=steps_per_epoch, callbacks=[tensorboard_callback])
