@@ -2,13 +2,14 @@ import os
 import psycopg2
 import random
 import cv2
+import time
 
 from datetime import datetime
 
 from keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, Cropping2D, concatenate
-from keras.metrics import Accuracy, TopKCategoricalAccuracy, MeanIoU
+from keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
 from keras.optimizers import Adam
-from keras.callbacks import TensorBoard
+from keras.callbacks import TensorBoard, ModelCheckpoint
 from keras.models import Model
 
 import numpy as np
@@ -88,17 +89,15 @@ def one_hot_encoding(label):
     return np.stack(encoded, axis=2)
 
 
-def data_generator(batch_size=2):
-    random.seed(42)
+def data_generator(gids, batch_size, seed=0):
+    rnd = random.Random(seed)
     image_base_dir = os.path.join("E:", "data", "unet", "images")
     label_base_dir = os.path.join("E:", "data", "unet", "labels")
-    gids = get_training_gids()
 
-    # number of batches per epoch
     yield len(gids) // batch_size
 
     while True:
-        random.shuffle(gids)
+        rnd.shuffle(gids)
         for chunk in chunks(gids, batch_size):
             images, labels = [], []
             for gid in chunk:
@@ -112,15 +111,38 @@ def data_generator(batch_size=2):
             yield np.array(images), np.array(labels)
 
 
-if __name__ == '__main__':
-    gen = data_generator()
-    steps_per_epoch = next(gen)
+def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
+    gids = get_training_gids()
 
-    metrics = [Accuracy(), MeanIoU(num_classes=6)]
+    rnd = random.Random(42)
+    rnd.shuffle(gids)
+
+    split = int(len(gids) * validation_split)
+
+    validation = gids[:split]
+    training = gids[split:]
+
+    return data_generator(training, batch_size, seed=17), data_generator(validation, batch_size, seed=29)
+
+
+if __name__ == '__main__':
+    start_time = int(time.time())
+    training_gen, validation_gen = make_training_and_validation_generators()
+    steps_per_epoch = next(training_gen)
+    validation_steps = next(validation_gen)
+
+    metrics = [Accuracy(), CategoricalAccuracy(), MeanIoU(num_classes=6)]
     model = define_and_compile_model(metrics=metrics)
     # model.summary()
 
     logdir = "tf-logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-    tensorboard_callback = TensorBoard(log_dir=logdir)
+    checkpoint_path = f"weights/{start_time}/epoch-{{epoch:02d}}__val-loss-{{val_loss:.2f}}.h5"
+    os.mkdir(f"weights/{start_time}")
 
-    model.fit(gen, epochs=1, steps_per_epoch=steps_per_epoch, callbacks=[tensorboard_callback])
+    tensorboard_callback = TensorBoard(log_dir=logdir)
+    checkpoint_callback = ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, period=1)
+
+    model.fit(training_gen, epochs=10, steps_per_epoch=steps_per_epoch,
+              validation_data=validation_gen, validation_steps=validation_steps,
+              callbacks=[tensorboard_callback, checkpoint_callback])
+    model.save_weights(f"weights/{start_time}_test_3_epoch")
