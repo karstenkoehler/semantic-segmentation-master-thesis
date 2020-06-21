@@ -3,14 +3,15 @@ import psycopg2
 import random
 import cv2
 import time
+import glob
 
 from datetime import datetime
 
-from keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, Cropping2D, concatenate
-from keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
-from keras.optimizers import Adam
-from keras.callbacks import TensorBoard, ModelCheckpoint
-from keras.models import Model
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, Cropping2D, concatenate
+from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger
+from tensorflow.keras.models import Model, load_model
 
 import numpy as np
 
@@ -154,26 +155,43 @@ def predict(gids, weight_path):
         cv2.imwrite(f"{gids[idx]}-pred.png", one_hot_to_rgb(p))
 
 
-if __name__ == '__main__':
-    # predict([31033, 85616, 156078, 174458], "weights/1592678832/epoch-02__val-loss-0.64.h5")
-
-    start_time = int(time.time())
+def do_training(start_time):
     training_gen, validation_gen = make_training_and_validation_generators()
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
-    metrics = [Accuracy(), CategoricalAccuracy(), MeanIoU(num_classes=6)]
-    model = define_and_compile_model(metrics=metrics)
-    # model.summary()
+    if os.path.exists(f"weights/{start_time}"):
+        files = glob.glob(f"weights/{start_time}/*.hdf5")
+        run = len(files)
+        f = max(files, key=os.path.getctime)
+
+        dependencies = {
+        }
+
+        model = load_model(f, custom_objects=dependencies)
+        # model.summary()
+    else:
+        run = 0
+        os.mkdir(f"weights/{start_time}")
+
+        metrics = [Accuracy(), CategoricalAccuracy(), MeanIoU(num_classes=6)]
+        model = define_and_compile_model(metrics=metrics)
+        # model.summary()
 
     logdir = "tf-logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-    checkpoint_path = f"weights/{start_time}/epoch-{{epoch:02d}}__val-loss-{{val_loss:.2f}}.h5"
-    os.mkdir(f"weights/{start_time}")
+    checkpoint_path = f"weights/{start_time}/run-{run:02d}__epoch-{{epoch:02d}}__val-loss-{{val_loss:.2f}}.hdf5"
 
     tensorboard_callback = TensorBoard(log_dir=logdir)
-    checkpoint_callback = ModelCheckpoint(filepath=checkpoint_path, save_weights_only=True, period=1)
+    checkpoint_callback = ModelCheckpoint(filepath=checkpoint_path)
+    logger_callback = CSVLogger(f"weights/{start_time}.csv", append=True)
 
     model.fit(training_gen, epochs=10, steps_per_epoch=steps_per_epoch,
               validation_data=validation_gen, validation_steps=validation_steps,
-              callbacks=[tensorboard_callback, checkpoint_callback])
-    model.save_weights(f"weights/{start_time}_test_3_epoch")
+              callbacks=[tensorboard_callback, checkpoint_callback, logger_callback])
+
+
+if __name__ == '__main__':
+    # predict([31033, 85616, 156078, 174458], "weights/1592678832/epoch-02__val-loss-0.64.h5")
+
+    start_time = int(time.time())
+    do_training(start_time)

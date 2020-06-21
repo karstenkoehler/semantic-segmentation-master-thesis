@@ -4,6 +4,8 @@ out
 references
 data
 tf-logs
+img
+weights/*.hdf5
 
 *.aux
 *.bbl
