@@ -125,7 +125,38 @@ def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
     return data_generator(training, batch_size, seed=17), data_generator(validation, batch_size, seed=29)
 
 
+def one_hot_to_rgb(prediction):
+    palette = np.array([(3, 0, 208),  # buildings
+                        (240, 126, 11),  # water
+                        (40, 171, 44),  # forest
+                        (39, 255, 154),  # urban greens
+                        (193, 193, 193),  # traffic
+                        (132, 240, 235)])  # agriculture
+
+    classes = np.argmax(prediction, axis=2)
+    out = np.zeros(classes.shape[:2] + (3,))
+    for idx, col in enumerate(palette):
+        out[classes == idx] = col
+    return out
+
+
+def predict(gids, weight_path):
+    model = define_and_compile_model()
+    model.load_weights(weight_path)
+
+    images = []
+    for gid in gids:
+        image = cv2.imread(os.path.join("E:", "data", "unet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
+        images.append(image / 255)
+
+    pred = model.predict(np.array(images))
+    for idx, p in enumerate(pred):
+        cv2.imwrite(f"{gids[idx]}-pred.png", one_hot_to_rgb(p))
+
+
 if __name__ == '__main__':
+    # predict([31033, 85616, 156078, 174458], "weights/1592678832/epoch-02__val-loss-0.64.h5")
+
     start_time = int(time.time())
     training_gen, validation_gen = make_training_and_validation_generators()
     steps_per_epoch = next(training_gen)
