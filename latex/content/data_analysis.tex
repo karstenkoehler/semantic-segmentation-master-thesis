@@ -35,15 +35,24 @@ After all tiles are imported, an index is created. Also very important for perfo
 
 Last step of this script is to create a separate table containing one big polygon that defines extents of the raster. Quick way to access the raster's extents without processing the raster tiles all the time. Will be used later on for generating tiles to export as training data.
 
-% TODO: summarize shp_to_geom.py
+% TODO: show some images and explain the dimensions (1px = 1dm)
 }
-
 
 \subsection{Preparing the labels}
 \WIP{
+% TODO: describe download process
+
+bundle contains various shape files with many kinds of information. also has point and line data sets that represent some interesting features. we are only interested in files that contain shapes. contains much more categories than we need, so generalize some of the categories. mapping of inputs can be found in later table.
+% TODO: insert table with mapping of file content, object id to segmentation category
+
+also import the segmentation data into postgres to have it easily accessible and be able to export tiles later on. For importing there is a cli utility called \texttt{shp2pgsql}. also some arguments passed to that. file name and srid just like above. output is piped directly to \texttt{psql} to execute the statements and import the data. some intermediate steps necessary to preprocess the data.
+% TODO: create shp2pgsql arguments
+
+first, each shape file imported into separate tables, just to get the data into the database. contains much more metadata depending on the file and its contents. next step is join the data into a single table only keeping the information needed. meaning only shape itself, object id and description. since the downloaded packages contains data for the whole State of North Rhine-Westphalia, we can also drop a lot of shapes. Only shapes that intersect with the raster extents are inserted in this step. Also cut along the raster extents, so now we only have the shape that is inside the raster's extents.
+
+Last step is to map the shape's object ids to the corresponding segmentation category. this happens according to table XYZ (see above). Also, all shapes of one category are merged into one multipolygon, meaning the final segmentation table only contains 6 geometry shapes.
+
 \begin{itemize}
-    \item describe download process
-    \item explain transformations (import to postgres, export as image)
     \item raise general ideas how the labels can be represented for training/visualization
 \end{itemize}
 }
