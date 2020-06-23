@@ -9,7 +9,7 @@ def raster_to_pgsql(file_path, bands, table_name, srid=25832, database="dop10rgb
     # -F  add column with filename
     # -e  don't use transactions
     # -a  insert into table
-    cmd = f"raster2pgsql -t 1000x1000 -b {bands} -F -I -s {srid} -e -a {file_path} {table_name} | psql -d {database} -q"
+    cmd = f"raster2pgsql -t 1000x1000 -b {bands} -F -s {srid} -e -a {file_path} {table_name} | psql -d {database} -q"
     print(cmd)
     subprocess.run(cmd, shell=True, check=True)
 
