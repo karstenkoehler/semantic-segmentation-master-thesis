@@ -3,9 +3,11 @@ The dataset which is used throughout this thesis is provided by the Ministry of 
 
 \subsection{Getting the dataset}
 \WIP{
+orthophoto: aerial photograph of earth's surface, distortion-free, true-to-scale, follows a map projection, topographical features and camera tilt are corrected. Used for semantic segmentation.
+nir data: image data gained from near-infrared spectroscopy. preprocessed in same way as DOPs. widely used in agriculture to determine quality of forages, grains, etc. Used to analyze vegetation density.
+
 for the thesis we need colored DOP footage. Various ways to get the data. they provide a Web Map Tile Service for DOPs, accessible on \url{https://www.wmts.nrw.de/geobasis/wmts_nw_dop}. Can be viewed with geographic information system (GIS) applications, for example QGIS. For easy access they also provide an online viewer on \url{https://www.tim-online.nrw.de/tim-online2/}.
 
-% TODO: what is a DOP? what is NIR data?
 There is a separate download section where you can choose the area and products you need and download as whole bundle. For the DOPs they use the JPEG2000 data format. this allows for high compression resulting in download size of about 11,6 GB. Provide the data in tiles, meaning there are several files each containing the data for one square tile. tile contain georeferencing information, meaning GIS applications can show the DOP at the correct position on earth's surface. Files contain 4 raster bands, RGB for color + one band with near-infrared spectral measurement (NIR) data. this is great, because we also need that later on.
 
 \begin{itemize}
