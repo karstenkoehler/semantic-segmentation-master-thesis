@@ -26,14 +26,17 @@ The PostGIS installation contains a few shell tools to import data into the data
 
 To convert the files from JPEG 2000 to GeoTiff, we use the \emph{Geospatial Data Abstraction Library} (GDAL). This is a tool collection which acts as an abstraction layer for various geospatial data formats. It also includes a shell tool to translate several georeferenced image file formats, including JPEG 2000 and GeoTiff. Listing~\ref{lst:jp2_to_tif} in appendix~\ref{app:code} shows a bash script using the \texttt{gdal\_translate} tool to convert all the JPEG 2000 files to the GeoTiff format.
 
+With the files in GeoTiff format it is now possible to use the \texttt{raster2pgsql} tool to import them into a PostGIS raster table. The whole import process is automated with a Python script (see listing~\ref{lst:tif_to_raster} in appendix~\ref{app:code}). It assumes that there is a database called \texttt{dop10rgbi\_nrw} with the PostGIS extension enabled.
+
+In the first step, the script creates two database tables named \texttt{dop\_rgb} and \texttt{dop\_nir}. The \texttt{dop\_rgb} table has a PostGIS raster column with three raster bands to hold the color information for the DOPs. Simultaneously, the \texttt{dop\_nir} table also has a PostGIS raster column with only one raster band for the NIR values. It is reasonable to separate the color and NIR values as they will be used for different tasks later on.
+
+After the tables are created, the script loops through all the GeoTiff files and calls the \texttt{raster2pgsql} tool for every single one. That call returns some SQL insert statements enriched with the raster information in a binary representation. To execute those statements, it is possible to simply pipe the output of \texttt{raster2pgsql} into a \texttt{psql} command which is connected to the database.
+
+The \texttt{raster2pgsql} tool provides a lot of arguments to properly configure the import of the data. Obviously it needs to know the name of the file to import and the name of the database table to insert the data to. For performance reasons it is very important to set an appropriate tile size for the raster. The original tile size of the GeoTiff files ($10000x10000$ pixels) was assessed to be too large. After some experiments, a tile size of $1000x1000$ pixels was found to work best for both the initial import and the later processing of the raster.
+
+Another major configuration is the spatial reference id (SRID). It also has to be passed as an argument, to ensure the data is imported correctly. The SRID indicates the map projection that is used to map the raster to the earth's surface. The dataset is provided with the SRID 25832. This SRID does not cover the entire globe, but only a rectangular area on the European continent. Therefore it offers a high precision (without too much distortion) in that area and is widely used for maps in Central Europe.
+
 \WIP{
-script for import is in Appendix~\ref{app:code} listing~\ref{lst:tif_to_raster}. it assumes database is already created and postgis extension enabled for that database. first creates two separate tables for image RGB raster and NIR values raster. Tiff files contain both information, RGB is in raster band 1-3, NIR is in raster band 4. But later on information is used for different purposes, so splitting does make sense.
-
-after tables are created, loop through all tiff files and call \texttt{raster2pgsql} cli tool. it generates the sql insert statement that we need to import the data. So we pipe the output directly into \texttt{psql} to import the data. raster2pgsql gets a lot of parameters to configure everything properly. besides name of file (parameter -F) and database table most important things are tile size and spatial reference id (SRID).
-
-tile size is set to 1000x1000, doesn't really matter to work, but major impact on performance. This size was found to be suitable for both initial import and later processing of raster.
-SRID is important for geographical placement of raster. There are different reference systems, each providing a way to project earth's surface onto two-dimensional plane. The provided dataset uses SRID 25832, which is very common for data in central europe.
-
 After all tiles are imported, an index is created. Also very important for performance reasons later on. Not a normal index, but a spatial one. Reduces computational complexity while working with raster tiles (meaning merging, intersecting, etc). Also for convenience reasons, there are constraints enforced on raster column. make sure the raster is properly aligned, has fixed extents, etc.
 
 Last step of this script is to create a separate table containing one big polygon that defines extents of the raster. Quick way to access the raster's extents without processing the raster tiles all the time. Will be used later on for generating tiles to export as training data.
