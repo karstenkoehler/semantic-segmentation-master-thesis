@@ -42,13 +42,19 @@ As a last step of the Python script, it creates one last table named \texttt{geo
 % TODO: show some images and explain the dimensions (1px = 1dm)
 
 \subsection{Preparing the labels}
-\WIP{
-for supervised training you need labels that determine the ground truth. usually acquired by hand with a lot of manual work. to ease this process, we use predefined labels. GEOportal has a Digital Basic Landscape Model (dt. Digitales Basis-Landschaftsmodell). this is a data set that describes topographical features of landscape in vector data format. also available for download and any use permitted within dl-de/zero-2-0 license. \cite{base-dlm20}
+As explained in section~\ref{sec:dl_paradigms}, for supervised training you need to provide the model with a pair of input and expected output. The DOPs explained in the previous section function as input for the model. To train the model for segmentation, another prerequisite is to have some segmentation examples prepared. Usually this task is done manually by lining out the segments of a tile and then assigning a category to each segment.
 
-bundle contains various shape files with many kinds of information. also has point and line data sets that represent some interesting features. we are only interested in files that contain shapes. contains much more categories than we need, so generalize some of the categories. mapping of inputs can be found in later table.
+To reduce the amount of work, we use another dataset from the GEOportal called Digital Basic Landscape Model~\cite{base-dlm20}. It describes topological features of the landscape in a vector data format. Besides other things like \WIP{points of interest}, it includes regions categorized by their respective land use. The dataset is available for free download and also permits any use within the dl-de/zero-2-0 license. With some transformation the data fits perfectly for the use as labels during the training of a model.
+
+The categorized regions are provided as Shapefiles. Shapefile is a specific data format for vector-based geospatial objects. To have all data in a single source system, the Shapefiles are imported into the PostGIS database. This also makes it easier to export the segmentation information later on for different tile sizes. Again, the import process is automated with a Python script (see listing~\ref{lst:tif_to_raster} in appendix~\ref{app:code}).
+
+PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a database table with a PostGIS geometry column. It also takes into account all the metadata that is listed in the Shapefile and creates separate columns for those values. The Python script loops over all the required Shapesfiles and calls the \texttt{shp2pgsql} tool. At first, each file is imported in its own database table. This is because each file contains a specific set of meta information resulting in different table layout for each file.
+
+\WIP{
+contains much more categories than we need, so generalize some of the categories. mapping of inputs can be found in later table.
 % TODO: insert table with mapping of file content, object id to segmentation category
 
-also import the segmentation data into postgres to have it easily accessible and be able to export tiles later on. For importing there is a cli utility called \texttt{shp2pgsql}. also some arguments passed to that. file name and srid just like above. output is piped directly to \texttt{psql} to execute the statements and import the data. some intermediate steps necessary to preprocess the data.
+For importing there is a cli utility called \texttt{shp2pgsql}. also some arguments passed to that. file name and srid just like above. output is piped directly to \texttt{psql} to execute the statements and import the data. some intermediate steps necessary to preprocess the data.
 % TODO: create shp2pgsql arguments
 
 first, each shape file imported into separate tables, just to get the data into the database. contains much more metadata depending on the file and its contents. next step is join the data into a single table only keeping the information needed. meaning only shape itself, object id and description. since the downloaded packages contains data for the whole State of North Rhine-Westphalia, we can also drop a lot of shapes. Only shapes that intersect with the raster extents are inserted in this step. Also cut along the raster extents, so now we only have the shape that is inside the raster's extents.
