@@ -36,13 +36,10 @@ The \texttt{raster2pgsql} tool provides a lot of arguments to properly configure
 
 Another major configuration is the spatial reference id (SRID). It also has to be passed as an argument, to ensure the data is imported correctly. The SRID indicates the map projection that is used to map the raster to the earth's surface. The dataset is provided with the SRID 25832. This SRID does not cover the entire globe, but only a rectangular area on the European continent. Therefore it offers a high precision (without too much distortion) in that area and is widely used for maps in Central Europe.
 
-\WIP{
-After all tiles are imported, an index is created. Also very important for performance reasons later on. Not a normal index, but a spatial one. Reduces computational complexity while working with raster tiles (meaning merging, intersecting, etc). Also for convenience reasons, there are constraints enforced on raster column. make sure the raster is properly aligned, has fixed extents, etc.
+After all GeoTiff files are imported, the Python script creates a Generalized Search Tree (GiST) index for both tables. This takes into account the spatial character of the data and thus speeds up spatial queries (like merging, intersecting) on the tables significantly. For the same reason, the Python script also enforces some constraints on the raster columns of the tables. This makes sure that all the raster tiles share common properties like tile size, SRID or the number of raster bands.
 
-Last step of this script is to create a separate table containing one big polygon that defines extents of the raster. Quick way to access the raster's extents without processing the raster tiles all the time. Will be used later on for generating tiles to export as training data.
-
+As a last step of the Python script, it creates one last table named \texttt{geom\_bounds}. This table holds a single PostGIS geometry object defining the exact boundaries of the raster tiles. That allows for a quick way to calculate if a given region is included in the spatial extents of the raster without having to process the whole raster table all the time.
 % TODO: show some images and explain the dimensions (1px = 1dm)
-}
 
 \subsection{Preparing the labels}
 \WIP{
