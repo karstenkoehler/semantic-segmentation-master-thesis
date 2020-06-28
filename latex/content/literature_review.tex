@@ -215,11 +215,17 @@ To add the connections between the layers, the authors simply concatenate the fe
 
 \subsubsection{W-Net}
 \label{sec:w-net}
+Both U-Net and DenseNet architectures are based on the idea of supervised learning. There are also some reference architectures that approach the segmentation task with unsupervised learning. The \emph{W-Net} architecture presented in~\cite{wnet17} is one example.
+
+In general, the network consists of two major parts. The first part is an encoder that generates a $k$-category segmentation of the input image. Subsequently, the second part tries to reconstruct the original image only from the segmentation. This is a very common network architecture called \emph{autoencoder}, often used for unsupervised learning tasks. The loss function then calculates the deviation between the reconstructed and the original image, i.~e. there is no ground truth for segmentation required. Because of that, the network detects all categories on its own. The downside is, that the chosen categories may be completely useless considering the question at hand.
+
+Figure~\ref{fig:wnet_architecture} illustrates the W-Net architecture. As mentioned earlier, the network is split into an encoder part $U_{Enc}$ and a decoder part $U_{Dec}$. The parts themselves are very much based on the U-Net architecture introduced in section~\ref{sec:unet}. Each part has its own contracting path followed by and expansive path with the connections between layers of the same spatial extents.
+
+The last layer of the encoder part is a 1x1 convolution layer. The number of feature maps in this layer (denoted with $K$ in figure~\ref{fig:wnet_architecture}) represents the number of categories to use for the segmentation maps.
+
 
 \WIP{
 \cite{wnet17}
-U-net and dense-net both use supervised learning. Also approaches with unsupervised learning exist, one called W-Net. Extension to U-Net architecture, basically two U-Nets concatenated, thus resulting in W shape. First FCN encodes image to k-way soft segmentation. second FCN goes the other way: from segmentation back to reconstructed image. Goal is to minimize reconstruction error and normalized cut loss function of encoding layer. Very similar to autoencoder architectures (provide paper for that).
-
 Network architecture illustrated in figure~\ref{fig:wnet_architecture}. First part is $U_{Enc}$, encodes image to segmentation. Very similar to U-Net, contracting path in the beginning, expansive path after that. input of layers with same spatial extents is bypassed to expansive path to enable precise feature localization. Since $U_{Enc}$ does segmentation, output of it is one-hot encoded segmentation map. Last layer is 1x1 conv layer with softmax activation. The number of classes is determined by number of feature maps in output layer (denoted by $K$ in the figure). $U_{Dec}$ is very similar. But it reads input with $K$ feature maps and outputs 3 feature maps representing RGB values in original image.
 
 \begin{figure}[h]
