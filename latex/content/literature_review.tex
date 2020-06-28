@@ -221,13 +221,6 @@ In general, the network consists of two major parts. The first part is an encode
 
 Figure~\ref{fig:wnet_architecture} illustrates the W-Net architecture. As mentioned earlier, the network is split into an encoder part $U_{Enc}$ and a decoder part $U_{Dec}$. The parts themselves are very much based on the U-Net architecture introduced in section~\ref{sec:unet}. Each part has its own contracting path followed by and expansive path with the connections between layers of the same spatial extents.
 
-The last layer of the encoder part is a 1x1 convolution layer. The number of feature maps in this layer (denoted with $K$ in figure~\ref{fig:wnet_architecture}) represents the number of categories to use for the segmentation maps.
-
-
-\WIP{
-\cite{wnet17}
-Network architecture illustrated in figure~\ref{fig:wnet_architecture}. First part is $U_{Enc}$, encodes image to segmentation. Very similar to U-Net, contracting path in the beginning, expansive path after that. input of layers with same spatial extents is bypassed to expansive path to enable precise feature localization. Since $U_{Enc}$ does segmentation, output of it is one-hot encoded segmentation map. Last layer is 1x1 conv layer with softmax activation. The number of classes is determined by number of feature maps in output layer (denoted by $K$ in the figure). $U_{Dec}$ is very similar. But it reads input with $K$ feature maps and outputs 3 feature maps representing RGB values in original image.
-
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/w-net-architecture}
@@ -235,6 +228,10 @@ Network architecture illustrated in figure~\ref{fig:wnet_architecture}. First pa
     \label{fig:wnet_architecture}
 \end{figure}
 
+The last layer of the encoder part is a 1x1 convolution layer. The number of feature maps in this layer (denoted with $K$ in figure~\ref{fig:wnet_architecture}) represents the number of categories to use for the segmentation maps. The output of the encoder is a one hot encoded vector with the likelihood for each pixel to belong to a certain category. During training, this vector serves as input for the decoder part of the network. The last layer of the decoder (and thus the last layer of the whole network) is also a 1x1 convolution layer. This layer always consists of three feature maps to restore the color bands of the original image.
+
+\WIP{
+\cite{wnet17}
 Important difference to U-Nets is the use of depthwise separable conv layers introduced in \cite{depthwise_conv17}. depthwise separable convolution consist of depthwise convolution and pointwise convolution. Reason is to separate between spatial correlations and cross-channel correlations independently. Increases efficiency of the network with same number of parameters.
 
 Authors apply postprocessing to output of W-Net to achieve better object delineation and smoothness. At first they use fully connected Conditional Random Field (CRF) \cite{crf17}. This allows for more confidence regarding boundaries of objects and removing small spurious regions. Second step is to reduce over-segmentation with hierarchical image segmentation. Importance of boundaries in over-segmented partitions is computed based on spectral clustering \cite{hierarchy_imgseg11}. This will merge some predicted segments to yield final segmentation results.
