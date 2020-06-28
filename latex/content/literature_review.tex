@@ -237,35 +237,6 @@ Important difference to U-Nets is the use of depthwise separable conv layers int
 Authors apply postprocessing to output of W-Net to achieve better object delineation and smoothness. At first they use fully connected Conditional Random Field (CRF) \cite{crf17}. This allows for more confidence regarding boundaries of objects and removing small spurious regions. Second step is to reduce over-segmentation with hierarchical image segmentation. Importance of boundaries in over-segmented partitions is computed based on spectral clustering \cite{hierarchy_imgseg11}. This will merge some predicted segments to yield final segmentation results.
 }
 
-\subsubsection{Mask R-CNN}
-\label{sec:mask-rcnn}
-
-\WIP{
-\begin{itemize}
-    \item Is it worth considering Mask R-CNN?
-\end{itemize}
-
-\cite{rcnn14}
-image classification not sufficient for segmentation, because of missing localization. CNN combined with region proposals leads to R-CNN. Is not a fixed architecture, but more a meta algorithm whose implementation can vary. Architecture consists of three modules: category independent region proposals with selective search (fast mode). This outputs regions of interest (RoI). Affine image warping to make all regions same size, then passed through CNN architecture. This extracts fixed-length feature vector for each region. Then, support vector machines used to compute probabilities for every class. Overall Output is class prediction and offset for proposed region. visualized in figure~\ref{fig:rcnn_architecture}
-
-This architecture had performance issues, training/test took very long. first improved in \cite{f-rcnn14} by first computing feature maps. Then identify RoIs directly in feature map and use RoI pooling (special kind of SPP pooling, only one pyramid layer) to generate fixed-size output layer. Then again, FC layers for classification and bounding box regression. This way, a lot of time is saved because convnet is only used once.
-
-After that, selective search was the limiting factor in speed, so \cite{ff-rcnn14} examined a new way to get region proposals. This leads to region proposal networks (RPN), which shares convolutional layers with CNN. Thus the cost to compute region proposals is very small during test time. Allows for object detecting near real-time.
-}
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=0.7\textwidth]{images/rcnn}
-    \caption{R-CNN architecture~\cite{rcnn14}}
-    \label{fig:rcnn_architecture}
-\end{figure}
-
-\WIP{
-Still, Faster R-CNN has only Object localization. Another extension called Mask R-CNN~\cite{mask-rcnn14} introduced instance segmentation for R-CNN. Uses identical first stage with RPN. Then adds another path for mask prediction besides the class and bounding box predictions. In contrast to other architectures, class prediction and mask predication are independent. Binary Masks are predicted for every class without competition.
-
-RoI pooling is not sufficient for masking, because of quantization described in \cite{f-rcnn14}. it is okay for classification, but introduces misalignment on pixel level which makes it unusable for segmentation. Thus, \cite{mask-rcnn14} came up with RoI Align layer, that has no quantization by avoiding rounding and using bilinear interpolation.
-}
-
 \subsection{Architecture Comparison}
 \WIP{
 \begin{itemize}
