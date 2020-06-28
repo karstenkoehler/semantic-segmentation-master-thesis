@@ -130,8 +130,8 @@ def one_hot_to_rgb(prediction):
     palette = np.array([(3, 0, 208),  # buildings
                         (240, 126, 11),  # water
                         (40, 171, 44),  # forest
-                        (39, 255, 154),  # urban greens
                         (193, 193, 193),  # traffic
+                        (39, 255, 154),  # urban greens
                         (132, 240, 235)])  # agriculture
 
     classes = np.argmax(prediction, axis=2)
