@@ -12,6 +12,7 @@ from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger
 from tensorflow.keras.models import Model, load_model
+from tensorflow.python.keras.backend import set_value
 
 import numpy as np
 
@@ -83,6 +84,13 @@ def get_training_gids():
             return [int(row[0]) for row in cur.fetchall()]
 
 
+def get_training_gids_only_multisegment():
+    # returns only the tiles that contain at least two different segments
+    with open("gids_with_multiple_segments.txt", 'r') as f:
+        gids = [int(line) for line in f.read().splitlines()]
+        return gids
+
+
 def one_hot_encoding(label):
     encoded = []
     for val in [62, 104, 118, 193, 200, 226]:
@@ -113,7 +121,8 @@ def data_generator(gids, batch_size, seed=0):
 
 
 def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
-    gids = get_training_gids()
+    # gids = get_training_gids()
+    gids = get_training_gids_only_multisegment()
 
     rnd = random.Random(42)
     rnd.shuffle(gids)
@@ -141,9 +150,8 @@ def one_hot_to_rgb(prediction):
     return out
 
 
-def predict(gids, weight_path):
-    model = define_and_compile_model()
-    model.load_weights(weight_path)
+def predict(gids, model_path):
+    model = load_model(model_path)
 
     images = []
     for gid in gids:
@@ -164,11 +172,13 @@ def do_training(start_time):
         files = glob.glob(f"weights/{start_time}/*.hdf5")
         run = len(files)
         f = max(files, key=os.path.getctime)
+        f = "weights/1593163475/run-00__epoch-38__val-loss-0.94.hdf5"
 
         dependencies = {
         }
 
         model = load_model(f, custom_objects=dependencies)
+        set_value(model.optimizer.lr, 1e-5)
         # model.summary()
     else:
         run = 0
@@ -185,13 +195,14 @@ def do_training(start_time):
     checkpoint_callback = ModelCheckpoint(filepath=checkpoint_path)
     logger_callback = CSVLogger(f"weights/{start_time}.csv", append=True)
 
-    model.fit(training_gen, epochs=10, steps_per_epoch=steps_per_epoch,
+    model.fit(training_gen, epochs=50, steps_per_epoch=steps_per_epoch,
               validation_data=validation_gen, validation_steps=validation_steps,
               callbacks=[tensorboard_callback, checkpoint_callback, logger_callback])
 
 
 if __name__ == '__main__':
-    # predict([31033, 85616, 156078, 174458], "weights/1592678832/epoch-02__val-loss-0.64.h5")
+    # predict([285, 304, 345, 14390, 31033, 85616, 156078, 174458], "weights/1593163475/run-00__epoch-50__val-loss-1.07.hdf5")
+    # exit(0)
 
     start_time = int(time.time())
     do_training(start_time)

@@ -5,7 +5,7 @@ references
 data
 tf-logs
 img
-weights/*.hdf5
+weights
 
 *.aux
 *.bbl
