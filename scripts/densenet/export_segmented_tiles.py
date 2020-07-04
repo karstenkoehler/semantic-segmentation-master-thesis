@@ -12,6 +12,7 @@ class TileRenderWorker(QgsTask):
         self.label_size = label_size
 
     def run(self):
+        # TODO: adjust base dir
         base_dir = os.path.join("E:", "data", "densenet")
         segmentation_layer = get_segmentation_layer()
         dop_layer = get_dop_rgb_layer()
