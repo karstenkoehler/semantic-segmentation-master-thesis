@@ -8,7 +8,7 @@ import glob
 from datetime import datetime
 
 from tensorflow.keras.layers import Input, Activation, Conv2D, Dropout, BatchNormalization, AveragePooling2D, \
-    Concatenate
+    Concatenate, Conv2DTranspose
 from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
 from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger
@@ -48,7 +48,7 @@ def dense_block(x, nb_layers, nb_filters, growth_rate, dropout_rate=None, bottle
     return x, nb_filters
 
 
-def transition_layer(x, nb_filters, dropout_rate=None, compression=1.0, weight_decay=1e-4):
+def transition_down_layer(x, nb_filters, dropout_rate=None, compression=1.0, weight_decay=1e-4):
     nb_filters = int(nb_filters * compression)
     x = BatchNormalization(gamma_regularizer=l2(weight_decay), beta_regularizer=l2(weight_decay))(x)
     x = Activation("relu")(x)
@@ -61,15 +61,22 @@ def transition_layer(x, nb_filters, dropout_rate=None, compression=1.0, weight_d
     return x, nb_filters
 
 
+def transition_up_layer(skip_connection, x, nb_filters):
+    x = Conv2DTranspose(nb_filters, (2, 2), strides=(2, 2))(x)
+    x = Concatenate(axis=3)([x, skip_connection])
+    return x, nb_filters
+
+
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
     input_size = (256, 256, 3)
-    growth_rate = 12
+    growth_rate = 16
     weight_decay = 1e-4
-    dense_block_layers = [6, 6, 4]
-    dropout = 0.5
+    dense_block_layers = [4, 5, 7, 10, 12] #, 15]
+    dropout = 0.2
     compression = 0.5
     bottleneck = False
-    nb_filters = growth_rate * 2
+    nb_filters = 48
+    skip_connections = []
 
     input = Input(input_size)
     x = Conv2D(nb_filters, (3, 3), padding="same", use_bias=False, kernel_regularizer=l2(weight_decay))(input)
@@ -77,11 +84,17 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossent
     for i, block_size in enumerate(dense_block_layers):
         x, nb_filters = dense_block(x, block_size, nb_filters, growth_rate, dropout, bottleneck, weight_decay)
 
+        skip_connections.append(x)
         if i < len(dense_block_layers) - 1:
-            x, nb_filters = transition_layer(x, nb_filters, dropout, compression, weight_decay)
+            x, nb_filters = transition_down_layer(x, nb_filters, dropout, compression, weight_decay)
 
-    x = BatchNormalization(gamma_regularizer=l2(weight_decay), beta_regularizer=l2(weight_decay))(x)
-    x = Activation("relu")(x)
+    skip_connections = skip_connections[::-1][1:]
+
+    for i, block_size in enumerate(dense_block_layers[::-1][1:]):
+        x, nb_filters = transition_up_layer(skip_connections[i], x, nb_filters)
+
+        x, nb_filters = dense_block(x, block_size, nb_filters, growth_rate, dropout, bottleneck, weight_decay)
+
     x = Conv2D(6, (1, 1), activation="softmax", kernel_regularizer=l2(weight_decay), bias_regularizer=l2(weight_decay))(
         x)
 
@@ -132,10 +145,11 @@ def split_to_tiles(img, tile_size=256):
 
 def data_generator(gids, batch_size, seed=0):
     rnd = random.Random(seed)
-    image_base_dir = os.path.join("E:", "data", "densenet", "images")
-    label_base_dir = os.path.join("E:", "data", "densenet", "labels")
+    image_base_dir = os.path.join("E:", "data", "densenet", "train", "images")
+    label_base_dir = os.path.join("E:", "data", "densenet", "train", "labels")
 
-    yield len(gids) // batch_size
+    images_per_file = 100
+    yield (len(gids) // batch_size) * images_per_file
 
     while True:
         rnd.shuffle(gids)
@@ -194,16 +208,17 @@ def predict(gids, model_path):
 
     images = []
     for gid in gids:
-        image = cv2.imread(os.path.join("E:", "data", "unet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images.append(image / 255)
+        image = cv2.imread(os.path.join("E:", "data", "densenet", "train", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
+        images += split_to_tiles(image / 255)
+        # images.append(image / 255)
 
-    pred = model.predict(np.array(images))
-    for idx, p in enumerate(pred):
-        cv2.imwrite(f"{gids[idx]}-pred.png", one_hot_to_rgb(p))
+    for idx, img in enumerate(images):
+        pred = model.predict(np.array([images[idx]]))
+        cv2.imwrite(f"images/{idx}-pred.png", one_hot_to_rgb(pred[0]))
 
 
 def do_training(start_time):
-    training_gen, validation_gen = make_training_and_validation_generators()
+    training_gen, validation_gen = make_training_and_validation_generators(batch_size=1)
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
@@ -241,8 +256,8 @@ def do_training(start_time):
 
 
 if __name__ == '__main__':
-    # predict(gids, "path_to_hdf5")
-    # exit(0)
+   # predict([44], "weights/1593860558/run-00__epoch-02__val-loss-1.70.hdf5")
+   # exit(0)
 
     start_time = int(time.time())
     do_training(start_time)
