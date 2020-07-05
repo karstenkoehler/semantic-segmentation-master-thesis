@@ -197,6 +197,7 @@ In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} whic
 \end{figure}
 
 The U-Net architecture contains neither fully connected layers nor do they use padding for the edges. Thus, the segmentation map has a lower resolution that the original image, because it only contains pixels for which the full context is available. By using a tiling strategy with overlapping tiles, this approach can produce seamless segmentation maps for input images of arbitrary size. For the edges of the input image, Ronneberger et al.\ suggest a mirroring strategy to extrapolate the missing context.~\cite{unet15}
+% TODO: buzzword: skip connection
 
 \subsubsection{DenseNet Architecture}
 \label{sec:densenet}
@@ -211,7 +212,15 @@ Huang et al.\ see the values passed between layers as a state. To access the sta
     \label{fig:densenet_architecture}
 \end{figure}
 
+% TODO: figure only shows one dense block, explain that better
 To add the connections between the layers, the authors simply concatenate the feature maps. Thus, it is not possible to connect layers which feature maps are of different size. To still be able to use pooling layers to condense the information in the network, the authors introduce a component called \emph{dense block} as illustrated in figure~\ref{fig:densenet_architecture}. Inside of a dense block, they apply dense connections between the convolution layers. In between two consecutive dense blocks, there is a \emph{transition layer}, which is formed by a convolution and an average pooling layer. Ultimately, the overall architecture of a DenseNet consists of several independent dense blocks separated by transition layers, eventually concluded by a fully-connected layer.
+
+\WIP{
+\cite{denseseg}
+original densenet architecture designed for image classification task. only downsampling path with final fully-connected layer for classification. there are proposals to do segmentation with adjusted densenet architectures. need to introduce upsampling path after downsampling to retrieve original image resolution. very similar to unet architecture. also uses skip connections to connect downsampling and upsampling paths.
+
+Instead of only convolution for downsampling, a dense block is used. for upsampling a transition-up block is used, it consists of transposed convolution and a dense block. transposed convolution only takes the output of the preceding dense block, otherwise memory consumption (number of parameters) would be too high. still, has all the information, because preceding dense block will summarize all feature maps (just like traditional architectures).
+}
 
 \subsubsection{W-Net}
 \label{sec:w-net}
