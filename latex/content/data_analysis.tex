@@ -68,9 +68,17 @@ Last step is to map the shape's object ids to the corresponding segmentation cat
 
 \subsection{Export images for training}
 \WIP{
-\begin{itemize}
-  \item explain how tiles for images were generated
-  \item show rendering process with QGIS
+for training, networks need fixed set of training/validation data. images and labels are prepared in database, but that does not work well for training. for efficient training process, dataset should be ready to use (like only read files and don't do any further processing). Very inefficient to export training batches live while training. it is better to export and save dataset in prepared batches, that can be fed directly into the network.
+
+spatial image dimension are given by reference architectures. each architecture has different needs in regards to for example the input size of images and labels. But in general, all architectures need images with given resolution.
+
+there is a general process to generate those images. create PostGIS geometry tiles to outline the training batches. then render those tiles with the DOP RGB bands to have input images. render it again with the segmentation info, to get the labels.
+
+there is a python script to generate valid tiles that can be exported for training. basically it creates a bounding box for the region where data is available. inside that box, it creates all possible square tiles using the specified tile size. and last step is to remove all tiles that are not fully included in the region where data is available.
+
+with all the tiles outlined, it is possible to generate images/label now. This can be done using the PostGIS raster bands and merging/intersecting them in a smart way. Still this would take a long time. It was found that this process is faster when using QGIS, an application to show/render geospatial data. it has a python API, allowing to run automatized exports. This is the way we go, rendering all tiles with image data and also all tiles with the segmentation info.
+
+unfortunately, for rendering the segmentation info QGIS does interpolation for borders between segments. This is not what we want, because for the labels each pixel should clearly belong to one category. Thus, we have another script to correct the rendered labels. this just takes the interpolated pixels and assigns them to one of the adjacent categories in the label. After that, the images and labels are ready to use.
 \end{itemize}
 }
 
