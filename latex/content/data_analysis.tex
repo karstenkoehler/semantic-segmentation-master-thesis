@@ -79,7 +79,6 @@ there is a python script to generate valid tiles that can be exported for traini
 with all the tiles outlined, it is possible to generate images/label now. This can be done using the PostGIS raster bands and merging/intersecting them in a smart way. Still this would take a long time. It was found that this process is faster when using QGIS, an application to show/render geospatial data. it has a python API, allowing to run automatized exports. This is the way we go, rendering all tiles with image data and also all tiles with the segmentation info.
 
 unfortunately, for rendering the segmentation info QGIS does interpolation for borders between segments. This is not what we want, because for the labels each pixel should clearly belong to one category. Thus, we have another script to correct the rendered labels. this just takes the interpolated pixels and assigns them to one of the adjacent categories in the label. After that, the images and labels are ready to use.
-\end{itemize}
 }
 
 \subsection{Considerations about the data set}
