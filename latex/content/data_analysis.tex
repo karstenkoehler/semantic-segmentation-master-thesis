@@ -109,16 +109,16 @@ with all the tiles outlined, it is possible to generate images/label now. This c
 unfortunately, for rendering the segmentation info QGIS does interpolation for borders between segments. This is not what we want, because for the labels each pixel should clearly belong to one category. Thus, we have another script to correct the rendered labels. this just takes the interpolated pixels and assigns them to one of the adjacent categories in the label. After that, the images and labels are ready to use.
 }
 
-\subsection{Considerations about the data set}
+\subsection{Considerations about the dataset}
 \WIP{
 shapes in the labels are not super accurate. on macroscopic point of view, they cover all segments on large areas. but borders between segments are oftentimes poorly represented. meaning transition between forest and agriculture or coastal line along rivers modelled very roughly. to get really good training results one should preferably use pixel-perfect labels. for purpose of this thesis, where the goal is to identify suitable emergency landing areas, this might not be a big issue as we are looking for open wide areas and don't care to much about perfect borders. But anyway, keep it in mind during model training.
 % TODO: show images/labels to support this argument
 
-Another thing is distribution of segmentation classes in the data set. table~\ref{tab:seg-breakdown} shows relative coverage of the area with the categories. you can see that around 65\% of the data set consist of forest. On the other hand the area of traffic and water combined is still under 1\%. In general, this is really bad for training DNNs. Will lead the network to predicting forest way more often than water/traffic. For optimal results the categories should be well balanced inside the training dataset. So this is also a point to consider later on.
+Another thing is distribution of segmentation classes in the dataset. table~\ref{tab:seg-breakdown} shows relative coverage of the area with the categories. you can see that around 65\% of the data set consist of forest. On the other hand the area of traffic and water combined is still under 1\%. In general, this is really bad for training DNNs. Will lead the network to predicting forest way more often than water/traffic. For optimal results the categories should be well balanced inside the training dataset. So this is also a point to consider later on.
 % TODO: find a paper to support this argument
 }
 
-\subsection{Choose the test data set}
+\subsection{Choose the test dataset}
 \WIP{
 
 }
