@@ -52,15 +52,47 @@ PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a da
 
 The original Shapesfiles enclose all regions of the State of North Rhine-Westphalia. Since the DOP und NIR datasets only consist of a smaller subregion, all geometry objects are cropped to that subregion in the next step. Geometry objects that are located outside of the boundaries are dropped entirely. During this process, the tables of the different Shapefiles are merged into one single table. This resulting table has columns for an internal id, the object type, a textual object description and for the geometry object itself. As all the other meta information contained in the Shapefiles is not needed, it is dropped in this step.
 
-The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between \WIP{Cat A} and \WIP{Cat B} is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined supercategories. The mapping between the categories and supercategories is to be found in table~\ref{tab:category_mapping}.
+The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined supercategories:
+\begin{itemize}
+  \setlength\itemsep{1mm}
+  \item water
+  \item buildings
+  \item agriculture
+  \item forest
+  \item urban greens
+  \item traffic
+\end{itemize}
+The mapping between the categories of the Shapefiles and the chosen supercategories is to be found in table~\ref{tab:category_mapping}.
 
-\begin{table}
-  % TODO: insert the mapping table
-  \caption{Mapping from Shapefile categories to segmentation categories}
-  \label{tab:category_mapping}
+\begin{table}[]
+\centering
+\small
+\caption{Mapping from Shapefile objects to segmentation categories}
+\label{tab:category_mapping}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Shapefile} & \textbf{Object Code} & \textbf{Object Description}    & \textbf{Segmentation Category} \\ \hline
+gew01\_f           & 44001                & running water                  & water                          \\ \hline
+gew01\_f           & 44005                & harbor dock                    & water                          \\ \hline
+gew01\_f           & 44006                & stagnant water                 & water                          \\ \hline
+sie02\_f           & 41007                & specialized regions            & buildings                      \\ \hline
+sie02\_f           & 41009                & cemetery                       & urban greens                   \\ \hline
+sie02\_f           & 41002                & industrial zone                & buildings                      \\ \hline
+sie02\_f           & 41010                & housing zone                   & buildings                      \\ \hline
+sie02\_f           & 41008                & sports, recreation          & urban greens                   \\ \hline
+sie02\_f           & 41005                & quarry, surface mining         & buildings                      \\ \hline
+veg01\_f           & 43001                & agriculture                    & agriculture                    \\ \hline
+veg02\_f           & 43002                & forest                         & forest                         \\ \hline
+veg03\_f           & 43003                & woody, undergrowth             & forest                         \\ \hline
+veg03\_f           & 43004                & heath                          & forest                         \\ \hline
+veg03\_f           & 43007                & uncultivated zones             & agriculture                    \\ \hline
+ver01\_f           & 42009                & urban squares                  & traffic                        \\ \hline
+ver01\_f           & 42001                & road traffic                   & traffic                        \\ \hline
+ver03\_f           & 42010                & rail traffic                   & traffic                        \\ \hline
+\end{tabular}
 \end{table}
 
-The last step is to merge all geometry objects of the same category. I. e. the final table only contains six geometry object, one for each category. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same category.
+The last step is to merge all geometry objects of the same category. I. e. the final table only contains six geometry objects, one for each category. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same category.
 
 \subsection{Export images for training}
 \WIP{
