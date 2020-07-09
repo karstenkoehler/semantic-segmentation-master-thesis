@@ -103,6 +103,7 @@ To give a brief summary, figure~\ref{fig:cv_tasks} depicts a visual representati
 
 One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. In traditional neural networks the layers are often densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of the input data into account. The following sections explain the commonly used operations in CNNs.
 % TODO: name general architecture with conv, pool and fc layers
+% TODO: go more into detail, why is CNN for grid-like good, why is dense for grid-like bad?
 
 \subsubsection{Convolution}
 \label{sec:convolution}
@@ -190,7 +191,11 @@ to go back to full resolution, authors describe upsampling (deconvolution). This
 \subsubsection{U-Net Architecture}
 \label{sec:unet}
 %TODO: go more into detail on the training and the results they achieved
-In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} which they recommended for binary segmentation of biomedical images~\cite{unet15}. As can be seen in figure~\ref{fig:unet_architecture}, this name derives from the U-shape of the network model. It consists of a contracting path in the beginning, in which convolution and pooling layers are used to condense the input. The second half forms an expansive part, that uses convolution and upsampling layers to go back to the scale of the original image. Note that the outputs of the convolution layers in the contracting path are cropped and then concatenated to the input layers with the corresponding size in the expansive path. By doing that, the expansive layers still retain enough information from the original input to deliver a precise segmentation.
+In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} which they recommended for binary segmentation of biomedical images~\cite{unet15}. It consists of a contracting path in the beginning, in which convolution and pooling layers are used to condense the input. The second half forms an expansive part, that uses convolution and upsampling layers to go back to the scale of the original image. Note that the outputs of the convolution layers in the contracting path are cropped and then concatenated to the input layers with the corresponding size in the expansive path. These connections between layers that are not directly adjacent to each other are called \emph{skip connections}. By doing that, the expansive layers still retain enough information from the original input to deliver a precise segmentation.
+
+As can be seen in figure~\ref{fig:unet_architecture}, the name U-Net derives from the U-shape of the network model. The input layer expects a 572x572 pixels image with only one feature channel (i.~e. the inputs are grayscale images). The contracting path consists of downsampling blocks with repeated 3x3 unpadded convolutions with ReLU activation followed by a 2x2 max pooling layer. After each downsampling block, the number of feature maps is doubled. In total, there are four downsampling blocks resulting in 32x32 pixels resolution with 1024 feature maps at the lowest level.
+
+For the expansive path, an upsampling layer followed by a 2x2 convolution layer is used to increase the spatial extents again. At the same time, each upsampling step halves the number of feature maps and then concatenates the (cropped) feature maps of the corresponding size of the contracting path. After that, two 3x3 unpadded convolutions with ReLU activations are applied to form one upsampling block. In total, there are four upsampling blocks eventually landing at a resolution of 388x388 pixels. Finally, a single 1x1 convolution layer with softmax activation carries out the actual segmentation. Therefore, the number of feature maps for this convolution matches the number of classes to predict.
 
 \begin{figure}[h]
     \centering
@@ -199,8 +204,7 @@ In 2015, Ronneberger et al.\ introduced an architecture called \emph{U-Net} whic
     \label{fig:unet_architecture}
 \end{figure}
 
-The U-Net architecture contains neither fully connected layers nor do they use padding for the edges. Thus, the segmentation map has a lower resolution that the original image, because it only contains pixels for which the full context is available. By using a tiling strategy with overlapping tiles, this approach can produce seamless segmentation maps for input images of arbitrary size. For the edges of the input image, Ronneberger et al.\ suggest a mirroring strategy to extrapolate the missing context.~\cite{unet15}
-% TODO: buzzword: skip connection
+The U-Net architecture contains neither fully connected layers nor do they use padding for the edges in the convolutional layers. Thus, the edges of the image are being cropped and the resulting segmentation map has a lower resolution than the original image. With that strategy, the edges of the predicted segmentation tend to be more accurate, because they still have all the contextual information (i.~e. their surrounding pixels) available. By using a tiling strategy with overlapping tiles, this approach can produce seamless segmentation maps for input images of arbitrary size. For the edges of the input image, Ronneberger et al.\ suggest a mirroring strategy to extrapolate the missing context.~\cite{unet15}
 
 \subsubsection{DenseNet Architecture}
 \label{sec:densenet}
