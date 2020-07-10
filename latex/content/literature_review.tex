@@ -108,6 +108,7 @@ One subclass of neural networks is called \emph{Convolutional Neural Network} (C
 \subsubsection{Convolution}
 \label{sec:convolution}
 % TODO: explain depthwise/pointwise convolution difference \cite{depthwise_conv17}
+% TODO: explain transposed convolution
 % TODO: be more precise with input/output of neurons
 \emph{Convolution} is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value. The concept is shown in figure~\ref{fig:convolution}. The notation $n_{k,~i,~j}$ represents a neuron at row~$i$ and column~$j$ in layer~$k$. For a convolutional layer, neuron $n_{k,~i,~j}$ is connected to all neurons $n_{k-1,~i,~j}$ to $n_{k-1,~i + f_w -1,~j + f_h -1}$. The neurons in layer~$k-1$ are therefore called receptive field of $n_{k,~i,~j}$ with a kernel width of $f_w$ and kernel height of $f_h$.~\cite[p.~361 f]{praxiseinstieg_ml17}
 
@@ -215,20 +216,26 @@ Huang et al.\ consider the values passed between layers to be the network's stat
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/dense-net-architecture}
-    \caption{A 5-layer dense block\cite{densenet18}}
+    \caption{A 5-layer dense block~\cite{densenet18}}
     \label{fig:dense_block}
 \end{figure}
 
 To still be able to use pooling layers to condense the information in the network, the authors introduce a component called \emph{dense block} (see figure~\ref{fig:dense_block}). Inside of a dense block, they apply dense connections between all subsequent convolution layers. Each square in the figure represents one feature map. The initial input of the dense block consists of six feature maps. Those are passed into a group of batch normalization, ReLU activation and convolution layers (marked with $H_1$ in figure~\ref{fig:dense_block}). The convolution layer produces four new feature maps. The next group of layers ($H_2$) now receives all ten feature maps, again producing four new feature maps. For each group of layers, the number of feature maps increases by four. Huang et al.\ therefore called this factor the \emph{growth rate} of the network.
 
-The overall architecture of DenseNets is made up of multiple dense blocks. In between two consecutive dense blocks, there is a \emph{transition layer}, which is formed by batch normalization, 1x1 convolution and 2x2 average pooling. Since the original DenseNet architecture was designed for the purpose of image classification, the conclusion of the network is a 7x7 global average pooling layer and eventually a fully-connected layer with softmax activation.
+The overall architecture of DenseNets is made up of multiple dense blocks. In between two consecutive dense blocks, there is a \emph{transition layer}, which is formed by batch normalization, 1x1 convolution and 2x2 average pooling. Since the original DenseNet architecture was designed for the purpose of image classification, the conclusion of the network is a 7x7 global average pooling layer and eventually a fully-connected layer with softmax activation. Thus, the original architecture is incapable of performing semantic segmentation.
 
-\WIP{
-\cite{denseseg}
-original densenet architecture designed for image classification task. only downsampling path with final fully-connected layer for classification. there are proposals to do segmentation with adjusted densenet architectures. need to introduce upsampling path after downsampling to retrieve original image resolution. very similar to unet architecture. also uses skip connections to connect downsampling and upsampling paths.
+However, it is possible to extent the architecture with an upsampling path at the end. By doing that, DenseNets can also be used to enact on segmentation tasks. This approach was first investigated by Jégou et al.~\cite{denseseg17}. Their overall architecture looks very similar to the U-Net architecture (see figure~\ref{fig:densenet_segmentation}). But instead of using standalone convolution layers, the authors used the dense blocks proposed in~\cite{densenet18}. This results in a very densely connected architecture, because now there are connections between all convolution layers as well as the skip connections between the downsampling and upsampling path.
 
-Instead of only convolution for downsampling, a dense block is used. for upsampling a transition-up block is used, it consists of transposed convolution and a dense block. transposed convolution only takes the output of the preceding dense block, otherwise memory consumption (number of parameters) would be too high. still, has all the information, because preceding dense block will summarize all feature maps (just like traditional architectures).
-}
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/dense_segmentation_architecture}
+    \caption{DenseNet architecture for semantic segmentation~\cite{denseseg17}}
+    \label{fig:densenet_segmentation}
+\end{figure}
+
+For this architecture, there are two types of transition layers. The \emph{transition down} layer is used for the downsampling path and has the same setup as the transition layer in the original DenseNet. On the other hand, there is a \emph{transition up} layer, which is used in the upsampling path. It consists of a 3x3 transposed convolution with a stride of 2x2. Thus, the transition up layers double the spatial extents of the feature maps.
+
+In \cite{denseseg17}, Jégou et al.\ proposed a configuration for the DenseNet consisting of five dense blocks each followed by transition down as downsampling path, one intermediate dense block to act as a bottleneck layer, and again five dense blocks each followed by transition up as upsampling path. The final layer is a 1x1 convolution layer with softmax activation and $k$ (the number of classes) feature maps. In total, this network contains 103 convolutional layers.
 
 \subsubsection{W-Net}
 \label{sec:w-net}
