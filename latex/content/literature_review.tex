@@ -178,16 +178,11 @@ semi-supervised learning approach. combine small number of strong annotations wi
 
 \subsection{Reference Architectures}
 \label{sec:ref_archs}
-\WIP{
-\begin{itemize}
-    \item make clear why it is convenient to use reference architectures
-\end{itemize}
+CNNs play a key role in all computer vision tasks. While a DNN is able to compute a non-linear function, a CNN with a proper architecture allows to compute a non-linear filter. That is the case if the network only consists of layers that operate on the spatial features only (i.~e. no fully-connected layers).
 
-\cite{fcn15}
-CNN play key role in computer vision tasks. NN in general computes nonlinear function, fcn computes nonlinear filter. therefor, can handle any input size and produce corresponding output size (keep spatial dimensions). Authors take existing classification architectures and transform them to fcn approach. last fully-connected layers are replaces by convolutional layers. output is then a coarse classification heatmap (smaller than input image).
+The idea of fully convolutional networks (FCNs) was first introduced by Long et al.\ in~\cite{fcn15}. They took existing CNNs architectures like AlexNet~\cite{alexnet12} and transformed them to the FCN concept by replacing all fully-connected layers with 1x1 convolution layers. That way, the spatial nature of the input was preserved and the output basically formed a heatmap highlighting the parts of the input that the prediction was based on. Later on, they used convolution layers with fractional strides as a way to upsample the resolution with trainable filters. Eventually, this led from the coarse heatmaps to class predictions at the pixel level, which is essentially a semantic segmentation.
 
-to go back to full resolution, authors describe upsampling (deconvolution). This is convolution as described in \ref{sec:convolution}, but with fractional stride. this leads from coarse to dense prediction for pixels. Following architectures utilize the idea of FCN and upsampling to make dense predictions for segmentation maps.
-}
+Since then, many network architectures have been explored. The architecture affects the quality of the network significantly, thus it is important to choose a matching architecture for the question at hand. There is plenty of research going on for architectural patterns that benefit towards semantic segmentation. In this thesis, three well-performing network architectures have been picked to explore their capabilities of carrying out land use segmentation. The following subsections will present these architectures in detail.
 
 \subsubsection{U-Net Architecture}
 \label{sec:unet}
