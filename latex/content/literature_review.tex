@@ -62,16 +62,16 @@ Rectangular boxes are not very accurate for expressing the spatial extents of an
 The last task to mention here for the sake of completeness is called \emph{instance segmentation}~\cite{mask-rcnn14}. Whereas previously only one category had to be assigned to each pixel, a distinction is now also made between pixels that belong to the same object category but different instances of an object. This task is quite challenging, as for example parts of an instance can be hidden by another instance of the same category, which leads to gaps in the mask. \emph{Mask R-CNN}~\cite{mask-rcnn14} is a widely used meta-algorithm for solving this task. It combines region proposals used for object localization with semantic segmentation processes. A great dataset for this challenge is the \emph{Microsoft Common Objects in Context} set, which can be found in~\cite{coco15}.
 
 \begin{figure}
-    \newcommand{\imgWidth}{0.4\textwidth}
+    \newcommand{\VisionTasksImageWidth}{0.4\textwidth}
     \centering
     \hfill
-    \begin{subfigure}{\imgWidth}
+    \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_1}
         \caption{Image Classification}
         \label{fig:cv_task_imgclass}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{\imgWidth}
+    \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_2}
         \caption{Object Localization}
         \label{fig:cv_task_objloc}
@@ -79,13 +79,13 @@ The last task to mention here for the sake of completeness is called \emph{insta
     \hfill
 
     \hfill
-    \begin{subfigure}{\imgWidth}
+    \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_3}
         \caption{Semantic Segmentation}
         \label{fig:cv_task_semseg}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{\imgWidth}
+    \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_4}
         \caption{Instance Segmentation}
         \label{fig:cv_task_inseg}
@@ -263,11 +263,46 @@ Authors apply postprocessing to output of W-Net to achieve better object delinea
 
 \subsection{Architecture Comparison}
 \WIP{
-\begin{itemize}
-    \item Interesting for architecture comparison: \cite{imseg_architecures}
-    \item point out the common characteristics and differences of the architectures
-    \item compare use cases of the architectures and how they perform on them
-\end{itemize}
+overall, all three reference architectures that were introduced, share common architectural pattern. All have some kind of contracting path followed by expansive path. In general, it is very common to have decrease spatial size of feature maps while increasing number of feature maps (contracting path) for CNNs. it is natural to just invert that part if the result should be of same resolution as original image.
+
+Hard to compare the actual performance of three architectures, since all were trained on different datasets with different metrics. Still, we look at some numbers and take into account the specific task with its difficulty. Also, figure~\ref{fig:segmentation_examples} show some results for segmentation, to get a feeling for what was achieved.
+
+U-Net was trained and evaluated for ISBI cell tracking challenge described in \cite{isbi_challenge}. Two different datasets in the challenge, both showing cells scanned with different microscopy techniques. achieved an average IoU of $92\%$ for PhC-U373 and $77.5\%$ for DIC-HeLa respectively \cite{unet15}. One examples for DIC-HeLa dataset is shown in figure~\ref{fig:exseg_unet}. This is a binary segmentation with two classes (cell, not-cell), meaning the prediction tells if pixel belongs to a cell or not.
+
+DenseNet for segmentation was trained and evaluated with CamVid dataset \cite{camvid_challenge}. This is database of urban scene videos fully labelled with 32 different classes. Classes include moving objects (like pedestrian, bicyclist, car), road (driveable road, lane marking, etc), ceiling types (sky, tunnel) and fixed objects (buildings, fences, etc). DenseNet achieved mean IoU of $66.9\%$, which is less than U-Net had for their challenge. On the other hand, the challenge is much more sophisticated (see figure~\ref{fig:exseg_densenet}). As another metric, authors present $91.5\%$ pixel-wise accuracy. This shows, predictions in general are of high quality, only outlining of the objects could be improved.
+
+W-Net trained on PASCAL VOC 2012 dataset and evaluated with Berkeley Segmentation Database (BSDS500). Both datasets contain hundreds of images with labelled segmentations. But since W-Net is unsupervised labels are not used during training, but only for evaluation. Metrics are a bit different in this case, because there are multiple ground-truth segmentations for each image. Two metrics of interest: \emph{probabilistic rand index} (PRI) is a form of pixel-wise accuracy. Other metric is \emph{segmentation covering} (SC), which is extended IoU. In detail explanation of metrics can be found in \cite{hierarchy_imgseg11}.
+
+W-Net without postprocessing scores for BSDS500 dataset values of up to $62\%$ SC and $84$ PRI. If compared to mean IoU and pixel-wise accuracy of DenseNet, the performance seems to be worse. But taking into account, that the W-Net does not receive any labelling information during training, the results are still valuable (as figure~\ref{fig:exseg_wnet} shows).
+
+it is hard to tell which architecture has best overall performance. Likewise it is hard to tell which architecture will perform good on the given task of land usage classification. Therefore, in section~\ref{sec:segmentation} all architectures are evaluated based on the available dataset.
 }
+
+\begin{figure}
+    \newcommand{\SegmentationExampleImageWidth}{0.3\textwidth}
+    \centering
+    \hfill
+    \begin{subfigure}{\SegmentationExampleImageWidth}
+        \includegraphics[width=\textwidth]{images/segmentation_example_unet}
+        \caption{U-Net~\cite{unet15}}
+        \label{fig:exseg_unet}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.4\textwidth}
+        \includegraphics[width=\textwidth]{images/segmentation_example_densenet}
+        \caption{DenseNet~\cite{denseseg17}}
+        \label{fig:exseg_densenet}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.21\textwidth}
+        \includegraphics[width=\textwidth]{images/segmentation_example_wnet}
+        \caption{W-Net~\cite{wnet17}}
+        \label{fig:exseg_wnet}
+    \end{subfigure}
+    \hfill
+    \caption{Segmentation results from the presented architectures}
+    \label{fig:segmentation_examples}
+\end{figure}
+
 
 \newpage
