@@ -27,9 +27,9 @@ Each neuron is itself a small computational unit that applies several mathematic
     \label{fig:perceptron}
 \end{figure}
 
-\subsubsection{Training with Backpropagation}
 To adapt a DNN model for a specific task, the weights for all the connections have to be initialized with proper values. Since there are so many weights, it is not feasible to choose the values by hand, but rather use a process called \emph{training}. To train the DNN model, it is fed with examples of input vectors with their respective output vectors. During this process the weights are adjusted slightly, so that the model better reflects the relations between the input and the output vectors. This is a computationally intensive process that requires a large amount of training data. After repeating this with hundreds or thousands of training vectors, the weights of the model will eventually converge to fit the task.
 
+\subsubsection{Training with Backpropagation}
 One of the most commonly used algorithms to perform the training is the \emph{backpropagation algorithm}~\cite[pp.~151ff]{nn_intro96}. It relies on an \emph{error function} (sometimes also called \emph{loss function}), which is meant to calculate the deviation between the model's current output vector and the desired output vector. The backpropagation algorithm then searches for a minimum of the error function by adjusting the model's weights according to an \emph{optimization strategy}. Which algorithms to choose for both the error function and the optimizing strategy is highly dependent on the task to solve and on the quality requirements for the final predictions.
 % TODO: list examples for loss functions and optimizers
 
@@ -39,9 +39,12 @@ Sometimes it can happen that the total error rate increases after the weights ar
 
 \WIP{
 \begin{itemize}
-    % TODO: explain hyperparameters, grid search
-    \item hyperparameter: LR, epochs, optimizer
+    % TODO: explain hyperparameters
+    \item hyperparameter: LR, epochs, optimizer, etc
+    % TODO: explain grid search to examine hyperparameters
     \item grid search, random search
+    %TODO: are there other training algorithms?
+    \item mention other training algorithms (if there are any)
 \end{itemize}
 }
 
@@ -108,7 +111,7 @@ The last task to mention here is called \emph{instance segmentation}~\cite{mask-
 \subsection{Convolutional Neural Networks}
 \label{sec:cnn}
 
-One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. In traditional neural networks the layers are often densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of the input data into account. The following sections explain the commonly used operations in CNNs.
+One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. Traditionally, the layers in DNNs are densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of the input data into account. The following sections explain the commonly used operations in CNNs.
 % TODO: name general architecture with conv, pool and fc layers
 % TODO: go more into detail, why is CNN for grid-like good, why is dense for grid-like bad?
 
@@ -131,7 +134,7 @@ There are different ways to handle the edges of the grid. If no special action i
 
 The trainable parameters in a convolution layer are the weights and biases used for the matrix multiplication introduced earlier. One specific set of weights and biases is called a \emph{filter}. It is responsible for detecting one single feature of the input layer. The output of a filter is thus referred to as \emph{feature map}. To inspect multiple features of the input, a convolution layer usually consists of multiple filters that are trained and calculated independently. In the end, the output of a convolution layer are multiple feature maps, each highlighting one single feature of the input.~\cite[p.~363 f]{praxiseinstieg_ml17}
 
-As stated by Goodfellow et al.\ in~\cite{DLbook16} the convolution operation has some properties that are highly valuable to build an efficient and powerful neural network. Compared to traditional neural networks, convolution layers have only few connections between to subsequent layers. This is because the kernel is much smaller than the input. Especially for images, which can have millions of pixels, this helps to reduce the number of parameters to train. Furthermore, the convolution reuses the same parameters for an entire feature map. Besides increasing the statistical efficiency of the model, it also makes the operation equivariant to translation in the input.
+As stated by Goodfellow et al.\ in~\cite{DLbook16} the convolution operation has some properties that are highly valuable to build an efficient and powerful neural network. Compared to traditional DNNs, convolution layers have only few connections between to subsequent layers. This is because the kernel is much smaller than the input. Especially for images, which can have millions of pixels, this helps to reduce the number of parameters to train. Furthermore, the convolution reuses the same parameters for an entire feature map. Besides increasing the statistical efficiency of the model, it also makes the operation equivariant to translation in the input.
 
 % TODO: explain the above section in more detail?
 \begin{comment}
