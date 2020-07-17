@@ -33,16 +33,17 @@ In the first step, the script creates two database tables named \texttt{dop\_rgb
 
 After the tables are created, the script loops through all the GeoTiff files and calls the \texttt{raster2pgsql} tool for every single one. That call returns some SQL insert statements enriched with the raster information in a binary representation. To execute those statements, it is possible to simply pipe the output of \texttt{raster2pgsql} into a \texttt{psql} command which is connected to the database.
 
-The \texttt{raster2pgsql} tool provides a lot of arguments to properly configure the import of the data. Obviously it needs to know the name of the file to import and the name of the database table to insert the data to. For performance reasons it is very important to set an appropriate tile size for the raster. The original tile size of the GeoTiff files ($10000x10000$ pixels) was assessed to be too large. After some experiments, a tile size of $1000x1000$ pixels was found to work best for both the initial import and the later processing of the raster.
+The \texttt{raster2pgsql} tool provides a lot of arguments to properly configure the import of the data. Obviously it needs to know the name of the file to import and the name of the database table to insert the data to. For performance reasons it is very important to set an appropriate tile size for the raster. The original tile size of the GeoTiff files ($10000\times 10000$ pixels) was assessed to be too large. After some experiments, a tile size of $1000\times 1000$ pixels was found to work best for both the initial import and the later processing of the raster.
 
 Another major configuration is the spatial reference id (SRID). It also has to be passed as an argument, to ensure the data is imported correctly. The SRID indicates the map projection that is used to map the raster to the earth's surface. The dataset is provided with the SRID 25832. This SRID does not cover the entire globe, but only a rectangular area on the European continent. Therefore it offers a high precision (without too much distortion) in that area and is widely used for maps in Central Europe.
 
 After all GeoTiff files are imported, the Python script creates a Generalized Search Tree (GiST) index for both tables. This takes into account the spatial character of the data and thus speeds up spatial queries (like merging, intersecting) on the tables significantly. For the same reason, the Python script also enforces some constraints on the raster columns of the tables. This makes sure that all the raster tiles share common properties like tile size, SRID or the number of raster bands.
 
 As a last step of the Python script, it creates one last table named \texttt{geom\_bounds}. This table holds a single PostGIS geometry object defining the exact boundaries of the raster tiles. That allows for a quick way to calculate if a given region is included in the spatial extents of the raster without having to process the whole raster table all the time.
-% TODO: show some images and explain the dimensions (1px = 1dm)
 
-% TODO: reference figure
+Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its location in Germany. To show the granularity of the data, one region is enlarged and shown in full resolution. One pixel in the dataset represents $10\times 10$ decimeters in real-world scale. As can be seen in figure~\ref{fig:dop_rgb_all}, it is easily possible to detect objects like trees, cars or buildings with such a high resolution. Therefore, the data provides sufficient information for the segmentation of land usage.
+
+% TODO: adjust figure, show map of Germany, zoom to whole dataset, then zoom to high-resolution tile
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/dop_rgb_all}
@@ -103,7 +104,9 @@ ver03\_f           & 42010                & rail traffic                   & tra
 
 The last step is to merge all geometry objects of the same category. I. e. the final table only contains six geometry objects, one for each category. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same category.
 
-% TODO: reference figure
+Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant categories are clearly forest and buildings. Water and traffic zones only take up a very small areas and both are barely visible because of the scale of the illustration. The imbalance of the categories is an issue which is further addressed in section~\ref{sec:dataset_considerations}
+
+% TODO: show mapping from categories to colors
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/dop_label_all}
@@ -172,6 +175,7 @@ unfortunately, for rendering the segmentation info QGIS does interpolation for b
 \end{figure}
 
 \subsection{Considerations about the dataset}
+\label{sec:dataset_considerations}
 \WIP{
 shapes in the labels are not super accurate. on macroscopic point of view, they cover all segments on large areas. but borders between segments are oftentimes poorly represented. meaning transition between forest and agriculture or coastal line along rivers modelled very roughly. to get really good training results one should preferably use pixel-perfect labels. for purpose of this thesis, where the goal is to identify suitable emergency landing areas, this might not be a big issue as we are looking for open wide areas and don't care to much about perfect borders. But anyway, keep it in mind during model training.
 % TODO: show images/labels to support this argument
