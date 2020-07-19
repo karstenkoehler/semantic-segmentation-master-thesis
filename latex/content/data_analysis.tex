@@ -115,12 +115,16 @@ Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset wi
 \end{figure}
 
 \subsection{Export images for training}
+% TODO: confirm numbers for training/querying time
+At this stage, all the data required for the training of network models is contained in the PostgreSQL database and can be queried in regions of arbitrary tile size. While it is possible to query each tile live during training, this is highly inefficient. Since the same data is fed into the network multiple times, the same query result would have to be computed multiple times during a training run (i.~e. once per epoch). Also, doing a full round of backpropagation with a single tile is by far faster than executing a query for a single tile. Depending on the architecture of the network and the available hardware, a single pass of backpropagation usually takes around \WIP{$500~\text{ms}$} at most. Compared to that, the database query for a single tile measures on average to \WIP{$x~\text{ms}$}.
 
+One common way to use more of the available processing power for the actual training, all tiles are precomputed and saved in well-sized batches on a hard drive. That way, they only need to be loaded into memory and can then be used directly. However, depending on batch size and the hard drive's reading speed this might leave the hard drive as bottleneck. In the end, the process of feeding the data into the network is a balancing act between factors such as data compression, preprocessing pipelines and hardware availability.
+
+% TODO: reference the correct section
+For this thesis, the data is exported from the database and saved as image files in PNG format. This format offers a good tradeoff between file size on the hard drive and processing time required to decode the data. The width and height of the images depends on the shape of the input layer of the network to train and will thus be discussed later on in \WIP{section~\ref{sec:segmentation}}. It is possible to store each tile in a separate file, but in general, the tiles are so small that this would not be very efficient. That way, hundreds of file handles will be opened and closed each second during training, which might cause performance issues with the operating system. Instead, multiple tiles are arranged in a grid layout in a single image file. This only requires an array split operation after reading a file, which is computationally cheaper than dealing with lots of file handles.
 
 \WIP{
-for training, networks need fixed set of training/validation data. images and labels are prepared in database, but that does not work well for training. for efficient training process, dataset should be ready to use (like only read files and don't do any further processing). Very inefficient to export training batches live while training. it is better to export and save dataset in prepared batches, that can be fed directly into the network.
-
-spatial image dimension are given by reference architectures. each architecture has different needs in regards to for example the input size of images and labels. But in general, all architectures need images with given resolution.
+both RGB data and labels are saved to RGB images. Before feeding to network, RGB channels are normalized to range 0-1 by diving with 255. labels have to be transformed to one-hot encoded vector. basically, this is mapping from 3-valued vector (RGB color) to 6-valued vector, so also very fast.
 
 there is a general process to generate those images. create PostGIS geometry tiles to outline the training batches. then render those tiles with the DOP RGB bands to have input images. render it again with the segmentation info, to get the labels.
 
