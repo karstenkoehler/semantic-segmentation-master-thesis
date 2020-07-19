@@ -104,7 +104,7 @@ ver03\_f           & 42010                & rail traffic                   & tra
 
 The last step is to merge all geometry objects of the same category. I. e. the final table only contains six geometry objects, one for each category. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same category.
 
-Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant categories are clearly forest and buildings. Water and traffic zones only take up a very small areas and both are barely visible because of the scale of the illustration. The imbalance of the categories is an issue which is further addressed in section~\ref{sec:dataset_considerations}
+Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant categories are clearly forest and buildings. Water and traffic zones only take up a very small area and both are barely visible because of the scale of the illustration. The imbalance of the categories is an issue which is further addressed in section~\ref{sec:dataset_considerations}
 
 % TODO: show mapping from categories to colors
 \begin{figure}[h]
@@ -115,6 +115,8 @@ Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset wi
 \end{figure}
 
 \subsection{Export images for training}
+
+
 \WIP{
 for training, networks need fixed set of training/validation data. images and labels are prepared in database, but that does not work well for training. for efficient training process, dataset should be ready to use (like only read files and don't do any further processing). Very inefficient to export training batches live while training. it is better to export and save dataset in prepared batches, that can be fed directly into the network.
 
