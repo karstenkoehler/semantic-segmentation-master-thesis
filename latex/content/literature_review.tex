@@ -268,6 +268,8 @@ Authors apply postprocessing to output of W-Net to achieve better object delinea
 
 \subsection{Architecture Comparison}
 \WIP{
+% TODO: have a look at \cite{imseg_survey20}
+
 overall, all three reference architectures that were introduced, share common architectural pattern. All have some kind of contracting path followed by expansive path. In general, it is very common to have decrease spatial size of feature maps while increasing number of feature maps (contracting path) for CNNs. it is natural to just invert that part if the result should be of same resolution as original image.
 
 Hard to compare the actual performance of three architectures, since all were trained on different datasets with different metrics. Still, we look at some numbers and take into account the specific task with its difficulty. Also, figure~\ref{fig:segmentation_examples} show some results for segmentation, to get a feeling for what was achieved.
