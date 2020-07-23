@@ -16,3 +16,9 @@ def get_training_gids_from_database(table_suffix):
             stmt = f"SELECT gid FROM geom_tiles_{table_suffix} WHERE NOT test_set;;"
             cur.execute(stmt)
             return [int(row[0]) for row in cur.fetchall()]
+
+
+def get_training_gids_from_file(file_path):
+    """Reads GIDS from a file and returns them as a list."""
+    with open(file_path, 'r') as f:
+        return [int(line) for line in f.read().splitlines()]

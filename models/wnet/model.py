@@ -20,7 +20,7 @@ import tensorflow as tf
 
 import matplotlib.pyplot as plt
 
-from models.common.common import get_training_gids_from_database
+from models.common.common import get_training_gids_from_database, get_training_gids_from_file
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
@@ -90,13 +90,6 @@ class EncoderSaveCallback(tf.keras.callbacks.Callback):
         self.encoder.save(os.path.join(self.path, f"epoch_{epoch}_encoder_model.hdf5"))
 
 
-def get_training_gids_only_multisegment():
-    # returns only the tiles that contain at least two different segments
-    with open("gids_with_multiple_segments.txt", 'r') as f:
-        gids = [int(line) for line in f.read().splitlines()]
-        return gids
-
-
 def one_hot_encoding(label):
     encoded = []
     for val in [62, 104, 118, 193, 200, 226]:
@@ -140,7 +133,7 @@ def data_generator(gids, batch_size, seed=0):
 
 def make_training_and_validation_generators(batch_size=1, validation_split=0.1):
     # gids = get_training_gids_from_database("wnet")
-    gids = get_training_gids_only_multisegment()
+    gids = get_training_gids_from_file("gids_with_multiple_segments.txt")
 
     rnd = random.Random(42)
     rnd.shuffle(gids)
