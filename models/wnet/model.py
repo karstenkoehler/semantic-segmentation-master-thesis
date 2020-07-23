@@ -130,7 +130,7 @@ def split_to_tiles(img, tile_size=224):
 
 def data_generator(gids, batch_size, seed=0):
     rnd = random.Random(seed)
-    image_base_dir = os.path.join("E:", "data", "densenet", "train", "images")
+    image_base_dir = os.path.join("E:", "data", "wnet", "images")
 
     images_per_file = 100
     yield (len(gids) // batch_size) * images_per_file
