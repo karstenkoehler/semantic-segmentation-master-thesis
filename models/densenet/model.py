@@ -67,14 +67,14 @@ def transition_up_layer(skip_connection, x, nb_filters):
     return x, nb_filters
 
 
-def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
+def define_and_compile_model(optimizer=Adam(lr=1e-4), loss=None, metrics=None):
     input_size = (256, 256, 3)
     growth_rate = 16
     weight_decay = 1e-4
-    dense_block_layers = [4, 5, 7, 10, 12] #, 15]
+    dense_block_layers = [4, 5, 7, 10, 12, 15]
     dropout = 0.2
-    compression = 0.5
-    bottleneck = False
+    compression = 1.0
+    bottleneck = True
     nb_filters = 48
     skip_connections = []
 
@@ -148,7 +148,7 @@ def data_generator(gids, batch_size, seed=0):
     image_base_dir = os.path.join("E:", "data", "densenet", "train", "images")
     label_base_dir = os.path.join("E:", "data", "densenet", "train", "labels")
 
-    images_per_file = 100
+    images_per_file = 25
     yield (len(gids) // batch_size) * images_per_file
 
     while True:
@@ -156,12 +156,16 @@ def data_generator(gids, batch_size, seed=0):
         images, labels = [], []
 
         for gid in gids:
+            indices = random.sample(range(100), 25)
+
             image = cv2.imread(os.path.join(image_base_dir, f"{gid}.png"), cv2.IMREAD_COLOR)
-            images += split_to_tiles(image / 255)
+            image_list = split_to_tiles(image / 255)
+            images += [image_list[i] for i in indices]
 
             label = cv2.imread(os.path.join(label_base_dir, f"{gid}.png"), cv2.IMREAD_GRAYSCALE)
             label = one_hot_encoding(label)
-            labels += split_to_tiles(label)
+            label_list = split_to_tiles(label)
+            labels += [label_list[i] for i in indices]
 
             while len(images) > batch_size:
                 image_batch = images[:batch_size]
@@ -203,18 +207,47 @@ def one_hot_to_rgb(prediction):
     return out
 
 
+def weighted_categorical_crossentropy(class_weights):
+    class_weights = tf.constant(class_weights)
+
+    def wcce(y_true, y_pred):
+        # weights = tf.reduce_sum(tf.multiply(y_true, class_weights), axis=1)
+        # return tf.compat.v1.losses.softmax_cross_entropy(y_true, y_pred, weights=weights)
+
+        return tf.nn.weighted_cross_entropy_with_logits(y_true, y_pred, pos_weight=class_weights)
+
+    return wcce
+
+
 def predict(gids, model_path):
-    model = load_model(model_path)
+    dependencies = {
+        'wcce': weighted_categorical_crossentropy(class_weights=[
+            0.02471,  # buildings
+            0.54651,  # water
+            0.01185,  # forest
+            1.00000,  # traffic
+            0.16433,  # urban greens
+            0.01470,  # agriculture
+        ])
+    }
+    model = load_model(model_path, custom_objects=dependencies)
 
     images = []
     for gid in gids:
         image = cv2.imread(os.path.join("E:", "data", "densenet", "train", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images += split_to_tiles(image / 255)
-        # images.append(image / 255)
+        images = split_to_tiles(image / 255)
 
-    for idx, img in enumerate(images):
-        pred = model.predict(np.array([images[idx]]))
-        cv2.imwrite(f"images/{idx}-pred.png", one_hot_to_rgb(pred[0]))
+        final_prediction = np.empty([0, 2560, 3])
+        row = np.empty([256, 0, 3])
+
+        for idx, img in enumerate(images):
+            pred = model.predict(np.array([images[idx]]))
+            row = np.hstack([row, one_hot_to_rgb(pred[0])])
+            if row.shape[1] >= 2560:
+                final_prediction = np.vstack([final_prediction, row])
+                row = np.empty([256, 0, 3])
+
+        cv2.imwrite(f"images/{gid}-pred.png", final_prediction)
 
 
 def do_training(start_time):
@@ -222,13 +255,24 @@ def do_training(start_time):
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
+    # weight the classes according to the area they cover in the dataset
+    class_weights = [
+        0.02471,  # buildings
+        0.54651,  # water
+        0.01185,  # forest
+        1.00000,  # traffic
+        0.16433,  # urban greens
+        0.01470,  # agriculture
+    ]
+
     if os.path.exists(f"weights/{start_time}"):
         files = glob.glob(f"weights/{start_time}/*.hdf5")
         run = len(files)
         f = max(files, key=os.path.getctime)
-        f = "weights/1593163475/run-00__epoch-38__val-loss-0.94.hdf5"
+        f = "weights/1594878370/run-00__epoch-11__val-loss-0.64.hdf5"
 
         dependencies = {
+            'wcce': weighted_categorical_crossentropy(class_weights)
         }
 
         model = load_model(f, custom_objects=dependencies)
@@ -239,7 +283,8 @@ def do_training(start_time):
         os.mkdir(f"weights/{start_time}")
 
         metrics = [Accuracy(), CategoricalAccuracy(), MeanIoU(num_classes=6)]
-        model = define_and_compile_model(metrics=metrics)
+
+        model = define_and_compile_model(metrics=metrics, loss=weighted_categorical_crossentropy(class_weights))
         model.summary()
         plot_model(model, to_file=f"{start_time}.png")
 
