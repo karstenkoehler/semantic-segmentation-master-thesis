@@ -49,3 +49,15 @@ def one_hot_to_rgb(prediction, color_palette=None):
     for idx, col in enumerate(color_palette):
         rgb_encoded[classes == idx] = col
     return rgb_encoded
+
+
+def split_to_tiles(img, tile_size):
+    tiles = []
+    steps = img.shape[0] // tile_size
+
+    for x in range(steps):
+        for y in range(steps):
+            tile = img[x * tile_size:(x + 1) * tile_size, y * tile_size:(y + 1) * tile_size, :]
+            tiles.append(tile)
+
+    return tiles

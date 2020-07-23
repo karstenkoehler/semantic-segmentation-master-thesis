@@ -22,7 +22,7 @@ import tensorflow.keras.backend as K
 from tensorflow.python.keras.utils.vis_utils import plot_model
 
 from models.common.common import get_training_gids_from_database, get_training_gids_from_file, one_hot_encoding, \
-    one_hot_to_rgb
+    one_hot_to_rgb, split_to_tiles
 
 
 def conv_block(x, nb_filters, dropout_rate=None, bottleneck=False, weight_decay=1e-4):
@@ -108,20 +108,6 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss=None, metrics=None):
     return model
 
 
-
-
-def split_to_tiles(img, tile_size=256):
-    tiles = []
-    steps = img.shape[0] // tile_size
-
-    for x in range(steps):
-        for y in range(steps):
-            tile = img[x * tile_size:(x + 1) * tile_size, y * tile_size:(y + 1) * tile_size, :]
-            tiles.append(tile)
-
-    return tiles
-
-
 def data_generator(gids, batch_size, seed=0):
     rnd = random.Random(seed)
     image_base_dir = os.path.join("E:", "data", "densenet", "train", "images")
@@ -138,12 +124,12 @@ def data_generator(gids, batch_size, seed=0):
             indices = random.sample(range(100), 25)
 
             image = cv2.imread(os.path.join(image_base_dir, f"{gid}.png"), cv2.IMREAD_COLOR)
-            image_list = split_to_tiles(image / 255)
+            image_list = split_to_tiles(image / 255, 256)
             images += [image_list[i] for i in indices]
 
             label = cv2.imread(os.path.join(label_base_dir, f"{gid}.png"), cv2.IMREAD_GRAYSCALE)
             label = one_hot_encoding(label)
-            label_list = split_to_tiles(label)
+            label_list = split_to_tiles(label, 256)
             labels += [label_list[i] for i in indices]
 
             while len(images) > batch_size:
@@ -199,7 +185,7 @@ def predict(gids, model_path):
 
     for gid in gids:
         image = cv2.imread(os.path.join("E:", "data", "densenet", "train", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images = split_to_tiles(image / 255)
+        images = split_to_tiles(image / 255, 256)
 
         final_prediction = np.empty([0, 2560, 3])
         row = np.empty([256, 0, 3])

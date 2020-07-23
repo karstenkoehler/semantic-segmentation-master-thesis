@@ -20,7 +20,7 @@ import tensorflow as tf
 
 import matplotlib.pyplot as plt
 
-from models.common.common import get_training_gids_from_database, get_training_gids_from_file
+from models.common.common import get_training_gids_from_database, get_training_gids_from_file, split_to_tiles
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
@@ -90,21 +90,6 @@ class EncoderSaveCallback(tf.keras.callbacks.Callback):
         self.encoder.save(os.path.join(self.path, f"epoch_{epoch}_encoder_model.hdf5"))
 
 
-
-
-
-def split_to_tiles(img, tile_size=224):
-    tiles = []
-    steps = img.shape[0] // tile_size
-
-    for x in range(steps):
-        for y in range(steps):
-            tile = img[x * tile_size:(x + 1) * tile_size, y * tile_size:(y + 1) * tile_size, :]
-            tiles.append(tile)
-
-    return tiles
-
-
 def data_generator(gids, batch_size, seed=0):
     rnd = random.Random(seed)
     image_base_dir = os.path.join("E:", "data", "wnet", "images")
@@ -118,7 +103,7 @@ def data_generator(gids, batch_size, seed=0):
 
         for gid in gids:
             image = cv2.imread(os.path.join(image_base_dir, f"{gid}.png"), cv2.IMREAD_COLOR)
-            images += split_to_tiles(image / 255)
+            images += split_to_tiles(image / 255, 224)
 
             while len(images) > batch_size:
                 image_batch = images[:batch_size]
@@ -148,7 +133,7 @@ def predict(gids, model_path, num_classes=1000):
 
     for gid in gids:
         image = cv2.imread(os.path.join("E:", "data", "wnet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images = split_to_tiles(image / 255)
+        images = split_to_tiles(image / 255, 224)
 
         final_prediction = np.empty([0, 2240, 1])
         row = np.empty([224, 0, 1])
@@ -174,7 +159,7 @@ def restore(gids, model_path):
 
     for gid in gids:
         image = cv2.imread(os.path.join("E:", "data", "wnet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images = split_to_tiles(image / 255)
+        images = split_to_tiles(image / 255, 224)
 
         final_prediction = np.empty([0, 2240, 3])
         row = np.empty([224, 0, 3])
