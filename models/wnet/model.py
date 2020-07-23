@@ -141,19 +141,6 @@ def make_training_and_validation_generators(batch_size=1, validation_split=0.1):
     return data_generator([51], batch_size, seed=17), data_generator([51], batch_size, seed=29)
 
 
-def one_hot_to_rgb(prediction):
-    palette = np.array([(3, 0, 208),  # buildings
-                        (240, 126, 11),  # water
-                        (40, 171, 44),  # forest
-                        (193, 193, 193),  # traffic
-                        (39, 255, 154),  # urban greens
-                        (132, 240, 235)])  # agriculture
-
-    classes = np.argmax(prediction, axis=2)
-    out = np.zeros(classes.shape[:2] + (3,))
-    for idx, col in enumerate(palette):
-        out[classes == idx] = col
-    return out
 
 
 def predict(gids, model_path, num_classes=1000):
@@ -176,6 +163,7 @@ def predict(gids, model_path, num_classes=1000):
                 final_prediction = np.vstack([final_prediction, row])
                 row = np.empty([224, 0, 1])
 
+        # FIXME: use common.one_hot_to_rgb instead
         cmap = plt.cm.get_cmap("hsv", num_classes)
         final_prediction = final_prediction.reshape((2240, 2240))
         plt.imsave(f"images/{gid}-pred.png", final_prediction, cmap=cmap)

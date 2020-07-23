@@ -16,7 +16,8 @@ from tensorflow.python.keras.backend import set_value
 
 import numpy as np
 
-from models.common.common import get_training_gids_from_database, chunks, get_training_gids_from_file, one_hot_encoding
+from models.common.common import get_training_gids_from_database, chunks, get_training_gids_from_file, one_hot_encoding, \
+    one_hot_to_rgb
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
@@ -111,19 +112,6 @@ def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
     return data_generator(training, batch_size, seed=17), data_generator(validation, batch_size, seed=29)
 
 
-def one_hot_to_rgb(prediction):
-    palette = np.array([(3, 0, 208),  # buildings
-                        (240, 126, 11),  # water
-                        (40, 171, 44),  # forest
-                        (193, 193, 193),  # traffic
-                        (39, 255, 154),  # urban greens
-                        (132, 240, 235)])  # agriculture
-
-    classes = np.argmax(prediction, axis=2)
-    out = np.zeros(classes.shape[:2] + (3,))
-    for idx, col in enumerate(palette):
-        out[classes == idx] = col
-    return out
 
 
 def predict(gids, model_path):
