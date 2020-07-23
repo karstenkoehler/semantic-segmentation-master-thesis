@@ -127,8 +127,7 @@ def data_generator(gids, batch_size, seed=0):
             while len(images) > batch_size:
                 image_batch = images[:batch_size]
                 images = images[batch_size:]
-                while True:
-                    yield np.array(image_batch), np.array(image_batch)
+                yield np.array(image_batch), np.array(image_batch)
 
 
 def make_training_and_validation_generators(batch_size=1, validation_split=0.1):
