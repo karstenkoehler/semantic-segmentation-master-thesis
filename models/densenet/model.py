@@ -21,7 +21,7 @@ import tensorflow as tf
 import tensorflow.keras.backend as K
 from tensorflow.python.keras.utils.vis_utils import plot_model
 
-from models.common.common import get_training_gids_from_database, get_training_gids_from_file
+from models.common.common import get_training_gids_from_database, get_training_gids_from_file, one_hot_encoding
 
 
 def conv_block(x, nb_filters, dropout_rate=None, bottleneck=False, weight_decay=1e-4):
@@ -107,11 +107,6 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss=None, metrics=None):
     return model
 
 
-def one_hot_encoding(label):
-    encoded = []
-    for val in [62, 104, 118, 193, 200, 226]:
-        encoded.append((label == val) * 1.0)
-    return np.stack(encoded, axis=2)
 
 
 def split_to_tiles(img, tile_size=256):

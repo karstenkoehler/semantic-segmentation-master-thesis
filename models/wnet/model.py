@@ -90,11 +90,7 @@ class EncoderSaveCallback(tf.keras.callbacks.Callback):
         self.encoder.save(os.path.join(self.path, f"epoch_{epoch}_encoder_model.hdf5"))
 
 
-def one_hot_encoding(label):
-    encoded = []
-    for val in [62, 104, 118, 193, 200, 226]:
-        encoded.append((label == val) * 1.0)
-    return np.stack(encoded, axis=2)
+
 
 
 def split_to_tiles(img, tile_size=224):

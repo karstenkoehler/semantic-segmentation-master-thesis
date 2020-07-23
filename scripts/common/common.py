@@ -1,1 +1,0 @@
-POSTGRES_CONNECTION_DSN = "dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'"

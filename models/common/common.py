@@ -1,6 +1,7 @@
 import psycopg2
+import numpy as np
 
-from scripts.common.common import POSTGRES_CONNECTION_DSN
+from scripts.common.constants import POSTGRES_CONNECTION_DSN, LABEL_GRAYSCALE_VALUES
 
 
 def chunks(L, n):
@@ -22,3 +23,10 @@ def get_training_gids_from_file(file_path):
     """Reads GIDS from a file and returns them as a list."""
     with open(file_path, 'r') as f:
         return [int(line) for line in f.read().splitlines()]
+
+
+def one_hot_encoding(label):
+    encoded = []
+    for val in LABEL_GRAYSCALE_VALUES:
+        encoded.append((label == val) * 1.0)
+    return np.stack(encoded, axis=2)

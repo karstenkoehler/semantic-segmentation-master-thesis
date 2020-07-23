@@ -16,7 +16,7 @@ from tensorflow.python.keras.backend import set_value
 
 import numpy as np
 
-from models.common.common import get_training_gids_from_database, chunks, get_training_gids_from_file
+from models.common.common import get_training_gids_from_database, chunks, get_training_gids_from_file, one_hot_encoding
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
@@ -72,11 +72,6 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossent
     return model
 
 
-def one_hot_encoding(label):
-    encoded = []
-    for val in [62, 104, 118, 193, 200, 226]:
-        encoded.append((label == val) * 1.0)
-    return np.stack(encoded, axis=2)
 
 
 def data_generator(gids, batch_size, seed=0):
