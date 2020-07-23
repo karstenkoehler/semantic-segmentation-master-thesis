@@ -1,3 +1,4 @@
+import csv
 import os
 import psycopg2
 import random
@@ -10,19 +11,22 @@ from datetime import datetime
 from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, Cropping2D, concatenate
 from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
 from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger, LambdaCallback
 from tensorflow.keras.models import Model, load_model
 from tensorflow.python.keras.backend import set_value
 
 import numpy as np
+import tensorflow as tf
+
+import matplotlib.pyplot as plt
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
     # contracting path
-    input_size = (256, 256, 3)
+    input_size = (224, 224, 3)
     input = Input(input_size)
-    classification = unet(input, num_classes=6)
-    reconstructed = unet(classification, num_classes=3)
+    classification = unet(input, num_classes=1000)
+    reconstructed = unet(classification, num_classes=3, output_activation="sigmoid")
 
     model = Model(inputs=input, outputs=reconstructed)
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
@@ -32,7 +36,7 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossent
     return model, encoder
 
 
-def unet(input, num_classes):
+def unet(input, num_classes, output_activation="softmax"):
     conv1 = Conv2D(64, 3, activation='relu', padding="same", kernel_initializer='he_normal')(input)
     conv1 = Conv2D(64, 3, activation='relu', padding="same", kernel_initializer='he_normal')(conv1)
     pool1 = MaxPooling2D(pool_size=(2, 2))(conv1)
@@ -70,8 +74,18 @@ def unet(input, num_classes):
     merge9 = concatenate([conv1, up9], axis=3)
     conv9 = Conv2D(64, 3, activation='relu', padding="same", kernel_initializer='he_normal')(merge9)
     conv9 = Conv2D(64, 3, activation='relu', padding="same", kernel_initializer='he_normal')(conv9)
-    conv10 = Conv2D(num_classes, 1, activation='softmax')(conv9)
+    conv10 = Conv2D(num_classes, 1, activation=output_activation)(conv9)
     return conv10
+
+
+class EncoderSaveCallback(tf.keras.callbacks.Callback):
+    def __init__(self, encoder, path):
+        super().__init__()
+        self.encoder = encoder
+        self.path = path
+
+    def on_epoch_end(self, epoch, logs=None):
+        self.encoder.save(os.path.join(self.path, f"epoch_{epoch}_encoder_model.hdf5"))
 
 
 def chunks(gids, n):
@@ -102,7 +116,7 @@ def one_hot_encoding(label):
     return np.stack(encoded, axis=2)
 
 
-def split_to_tiles(img, tile_size=256):
+def split_to_tiles(img, tile_size=224):
     tiles = []
     steps = img.shape[0] // tile_size
 
@@ -165,17 +179,65 @@ def one_hot_to_rgb(prediction):
     return out
 
 
-def predict(gids, model_path):
+def predict(gids, model_path, num_classes=1000):
     model = load_model(model_path)
 
-    images = []
     for gid in gids:
         image = cv2.imread(os.path.join("E:", "data", "wnet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images.append(image / 255)
+        images = split_to_tiles(image / 255)
 
-    pred = model.predict(np.array(images))
-    for idx, p in enumerate(pred):
-        cv2.imwrite(f"{gids[idx]}-pred.png", one_hot_to_rgb(p))
+        final_prediction = np.empty([0, 2240, 1])
+        row = np.empty([224, 0, 1])
+
+        for idx, img in enumerate(images):
+            pred = model.predict(np.array([images[idx]]))
+            tile = np.argmax(pred[0], axis=2).reshape((224, 224, 1))
+            # print(np.unique(tile.reshape((224*224,))))
+            row = np.hstack([row, tile])
+            if row.shape[1] >= 2240:
+                # row = np.argmax(row, axis=2)
+                final_prediction = np.vstack([final_prediction, row])
+                row = np.empty([224, 0, 1])
+
+        cmap = plt.cm.get_cmap("hsv", num_classes)
+        final_prediction = final_prediction.reshape((2240, 2240))
+        plt.imsave(f"images/{gid}-pred.png", final_prediction, cmap=cmap)
+
+
+def restore(gids, model_path):
+    model = load_model(model_path)
+
+    for gid in gids:
+        image = cv2.imread(os.path.join("E:", "data", "wnet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
+        images = split_to_tiles(image / 255)
+
+        final_prediction = np.empty([0, 2240, 3])
+        row = np.empty([224, 0, 3])
+
+        for idx, img in enumerate(images):
+            pred = model.predict(np.array([images[idx]]))
+
+            row = np.hstack([row, pred[0]])
+            if row.shape[1] >= 2240:
+                final_prediction = np.vstack([final_prediction, row])
+                row = np.empty([224, 0, 3])
+
+        final_prediction = final_prediction * 255
+        # print(f"restore min_max: {np.min(final_prediction)}, {np.max(final_prediction)}")
+        cv2.imwrite(f"images/{gid}-restore.png", final_prediction)
+
+
+def loggercallback(file_path):
+    with open(file_path, "w", newline="") as file:
+        wr = csv.writer(file, delimiter=";")
+        wr.writerow(["batch", "loss", "accuracy", "categorical_accuracy"])
+
+    def callback(batch, logs):
+        with open(file_path, "a", newline="") as file:
+            wr = csv.writer(file, delimiter=";")
+            wr.writerow([batch, logs["loss"], logs["accuracy"], logs["categorical_accuracy"]])
+
+    return callback
 
 
 def do_training(start_time):
@@ -192,6 +254,7 @@ def do_training(start_time):
         dependencies = {
         }
 
+        # TODO: load both models
         model = load_model(f, custom_objects=dependencies)
         set_value(model.optimizer.lr, 1e-5)
         model.summary()
@@ -209,16 +272,17 @@ def do_training(start_time):
 
     tensorboard_callback = TensorBoard(log_dir=logdir)
     checkpoint_callback = ModelCheckpoint(filepath=checkpoint_path)
-    logger_callback = CSVLogger(f"weights/{start_time}.csv", append=True)
+    save_callback = EncoderSaveCallback(encoder=encoder, path=f"weights/{start_time}")
+    logger_callback = LambdaCallback(on_batch_end=loggercallback(f"weights/{start_time}.csv"))
 
-    # TODO: save model and encoder separately. or find a way to use model weights to init the encoder
-    model.fit(training_gen, epochs=50, steps_per_epoch=steps_per_epoch,
+    model.fit(training_gen, epochs=1, steps_per_epoch=steps_per_epoch,
               validation_data=validation_gen, validation_steps=validation_steps,
-              callbacks=[tensorboard_callback, checkpoint_callback, logger_callback])
+              callbacks=[tensorboard_callback, checkpoint_callback, logger_callback, save_callback])
 
 
 if __name__ == '__main__':
-    # predict([285, 304, 345, 14390, 31033, 85616, 156078, 174458], "weights/1593163475/run-00__epoch-50__val-loss-1.07.hdf5")
+    # predict([51, 126, 136], "weights/1595482742/epoch_0_encoder_model.hdf5")
+    # restore([51, 126, 136], "weights/1595482742/run-00__epoch-01__val-loss-1.53.hdf5")
     # exit(0)
 
     start_time = int(time.time())
