@@ -20,6 +20,8 @@ import tensorflow as tf
 
 import matplotlib.pyplot as plt
 
+from models.common.common import get_training_gids_from_database
+
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
     # contracting path
@@ -88,20 +90,6 @@ class EncoderSaveCallback(tf.keras.callbacks.Callback):
         self.encoder.save(os.path.join(self.path, f"epoch_{epoch}_encoder_model.hdf5"))
 
 
-def chunks(gids, n):
-    for i in range(0, len(gids), n):
-        yield gids[i:i + n]
-
-
-def get_training_gids():
-    db_connection = "dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'"
-    with psycopg2.connect(db_connection) as db:
-        with db.cursor() as cur:
-            stmt = "SELECT gid FROM geom_tiles_unet WHERE NOT test_set;;"
-            cur.execute(stmt)
-            return [int(row[0]) for row in cur.fetchall()]
-
-
 def get_training_gids_only_multisegment():
     # returns only the tiles that contain at least two different segments
     with open("gids_with_multiple_segments.txt", 'r') as f:
@@ -146,11 +134,12 @@ def data_generator(gids, batch_size, seed=0):
             while len(images) > batch_size:
                 image_batch = images[:batch_size]
                 images = images[batch_size:]
-                yield np.array(image_batch), np.array(image_batch)
+                while True:
+                    yield np.array(image_batch), np.array(image_batch)
 
 
-def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
-    # gids = get_training_gids()
+def make_training_and_validation_generators(batch_size=1, validation_split=0.1):
+    # gids = get_training_gids_from_database("wnet")
     gids = get_training_gids_only_multisegment()
 
     rnd = random.Random(42)
@@ -161,7 +150,7 @@ def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
     validation = gids[:split]
     training = gids[split:]
 
-    return data_generator(training, batch_size, seed=17), data_generator(validation, batch_size, seed=29)
+    return data_generator([51], batch_size, seed=17), data_generator([51], batch_size, seed=29)
 
 
 def one_hot_to_rgb(prediction):
@@ -275,15 +264,15 @@ def do_training(start_time):
     save_callback = EncoderSaveCallback(encoder=encoder, path=f"weights/{start_time}")
     logger_callback = LambdaCallback(on_batch_end=loggercallback(f"weights/{start_time}.csv"))
 
-    model.fit(training_gen, epochs=1, steps_per_epoch=steps_per_epoch,
+    model.fit(training_gen, epochs=50, steps_per_epoch=steps_per_epoch,
               validation_data=validation_gen, validation_steps=validation_steps,
               callbacks=[tensorboard_callback, checkpoint_callback, logger_callback, save_callback])
 
 
 if __name__ == '__main__':
-    # predict([51, 126, 136], "weights/1595482742/epoch_0_encoder_model.hdf5")
-    # restore([51, 126, 136], "weights/1595482742/run-00__epoch-01__val-loss-1.53.hdf5")
-    # exit(0)
+    predict([51], "weights/1595520768/epoch_0_encoder_model.hdf5")
+    restore([51], "weights/1595520768/run-00__epoch-05__val-loss-1.48.hdf5")
+    exit(0)
 
     start_time = int(time.time())
     do_training(start_time)

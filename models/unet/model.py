@@ -16,6 +16,8 @@ from tensorflow.python.keras.backend import set_value
 
 import numpy as np
 
+from models.common.common import get_training_gids_from_database, chunks
+
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
     # contracting path
@@ -70,20 +72,6 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossent
     return model
 
 
-def chunks(gids, n):
-    for i in range(0, len(gids), n):
-        yield gids[i:i + n]
-
-
-def get_training_gids():
-    db_connection = "dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'"
-    with psycopg2.connect(db_connection) as db:
-        with db.cursor() as cur:
-            stmt = "SELECT gid FROM geom_tiles_unet WHERE NOT test_set;;"
-            cur.execute(stmt)
-            return [int(row[0]) for row in cur.fetchall()]
-
-
 def get_training_gids_only_multisegment():
     # returns only the tiles that contain at least two different segments
     with open("gids_with_multiple_segments.txt", 'r') as f:
@@ -121,7 +109,7 @@ def data_generator(gids, batch_size, seed=0):
 
 
 def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
-    # gids = get_training_gids()
+    # gids = get_training_gids_from_database("unet")
     gids = get_training_gids_only_multisegment()
 
     rnd = random.Random(42)
