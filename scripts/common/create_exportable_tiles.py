@@ -63,6 +63,24 @@ def delete_outer_tiles(db, table_suffix=""):
         cur.execute(stmt)
 
 
+def add_multisegment_column(db, table_suffix=""):
+    print("adding multisegment column...")
+    alter_stmt = f"ALTER TABLE geom_tiles_{table_suffix} ADD segment_count INTEGER DEFAULT 0;"
+    update_stmt = f"UPDATE geom_tiles_{table_suffix}" \
+                  f"SET segment_count=subquery.count" \
+                  f"FROM (SELECT geom_tiles_{table_suffix}.gid, COUNT(geom_tiles_{table_suffix}.gid) count " \
+                  f"  FROM geom_tiles_{table_suffix}, geom_segments" \
+                  f"  WHERE ST_Intersects(geom_tiles_{table_suffix}.geom_label, geom_segments.geom)" \
+                  f"  GROUP BY geom_tiles_{table_suffix}.gid) AS subquery" \
+                  f"WHERE geom_tiles_{table_suffix}.gid = subquery.gid;"
+
+    with db.cursor() as cur:
+        print(alter_stmt)
+        cur.execute(alter_stmt)
+        print(update_stmt)
+        cur.execute(update_stmt)
+
+
 def create_exportable_tile_table(table_suffix, tile_size, label_size):
     db = psycopg2.connect("dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'")
     db.autocommit = True
@@ -75,6 +93,7 @@ def create_exportable_tile_table(table_suffix, tile_size, label_size):
     gen = yield_tile_coordinates(bounds, tile_size=tile_size, label_size=label_size, label_offset=offset)
     generate_tiles(db, gen, table_suffix=table_suffix)
     delete_outer_tiles(db, table_suffix=table_suffix)
+    add_multisegment_column(db, table_suffix=table_suffix)
     print(f"done - {time.time() - start}s")
 
     db.close()
