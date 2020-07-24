@@ -40,7 +40,7 @@ class TileRenderWorker(QgsTask):
 
 def add_tiles_to_global_queue(table_suffix=""):
     with db.cursor() as cur:
-        cur.execute(f"SELECT gid, ST_AsText(geom_image), ST_AsText(geom_label) FROM geom_tiles_{table_suffix}")
+        cur.execute(f"SELECT gid, ST_AsText(geom_image), ST_AsText(geom_label) FROM geom_tiles_{table_suffix} WHERE segment_count>1")
 
         while True:
             value = cur.fetchone()
@@ -85,7 +85,7 @@ global_queue = queue.Queue(maxsize=150)
 db = psycopg2.connect("dbname='dop10rgbi_nrw' user='postgres' host='localhost' password='root'")
 
 for i in range(5):
-    worker = TileRenderWorker(i, 2560, 2560)
+    worker = TileRenderWorker(i, 256, 256)
     QgsApplication.taskManager().addTask(worker)
 
 start = time.time()
