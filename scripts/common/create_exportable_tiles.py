@@ -1,5 +1,10 @@
+import random
+
 import psycopg2
 import time
+
+from models.common.common import chunks
+from scripts.common.constants import SEGMENTATION_CATEGORIES
 
 
 def create_table(db, table_suffix="", srid=25832):
@@ -66,12 +71,12 @@ def delete_outer_tiles(db, table_suffix=""):
 def add_multisegment_column(db, table_suffix=""):
     print("adding multisegment column...")
     alter_stmt = f"ALTER TABLE geom_tiles_{table_suffix} ADD segment_count INTEGER DEFAULT 0;"
-    update_stmt = f"UPDATE geom_tiles_{table_suffix}" \
-                  f"SET segment_count=subquery.count" \
+    update_stmt = f"UPDATE geom_tiles_{table_suffix} " \
+                  f"SET segment_count=subquery.count " \
                   f"FROM (SELECT geom_tiles_{table_suffix}.gid, COUNT(geom_tiles_{table_suffix}.gid) count " \
-                  f"  FROM geom_tiles_{table_suffix}, geom_segments" \
-                  f"  WHERE ST_Intersects(geom_tiles_{table_suffix}.geom_label, geom_segments.geom)" \
-                  f"  GROUP BY geom_tiles_{table_suffix}.gid) AS subquery" \
+                  f"  FROM geom_tiles_{table_suffix}, geom_segments " \
+                  f"  WHERE ST_Intersects(geom_tiles_{table_suffix}.geom_label, geom_segments.geom) " \
+                  f"  GROUP BY geom_tiles_{table_suffix}.gid) AS subquery " \
                   f"WHERE geom_tiles_{table_suffix}.gid = subquery.gid;"
 
     with db.cursor() as cur:
@@ -79,6 +84,33 @@ def add_multisegment_column(db, table_suffix=""):
         cur.execute(alter_stmt)
         print(update_stmt)
         cur.execute(update_stmt)
+
+
+def add_testset_column(db, table_suffix="", test_data_split=0.1):
+    with db.cursor() as cur:
+        alter_stmt = f"ALTER TABLE geom_tiles_{table_suffix} ADD test_set BOOLEAN DEFAULT FALSE;"
+        print(alter_stmt)
+        cur.execute(alter_stmt)
+
+    random.seed(1654812)
+    for segment in SEGMENTATION_CATEGORIES:
+        gids = get_gids_intersecting_segment(db, segment, table_suffix=table_suffix)
+        test_gids = random.sample(gids, int(len(gids) * test_data_split))
+        with db.cursor() as cur:
+            for chunk in chunks(test_gids, 50):
+                gid_list = ",".join(chunk)
+                alter_stmt = f"UPDATE geom_tiles_{table_suffix} SET test_set=TRUE WHERE gid IN ({gid_list})"
+                cur.execute(alter_stmt)
+
+
+def get_gids_intersecting_segment(db, segment_description, table_suffix=""):
+    stmt = f"SELECT geom_tiles_{table_suffix}.gid FROM geom_segments, geom_tiles_{table_suffix} " \
+           f"WHERE ST_Intersects(geom_segments.geom, geom_tiles_{table_suffix}.geom_label)" \
+           f"AND geom_segments.segmentation_description='{segment_description}'" \
+           f"ORDER BY geom_tiles_{table_suffix}.gid;"
+    with db.cursor() as cur:
+        cur.execute(stmt)
+        return [str(row[0]) for row in cur.fetchall()]
 
 
 def create_exportable_tile_table(table_suffix, tile_size, label_size):
@@ -94,6 +126,7 @@ def create_exportable_tile_table(table_suffix, tile_size, label_size):
     generate_tiles(db, gen, table_suffix=table_suffix)
     delete_outer_tiles(db, table_suffix=table_suffix)
     add_multisegment_column(db, table_suffix=table_suffix)
+    add_testset_column(db, table_suffix=table_suffix)
     print(f"done - {time.time() - start}s")
 
     db.close()

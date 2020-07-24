@@ -20,3 +20,13 @@ LABEL_RGB_VALUES = [
     (39, 255, 154),  # urban greens
     (132, 240, 235),  # agriculture
 ]
+
+# string values for the segmentation categories
+SEGMENTATION_CATEGORIES = [
+    "buildings",
+    "water",
+    "forest",
+    "traffic"
+    "urban greens",
+    "agriculture",
+]
