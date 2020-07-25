@@ -36,7 +36,7 @@ def one_hot_encoding(label):
     encoded = []
     for val in LABEL_GRAYSCALE_VALUES:
         encoded.append((label == val) * 1.0)
-    return np.stack(encoded, axis=2)
+    return np.stack(encoded, axis=2).astype(np.float32)
 
 
 def one_hot_to_rgb(prediction, color_palette=None):
