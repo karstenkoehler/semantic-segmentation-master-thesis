@@ -20,7 +20,7 @@ def UNet(input_size=(572, 572, 3)):
     x = _upsampling_block(x, skip1, 64, 88)
 
     out = Conv2D(6, 1, activation='sigmoid')(x)
-    return Model(inputs=input, outputs=out)
+    return Model(inputs=x, outputs=out)
 
 
 def _downsampling_block(x, nb_filters):
