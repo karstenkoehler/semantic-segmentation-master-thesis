@@ -52,20 +52,16 @@ def predict(gids, model_path):
         cv2.imwrite(f"images/{gids[idx]}.png", one_hot_to_rgb(labels[idx]))
 
 
-def do_training(continue_from_file=""):
+def do_training():
     gids = get_gids_from_database("unet")
     training_gen, validation_gen = initialize_train_and_validation_generators("unet", gids, batch_size=4)
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
-    if continue_from_file != "" and os.path.exists(continue_from_file):
-        model = load_model(continue_from_file)
-        set_value(model.optimizer.lr, 1e-5)
-    else:
-        model = define_and_compile_model()
+    model = define_and_compile_model()
 
-        start_time = int(time.time())
-        os.mkdir(f"weights/{start_time}_{model.name}/")
+    start_time = int(time.time())
+    os.mkdir(f"weights/{start_time}_{model.name}/")
 
     metrics_to_log = ["loss", "accuracy", "categorical_accuracy", "mean_io_u"]
     callbacks = [
