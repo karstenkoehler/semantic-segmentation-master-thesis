@@ -1,6 +1,4 @@
 import os
-import psycopg2
-import random
 import cv2
 import time
 import glob
@@ -16,8 +14,8 @@ from tensorflow.python.keras.backend import set_value
 
 import numpy as np
 
-from models.common.common import get_training_gids_from_database, chunks, get_training_gids_from_file, one_hot_encoding, \
-    one_hot_to_rgb
+from models.common.common import get_training_gids_from_database, one_hot_to_rgb
+from models.common.data_generator import initialize_train_and_validation_generators
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
@@ -73,47 +71,6 @@ def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossent
     return model
 
 
-
-
-def data_generator(gids, batch_size, seed=0):
-    rnd = random.Random(seed)
-    image_base_dir = os.path.join("E:", "data", "unet", "images")
-    label_base_dir = os.path.join("E:", "data", "unet", "labels")
-
-    yield len(gids) // batch_size
-
-    while True:
-        rnd.shuffle(gids)
-        for chunk in chunks(gids, batch_size):
-            images, labels = [], []
-            for gid in chunk:
-                image = cv2.imread(os.path.join(image_base_dir, f"{gid}.png"), cv2.IMREAD_COLOR)
-                images.append(image / 255)
-
-                label = cv2.imread(os.path.join(label_base_dir, f"{gid}.png"), cv2.IMREAD_GRAYSCALE)
-                labels.append(one_hot_encoding(label))
-
-            # (None, 572, 572, 3)  --  (None, 388, 388, 6)
-            yield np.array(images), np.array(labels)
-
-
-def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
-    # gids = get_training_gids_from_database("unet")
-    gids = get_training_gids_from_file("gids_with_multiple_segments.txt")
-
-    rnd = random.Random(42)
-    rnd.shuffle(gids)
-
-    split = int(len(gids) * validation_split)
-
-    validation = gids[:split]
-    training = gids[split:]
-
-    return data_generator(training, batch_size, seed=17), data_generator(validation, batch_size, seed=29)
-
-
-
-
 def predict(gids, model_path):
     model = load_model(model_path)
 
@@ -128,7 +85,8 @@ def predict(gids, model_path):
 
 
 def do_training(start_time):
-    training_gen, validation_gen = make_training_and_validation_generators()
+    gids = get_training_gids_from_database("unet")
+    training_gen, validation_gen = initialize_train_and_validation_generators("unet", gids, batch_size=4)
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
