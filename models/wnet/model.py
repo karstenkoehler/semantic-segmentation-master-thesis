@@ -107,7 +107,7 @@ def make_training_and_validation_generators(batch_size=1, validation_split=0.1):
     validation = gids[:split]
     training = gids[split:]
 
-    return data_generator([51], batch_size, seed=17), data_generator([51], batch_size, seed=29)
+    return data_generator(training, batch_size, seed=17), data_generator(validation, batch_size, seed=29)
 
 
 def predict(gids, model_path, num_classes=1000):
