@@ -4,13 +4,15 @@ import time
 import cv2
 import numpy as np
 from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
+from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.python.keras.backend import set_value
 
 from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
-from models.common.common import get_gids_from_database, one_hot_to_rgb
+from models.common.common import get_gids_from_database, one_hot_to_rgb, one_hot_encoding
 from models.common.data_generator import initialize_train_and_validation_generators
+from models.common.metrics import ArgmaxMeanIOU
 from models.unet.unet import UNet
 
 
@@ -27,13 +29,27 @@ def predict(gids, model_path):
     model = load_model(model_path)
 
     images = []
+    labels = []
     for gid in gids:
-        image = cv2.imread(os.path.join("E:", "data", "unet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
+        image = cv2.imread(os.path.join("E:", "data", "unet", "train", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
         images.append(image / 255)
 
+        label = cv2.imread(os.path.join("E:", "data", "unet", "train", "labels", f"{gid}.png"), cv2.IMREAD_GRAYSCALE)
+        labels.append(one_hot_encoding(label))
+
     pred = model.predict(np.array(images))
+    losses = categorical_crossentropy(labels, pred)
+    losses = np.mean(losses, axis=(1, 2))
+
+    argmax_mean_iou = ArgmaxMeanIOU(num_classes=6)
     for idx, p in enumerate(pred):
-        cv2.imwrite(f"{gids[idx]}-pred.png", one_hot_to_rgb(p))
+        argmax_mean_iou.update_state(labels[idx], p)
+        iou = argmax_mean_iou.result().numpy()
+
+        print(f"{gids[idx]}: loss={losses[idx]:02f}     iou={iou:02f}")
+
+        cv2.imwrite(f"images/{gids[idx]}-pred.png", one_hot_to_rgb(p))
+        cv2.imwrite(f"images/{gids[idx]}.png", one_hot_to_rgb(labels[idx]))
 
 
 def do_training(continue_from_file=""):
@@ -63,7 +79,7 @@ def do_training(continue_from_file=""):
 
 
 if __name__ == '__main__':
-    # predict([285, 304, 345, 14390, 31033, 85616, 156078, 174458], "weights/1593163475/run-00__epoch-50__val-loss-1.07.hdf5")
+    # predict([218728, 165639, 115316, 27516], "weights/1595700422_unet-23D-softmax/unet-23D_epoch_0.hdf5")
     # exit(0)
 
     do_training()
