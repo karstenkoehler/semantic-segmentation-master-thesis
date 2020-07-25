@@ -21,7 +21,7 @@ import tensorflow as tf
 import tensorflow.keras.backend as K
 from tensorflow.python.keras.utils.vis_utils import plot_model
 
-from models.common.common import get_training_gids_from_database, get_training_gids_from_file, one_hot_encoding, \
+from models.common.common import get_gids_from_database, get_training_gids_from_file, one_hot_encoding, \
     one_hot_to_rgb, split_to_tiles
 
 
@@ -143,7 +143,7 @@ def data_generator(gids, batch_size, seed=0):
 
 
 def make_training_and_validation_generators(batch_size=4, validation_split=0.1):
-    # gids = get_training_gids_from_database("densenet")
+    # gids = get_gids_from_database("densenet")
     gids = get_training_gids_from_file("gids_with_multiple_segments.txt")
 
     rnd = random.Random(42)

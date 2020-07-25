@@ -1,5 +1,5 @@
-import psycopg2
 import numpy as np
+import psycopg2
 
 from scripts.common.constants import POSTGRES_CONNECTION_DSN, LABEL_GRAYSCALE_VALUES, LABEL_RGB_VALUES
 
@@ -10,11 +10,15 @@ def chunks(L, n):
         yield L[i:i + n]
 
 
-def get_training_gids_from_database(table_suffix):
+def get_gids_from_database(table_suffix, only_multisegment=True, test_set=False):
     """Reads all GIDS from respective table and returns them as a list."""
+
+    test_filter = " test_set " if test_set else " NOT test_set "
+    segment_filter = " segment_count>1" if only_multisegment else " segment_count<>0 "
+
     with psycopg2.connect(POSTGRES_CONNECTION_DSN) as db:
         with db.cursor() as cur:
-            stmt = f"SELECT gid FROM geom_tiles_{table_suffix} WHERE NOT test_set;;"
+            stmt = f"SELECT gid FROM geom_tiles_{table_suffix} WHERE {test_filter} AND {segment_filter};"
             cur.execute(stmt)
             return [int(row[0]) for row in cur.fetchall()]
 

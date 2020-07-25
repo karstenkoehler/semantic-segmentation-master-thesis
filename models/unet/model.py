@@ -13,7 +13,7 @@ from tensorflow.python.keras.backend import set_value
 
 import numpy as np
 
-from models.common.common import get_training_gids_from_database, one_hot_to_rgb
+from models.common.common import get_gids_from_database, one_hot_to_rgb
 from models.common.data_generator import initialize_train_and_validation_generators
 from models.unet.unet import UNet
 
@@ -38,7 +38,7 @@ def predict(gids, model_path):
 
 
 def do_training(start_time):
-    gids = get_training_gids_from_database("unet")
+    gids = get_gids_from_database("unet")
     training_gen, validation_gen = initialize_train_and_validation_generators("unet", gids, batch_size=4)
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
