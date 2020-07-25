@@ -2,7 +2,7 @@ from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSamp
 from tensorflow.keras.models import Model
 
 
-def UNet(feature_maps=None, dropout=0.5, output_layer_activation="sigmoid", input_size=(572, 572, 3)):
+def UNet(feature_maps=None, dropout=0.5, output_layer_activation="softmax", input_size=(572, 572, 3)):
     nb_conv_layers = 0
 
     if feature_maps is None:
