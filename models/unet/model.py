@@ -3,12 +3,12 @@ import time
 
 import cv2
 import numpy as np
-from tensorflow.keras.callbacks import ModelCheckpoint, CSVLogger
 from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import Adam
 from tensorflow.python.keras.backend import set_value
 
+from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
 from models.common.common import get_gids_from_database, one_hot_to_rgb
 from models.common.data_generator import initialize_train_and_validation_generators
 from models.unet.unet import UNet
@@ -46,21 +46,20 @@ def do_training(continue_from_file=""):
         model = load_model(continue_from_file)
         set_value(model.optimizer.lr, 1e-5)
     else:
-        start_time = int(time.time())
-        os.mkdir(f"weights/{start_time}")
-
         model = define_and_compile_model()
-        # model.summary()
 
-    run = 0
-    checkpoint_path = f"weights/{start_time}/run-{run:02d}__epoch-{{epoch:02d}}__val-loss-{{val_loss:.2f}}.hdf5"
+        start_time = int(time.time())
+        os.mkdir(f"weights/{start_time}_{model.name}/")
 
-    checkpoint_callback = ModelCheckpoint(filepath=checkpoint_path)
-    logger_callback = CSVLogger(f"weights/{start_time}.csv", append=True)
+    metrics_to_log = ["loss", "accuracy", "categorical_accuracy", "mean_io_u"]
+    callbacks = [
+        save_model_on_epoch_end(model.name, model, f"weights/{start_time}_{model.name}/"),
+        metrics_to_csv_logger(f"weights/{start_time}_{model.name}.csv", metrics_to_log),
+    ]
 
     model.fit(training_gen, epochs=50, steps_per_epoch=steps_per_epoch,
               validation_data=validation_gen, validation_steps=validation_steps,
-              callbacks=[checkpoint_callback, logger_callback])
+              callbacks=callbacks)
 
 
 if __name__ == '__main__':

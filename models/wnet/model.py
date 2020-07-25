@@ -189,7 +189,7 @@ def do_training(start_time):
     callbacks = [
         save_model_on_epoch_end("encoder-decoder", model, f"weights/{start_time}"),
         save_model_on_epoch_end("encoder", encoder, f"weights/{start_time}"),
-        metrics_to_csv_logger(f"weights/{start_time}.csv"),
+        metrics_to_csv_logger(f"weights/{start_time}.csv", ["loss", "accuracy", "categorical_accuracy"]),
     ]
 
     model.fit(training_gen, epochs=50, steps_per_epoch=steps_per_epoch,

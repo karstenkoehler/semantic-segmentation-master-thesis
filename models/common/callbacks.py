@@ -1,18 +1,18 @@
 import csv
 import os
 
-from keras.callbacks import LambdaCallback
+from tensorflow.keras.callbacks import LambdaCallback
 
 
-def metrics_to_csv_logger(file_path):
+def metrics_to_csv_logger(file_path, metrics):
     with open(file_path, "w", newline="") as file:
         wr = csv.writer(file, delimiter=";")
-        wr.writerow(["batch", "loss", "accuracy", "categorical_accuracy"])
+        wr.writerow(["batch"] + metrics)
 
     def callback(batch, logs):
         with open(file_path, "a", newline="") as file:
             wr = csv.writer(file, delimiter=";")
-            wr.writerow([batch, logs["loss"], logs["accuracy"], logs["categorical_accuracy"]])
+            wr.writerow([batch] + [logs[metric] for metric in metrics])
 
     return LambdaCallback(on_batch_end=callback)
 
