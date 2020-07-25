@@ -30,11 +30,8 @@ def get_training_gids_from_file(file_path):
 
 
 def one_hot_encoding(label):
-    if np.ndim(label) != 3:
-        raise ValueError("label should have 3 dimensions")
-
-    if np.shape(label)[2] != 1:
-        raise ValueError("label has to be read as grayscale values")
+    if np.ndim(label) != 2:
+        raise ValueError("Label should have 2 dimensions with grayscale values")
 
     encoded = []
     for val in LABEL_GRAYSCALE_VALUES:
