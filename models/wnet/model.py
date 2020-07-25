@@ -1,26 +1,20 @@
-import csv
 import os
-import psycopg2
-import random
-import cv2
-import time
 import glob
+import os
+import random
+import time
 
-from datetime import datetime
-
-from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, Cropping2D, concatenate
-from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger, LambdaCallback
+import cv2
+import matplotlib.pyplot as plt
+import numpy as np
+from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSampling2D, concatenate
+from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
 from tensorflow.keras.models import Model, load_model
+from tensorflow.keras.optimizers import Adam
 from tensorflow.python.keras.backend import set_value
 
-import numpy as np
-import tensorflow as tf
-
-import matplotlib.pyplot as plt
-
-from models.common.common import get_gids_from_database, get_training_gids_from_file, split_to_tiles
+from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
+from models.common.common import get_training_gids_from_file, split_to_tiles
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
@@ -80,16 +74,6 @@ def unet(input, num_classes, output_activation="softmax"):
     return conv10
 
 
-class EncoderSaveCallback(tf.keras.callbacks.Callback):
-    def __init__(self, encoder, path):
-        super().__init__()
-        self.encoder = encoder
-        self.path = path
-
-    def on_epoch_end(self, epoch, logs=None):
-        self.encoder.save(os.path.join(self.path, f"epoch_{epoch}_encoder_model.hdf5"))
-
-
 def data_generator(gids, batch_size, seed=0):
     rnd = random.Random(seed)
     image_base_dir = os.path.join("E:", "data", "wnet", "images")
@@ -124,8 +108,6 @@ def make_training_and_validation_generators(batch_size=1, validation_split=0.1):
     training = gids[split:]
 
     return data_generator([51], batch_size, seed=17), data_generator([51], batch_size, seed=29)
-
-
 
 
 def predict(gids, model_path, num_classes=1000):
@@ -177,19 +159,6 @@ def restore(gids, model_path):
         cv2.imwrite(f"images/{gid}-restore.png", final_prediction)
 
 
-def loggercallback(file_path):
-    with open(file_path, "w", newline="") as file:
-        wr = csv.writer(file, delimiter=";")
-        wr.writerow(["batch", "loss", "accuracy", "categorical_accuracy"])
-
-    def callback(batch, logs):
-        with open(file_path, "a", newline="") as file:
-            wr = csv.writer(file, delimiter=";")
-            wr.writerow([batch, logs["loss"], logs["accuracy"], logs["categorical_accuracy"]])
-
-    return callback
-
-
 def do_training(start_time):
     training_gen, validation_gen = make_training_and_validation_generators()
     steps_per_epoch = next(training_gen)
@@ -217,17 +186,15 @@ def do_training(start_time):
         model.summary()
         encoder.summary()
 
-    logdir = "tf-logs/" + datetime.now().strftime("%Y%m%d-%H%M%S")
-    checkpoint_path = f"weights/{start_time}/run-{run:02d}__epoch-{{epoch:02d}}__val-loss-{{val_loss:.2f}}.hdf5"
-
-    tensorboard_callback = TensorBoard(log_dir=logdir)
-    checkpoint_callback = ModelCheckpoint(filepath=checkpoint_path)
-    save_callback = EncoderSaveCallback(encoder=encoder, path=f"weights/{start_time}")
-    logger_callback = LambdaCallback(on_batch_end=loggercallback(f"weights/{start_time}.csv"))
+    callbacks = [
+        save_model_on_epoch_end("encoder-decoder", model, f"weights/{start_time}"),
+        save_model_on_epoch_end("encoder", encoder, f"weights/{start_time}"),
+        metrics_to_csv_logger(f"weights/{start_time}.csv"),
+    ]
 
     model.fit(training_gen, epochs=50, steps_per_epoch=steps_per_epoch,
               validation_data=validation_gen, validation_steps=validation_steps,
-              callbacks=[tensorboard_callback, checkpoint_callback, logger_callback, save_callback])
+              callbacks=callbacks)
 
 
 if __name__ == '__main__':
