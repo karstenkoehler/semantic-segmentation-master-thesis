@@ -2,25 +2,39 @@ from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSamp
 from tensorflow.keras.models import Model
 
 
-def UNet(input_size=(572, 572, 3)):
-    x = Input(input_size)
+def UNet(feature_maps=None, dropout=0.5, output_layer_activation="sigmoid", input_size=(572, 572, 3)):
+    nb_conv_layers = 0
 
-    x, skip1 = _downsampling_block(x, 64)
-    x, skip2 = _downsampling_block(x, 128)
-    x, skip3 = _downsampling_block(x, 256)
-    x, skip4 = _downsampling_block(x, 512)
+    if feature_maps is None:
+        feature_maps = [64, 128, 256, 512, 1024]
+    skip_connections = []
 
-    x = Conv2D(1024, 3, activation='relu', padding='valid', kernel_initializer='he_normal')(x)
-    x = Conv2D(1024, 3, activation='relu', padding='valid', kernel_initializer='he_normal')(x)
-    x = Dropout(0.5)(x)
+    input_layer = Input(input_size)
 
-    x = _upsampling_block(x, skip4, 512, 4)
-    x = _upsampling_block(x, skip3, 256, 16)
-    x = _upsampling_block(x, skip2, 128, 40)
-    x = _upsampling_block(x, skip1, 64, 88)
+    x = input_layer
+    for nb_filters in feature_maps[:-1]:
+        x, skip = _downsampling_block(x, nb_filters)
+        skip_connections += [skip]
+        nb_conv_layers += 2
 
-    out = Conv2D(6, 1, activation='sigmoid')(x)
-    return Model(inputs=x, outputs=out)
+    skip_connections = skip_connections[::-1]
+    x = Conv2D(feature_maps[-1], 3, activation='relu', padding='valid', kernel_initializer='he_normal')(x)
+    x = Conv2D(feature_maps[-1], 3, activation='relu', padding='valid', kernel_initializer='he_normal')(x)
+    nb_conv_layers += 2
+
+    if dropout > 0.0:
+        x = Dropout(dropout)(x)
+
+    for i, nb_filters in enumerate(feature_maps[:-1][::-1]):
+        crop_px = (skip_connections[i].shape[1] - (x.shape[1] * 2)) // 2
+        x = _upsampling_block(x, skip_connections[i], nb_filters, crop_px)
+        nb_conv_layers += 3
+
+    output_layer = Conv2D(6, 1, activation=output_layer_activation)(x)
+    nb_conv_layers += 1
+
+    model_name = f"unet-{nb_conv_layers}{'D' if dropout > 0.0 else ''}"
+    return Model(inputs=input_layer, outputs=output_layer, name=model_name), (input_layer, output_layer)
 
 
 def _downsampling_block(x, nb_filters):
@@ -42,5 +56,5 @@ def _upsampling_block(x, skip, nb_filters, crop_px):
 
 
 if __name__ == '__main__':
-    model = UNet()
+    model, _ = UNet()
     model.summary()

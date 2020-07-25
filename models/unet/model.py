@@ -19,7 +19,10 @@ from models.unet.unet import UNet
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
-    model = UNet()
+    if metrics is None:
+        metrics = [Accuracy(), CategoricalAccuracy(), MeanIoU(num_classes=6)]
+
+    model, _ = UNet()
     model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
     return model
 
