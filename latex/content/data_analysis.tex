@@ -192,27 +192,19 @@ Another thing is distribution of segmentation classes in the dataset. table~\ref
 % TODO: find a paper to support this argument
 }
 
-\subsection{Choose the test dataset}
-\WIP{
-
-}
-
 \begin{table}[h]
 \centering
 \begin{tabular}{|l|r|r|r|r|r|}
 \hline
-\multicolumn{1}{|c|}{\textbf{segment}} &
-  \multicolumn{1}{c|}{\textbf{total $m^2$}} &
-  \multicolumn{1}{c|}{\textbf{total rel. $m^2$}} &
-  \multicolumn{1}{c|}{\textbf{test $m^2$}} &
-  \multicolumn{1}{c|}{\textbf{test rel. $m^2$}} &
-  \multicolumn{1}{c|}{\textbf{test / total}} \\ \hline
-forest       & 162,554,698 & 65.40\% & 17,430,019 & 61.63\% & 10.72\% \\ \hline
-buildings    & 30,821,514  & 12.40\% & 3,827,202  & 13.53\% & 12.42\% \\ \hline
-urban greens & 5,715,026   & 2.30\%  & 716,624    & 2.53\%  & 12.54\% \\ \hline
-agriculture  & 47,331,698  & 19.04\% & 5,898,601  & 20.86\% & 12.46\% \\ \hline
-water        & 1,344,467   & 0.54\%  & 273,114    & 0.97\%  & 20.31\% \\ \hline
-traffic      & 788,878     & 0.32\%  & 135,977    & 0.48\%  & 17.24\% \\ \hline
+\multicolumn{1}{|c|}{\textbf{category}} &
+  \multicolumn{1}{c|}{\textbf{total area}} &
+  \multicolumn{1}{c|}{\textbf{relative area}} \\ \hline
+forest       & 162,554,698 $m^2$ & 65.40\%  \\ \hline
+buildings    & 30,821,514  $m^2$ & 12.40\%  \\ \hline
+urban greens & 5,715,026   $m^2$ & 2.30\%   \\ \hline
+agriculture  & 47,331,698  $m^2$ & 19.04\%  \\ \hline
+water        & 1,344,467   $m^2$ & 0.54\%   \\ \hline
+traffic      & 788,878     $m^2$ & 0.32\%   \\ \hline
 \end{tabular}
 \caption{Breakdown of segments}
 \label{tab:seg-breakdown}
