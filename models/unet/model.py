@@ -7,7 +7,7 @@ from tensorflow.keras.losses import categorical_crossentropy
 from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, CategoricalCrossentropy
 from tensorflow.keras.models import load_model
 from tensorflow.keras.optimizers import SGD
-from tensorflow.python.keras.callbacks import LearningRateScheduler
+from tensorflow.python.keras.callbacks import LearningRateScheduler, CSVLogger
 
 from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
 from models.common.common import get_gids_from_database, one_hot_to_rgb, one_hot_encoding
@@ -69,7 +69,8 @@ def do_training():
     metrics_to_log = ["loss", "accuracy", "categorical_accuracy", "mean_iou", "categorical_crossentropy"]
     callbacks = [
         save_model_on_epoch_end(model.name, model, f"weights/{start_time}_{model.name}/"),
-        metrics_to_csv_logger(f"weights/{start_time}_{model.name}.csv", metrics_to_log),
+        metrics_to_csv_logger(f"weights/{start_time}_batch_{model.name}.csv", metrics_to_log),
+        CSVLogger(f"weights/{start_time}_epoch_{model.name}.csv", separator=";"),
         LearningRateScheduler(lr_schedule()),
     ]
 
