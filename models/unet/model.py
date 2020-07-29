@@ -53,7 +53,7 @@ def lr_schedule(initial_lr=0.01, factor=5, power=2):
 
 def do_training(initial_learning_rate=0.1):
     gids = get_gids_from_database("unet")
-    training_gen, validation_gen = initialize_train_and_validation_generators("unet", gids, batch_size=4)
+    training_gen, validation_gen = initialize_train_and_validation_generators("unet", gids, batch_size=4, label_target_size=388)
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
