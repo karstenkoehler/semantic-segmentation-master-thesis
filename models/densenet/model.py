@@ -1,111 +1,22 @@
-import os
-import psycopg2
-import random
-import cv2
-import time
 import glob
-
+import os
+import random
+import time
 from datetime import datetime
 
-from tensorflow.keras.layers import Input, Activation, Conv2D, Dropout, BatchNormalization, AveragePooling2D, \
-    Concatenate, Conv2DTranspose
-from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
-from tensorflow.keras.optimizers import Adam
-from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger
-from tensorflow.keras.models import Model, load_model
-from tensorflow.keras.regularizers import l2
-from tensorflow.python.keras.backend import set_value
-
+import cv2
 import numpy as np
 import tensorflow as tf
-import tensorflow.keras.backend as K
+from tensorflow.keras.callbacks import TensorBoard, ModelCheckpoint, CSVLogger
+from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy, MeanIoU
+from tensorflow.keras.models import load_model
+from tensorflow.python.keras.backend import set_value
+from tensorflow.python.keras.optimizers import Adam
 from tensorflow.python.keras.utils.vis_utils import plot_model
 
-from models.common.common import get_gids_from_database, get_training_gids_from_file, one_hot_encoding, \
+from models.common.common import get_training_gids_from_file, one_hot_encoding, \
     one_hot_to_rgb, split_to_tiles
-
-
-def conv_block(x, nb_filters, dropout_rate=None, bottleneck=False, weight_decay=1e-4):
-    if bottleneck:
-        x = BatchNormalization(gamma_regularizer=l2(weight_decay), beta_regularizer=l2(weight_decay))(x)
-        x = Activation("relu")(x)
-        x = Conv2D(nb_filters * 4, (1, 1), padding="same", use_bias=False, kernel_regularizer=l2(weight_decay))(x)
-
-        if dropout_rate:
-            x = Dropout(dropout_rate)(x)
-
-    x = BatchNormalization(gamma_regularizer=l2(weight_decay), beta_regularizer=l2(weight_decay))(x)
-    x = Activation("relu")(x)
-    x = Conv2D(nb_filters, (3, 3), padding="same", use_bias=False, kernel_regularizer=l2(weight_decay))(x)
-
-    if dropout_rate:
-        x = Dropout(dropout_rate)(x)
-
-    return x
-
-
-def dense_block(x, nb_layers, nb_filters, growth_rate, dropout_rate=None, bottleneck=False, weight_decay=1e-4):
-    for _ in range(nb_layers):
-        block = conv_block(x, growth_rate, dropout_rate, bottleneck, weight_decay)
-        x = Concatenate(axis=3)([x, block])
-        nb_filters += growth_rate
-
-    return x, nb_filters
-
-
-def transition_down_layer(x, nb_filters, dropout_rate=None, compression=1.0, weight_decay=1e-4):
-    nb_filters = int(nb_filters * compression)
-    x = BatchNormalization(gamma_regularizer=l2(weight_decay), beta_regularizer=l2(weight_decay))(x)
-    x = Activation("relu")(x)
-    x = Conv2D(nb_filters, (1, 1), padding="same", use_bias=False, kernel_regularizer=l2(weight_decay))(x)
-
-    if dropout_rate:
-        x = Dropout(dropout_rate)(x)
-
-    x = AveragePooling2D((2, 2), strides=(2, 2))(x)
-    return x, nb_filters
-
-
-def transition_up_layer(skip_connection, x, nb_filters):
-    x = Conv2DTranspose(nb_filters, (2, 2), strides=(2, 2))(x)
-    x = Concatenate(axis=3)([x, skip_connection])
-    return x, nb_filters
-
-
-def define_and_compile_model(optimizer=Adam(lr=1e-4), loss=None, metrics=None):
-    input_size = (256, 256, 3)
-    growth_rate = 16
-    weight_decay = 1e-4
-    dense_block_layers = [4, 5, 7, 10, 12, 15]
-    dropout = 0.2
-    compression = 1.0
-    bottleneck = True
-    nb_filters = 48
-    skip_connections = []
-
-    input = Input(input_size)
-    x = Conv2D(nb_filters, (3, 3), padding="same", use_bias=False, kernel_regularizer=l2(weight_decay))(input)
-
-    for i, block_size in enumerate(dense_block_layers):
-        x, nb_filters = dense_block(x, block_size, nb_filters, growth_rate, dropout, bottleneck, weight_decay)
-
-        skip_connections.append(x)
-        if i < len(dense_block_layers) - 1:
-            x, nb_filters = transition_down_layer(x, nb_filters, dropout, compression, weight_decay)
-
-    skip_connections = skip_connections[::-1][1:]
-
-    for i, block_size in enumerate(dense_block_layers[::-1][1:]):
-        x, nb_filters = transition_up_layer(skip_connections[i], x, nb_filters)
-
-        x, nb_filters = dense_block(x, block_size, nb_filters, growth_rate, dropout, bottleneck, weight_decay)
-
-    x = Conv2D(6, (1, 1), activation="softmax", kernel_regularizer=l2(weight_decay), bias_regularizer=l2(weight_decay))(
-        x)
-
-    model = Model(inputs=input, outputs=x)
-    model.compile(optimizer=optimizer, loss=loss, metrics=metrics)
-    return model
+from models.densenet.densetnet import DenseNet
 
 
 def data_generator(gids, batch_size, seed=0):
@@ -234,7 +145,8 @@ def do_training(start_time):
 
         metrics = [Accuracy(), CategoricalAccuracy(), MeanIoU(num_classes=6)]
 
-        model = define_and_compile_model(metrics=metrics, loss=weighted_categorical_crossentropy(class_weights))
+        model = DenseNet()
+        model.compile(optimizer=Adam(lr=1e-4), loss=weighted_categorical_crossentropy(class_weights), metrics=metrics)
         model.summary()
         plot_model(model, to_file=f"{start_time}.png")
 
