@@ -26,13 +26,16 @@ def DenseNet(dense_block_layers=None, growth_rate=16, initial_nb_filters=48, com
     x, nb_filters = _dense_block(x, dense_block_layers[-1], nb_filters, growth_rate, dropout)
 
     for i, block_size in enumerate(dense_block_layers[::-1][1:]):
-        x, nb_filters = _transition_up_layer(skip_connections[i], x, dense_block_layers[-(i+1)]*growth_rate)
+        x, nb_filters = _transition_up_layer(skip_connections[i], x, dense_block_layers[-(i + 1)] * growth_rate)
         x, nb_filters = _dense_block(x, block_size, nb_filters, growth_rate, dropout)
 
     x = Conv2D(6, (1, 1), activation="softmax", kernel_regularizer=_l2reg(), bias_regularizer=_l2reg())(x)
-    nb_conv_layers += 1
 
-    return Model(inputs=input_layer, outputs=x)
+    nb_conv_layers = 2 * sum(dense_block_layers[:-1]) + 2 * len(dense_block_layers) + dense_block_layers[-1]
+    dropout_suffix = "D" if dropout > 0.0 else ""
+    compression_suffix = "C" if compression < 1.0 else ""
+    model_name = f"FC-DenseNet-{nb_conv_layers}{compression_suffix}{dropout_suffix}{model_name_suffix}"
+    return Model(name=model_name, inputs=input_layer, outputs=x)
 
 
 def _convolution_block(x, nb_filters, dropout):
