@@ -18,9 +18,7 @@ def DenseNet(dense_block_layers=None, growth_rate=16, initial_nb_filters=48, com
     nb_conv_layers += 1
 
     for block_size in dense_block_layers[:-1]:
-        dense_block_input = x
         x, nb_filters = _dense_block(x, block_size, nb_filters, growth_rate, dropout)
-        x = Concatenate(axis=3)([dense_block_input, x])
         skip_connections.append(x)
         x, nb_filters = _transition_down_layer(x, nb_filters, dropout, compression)
 
@@ -49,7 +47,7 @@ def _convolution_block(x, nb_filters, dropout):
 
 
 def _dense_block(x, nb_layers, nb_filters, growth_rate, dropout):
-    block_layers = []
+    block_layers = [x]
     for _ in range(nb_layers):
         layer = _convolution_block(x, growth_rate, dropout)
         block_layers.append(layer)
