@@ -17,7 +17,7 @@ def DenseNet(dense_block_layers=None, growth_rate=16, initial_nb_filters=48, com
     x = Conv2D(nb_filters, (3, 3), padding="same", use_bias=False, kernel_regularizer=_l2reg())(input_layer)
     nb_conv_layers += 1
 
-    for block_size in dense_block_layers:
+    for block_size in dense_block_layers[:-1]:
         dense_block_input = x
         x, nb_filters = _dense_block(x, block_size, nb_filters, growth_rate, dropout)
         x = Concatenate(axis=3)([dense_block_input, x])
@@ -25,6 +25,7 @@ def DenseNet(dense_block_layers=None, growth_rate=16, initial_nb_filters=48, com
         x, nb_filters = _transition_down_layer(x, nb_filters, dropout, compression)
 
     skip_connections = skip_connections[::-1]
+    x, nb_filters = _dense_block(x, dense_block_layers[-1], nb_filters, growth_rate, dropout)
 
     for i, block_size in enumerate(dense_block_layers[::-1][1:]):
         x, nb_filters = _transition_up_layer(skip_connections[i], x, nb_filters)
