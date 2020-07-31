@@ -2,7 +2,7 @@ from tensorflow.keras.layers import Input, Conv2D, MaxPooling2D, Dropout, UpSamp
 from tensorflow.keras.models import Model
 
 
-def UNet(feature_maps=None, dropout=0.5, model_name_suffix="", output_layer_activation="softmax", input_size=(572, 572, 3)):
+def UNet(feature_maps=None, nb_classes=6, dropout=0.5, model_name_suffix="", output_layer_activation="softmax", input_size=(572, 572, 3)):
     nb_conv_layers = 0
 
     if feature_maps is None:
@@ -30,7 +30,7 @@ def UNet(feature_maps=None, dropout=0.5, model_name_suffix="", output_layer_acti
         x = _upsampling_block(x, skip_connections[i], nb_filters, crop_px)
         nb_conv_layers += 3
 
-    output_layer = Conv2D(6, 1, activation=output_layer_activation)(x)
+    output_layer = Conv2D(nb_classes, 1, activation=output_layer_activation)(x)
     nb_conv_layers += 1
 
     model_name = f"unet-{nb_conv_layers}{'D' if dropout > 0.0 else ''}{model_name_suffix}"
