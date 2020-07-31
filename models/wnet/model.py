@@ -14,7 +14,7 @@ from tensorflow.keras.optimizers import Adam
 from tensorflow.python.keras.backend import set_value
 
 from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
-from models.common.common import get_training_gids_from_file, split_to_tiles
+from models.common.common import get_gids_from_database, split_to_tiles
 
 
 def define_and_compile_model(optimizer=Adam(lr=1e-4), loss='categorical_crossentropy', metrics=None):
@@ -96,8 +96,7 @@ def data_generator(gids, batch_size, seed=0):
 
 
 def make_training_and_validation_generators(batch_size=1, validation_split=0.1):
-    # gids = get_gids_from_database("wnet")
-    gids = get_training_gids_from_file("gids_with_multiple_segments.txt")
+    gids = get_gids_from_database("wnet")
 
     rnd = random.Random(42)
     rnd.shuffle(gids)

@@ -23,12 +23,6 @@ def get_gids_from_database(table_suffix, only_multisegment=True, test_set=False)
             return [int(row[0]) for row in cur.fetchall()]
 
 
-def get_training_gids_from_file(file_path):
-    """Reads GIDS from a file and returns them as a list."""
-    with open(file_path, 'r') as f:
-        return [int(line) for line in f.read().splitlines()]
-
-
 def one_hot_encoding(label):
     if np.ndim(label) != 2:
         raise ValueError("Label should have 2 dimensions with grayscale values")
