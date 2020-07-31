@@ -66,7 +66,7 @@ def do_training(initial_learning_rate=0.1):
         0.0480,  # agriculture
     ]
 
-    model, _ = UNet(input_size=(572, 572, 3), model_name_suffix="-CW")
+    model = UNet(input_size=(572, 572, 3), model_name_suffix="-CW")
     metrics = [Accuracy(), CategoricalAccuracy(),
                CategoricalCrossentropy(), ArgmaxMeanIoU(num_classes=6, name="mean_iou")]
     optimizer = SGD(learning_rate=initial_learning_rate, momentum=0.99, nesterov=True)

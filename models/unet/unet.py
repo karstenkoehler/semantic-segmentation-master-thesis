@@ -3,7 +3,7 @@ from tensorflow.keras.models import Model
 
 
 def UNet(feature_maps=None, nb_classes=6, dropout=0.5, model_name_suffix="", output_layer_activation="softmax",
-         input_layer=None, input_size=None, conv_padding="valid"):
+         input_layer=None, input_size=None, conv_padding="valid", build_model=True):
     if feature_maps is None:
         feature_maps = [64, 128, 256, 512, 1024]
     skip_connections = []
@@ -32,9 +32,12 @@ def UNet(feature_maps=None, nb_classes=6, dropout=0.5, model_name_suffix="", out
 
     output_layer = Conv2D(nb_classes, 1, activation=output_layer_activation, padding=conv_padding)(x)
 
-    nb_conv_layers = 3 + 5 * (len(feature_maps) - 1)
-    model_name = f"unet-{nb_conv_layers}{'D' if dropout > 0.0 else ''}{model_name_suffix}"
-    return Model(inputs=input_layer, outputs=output_layer, name=model_name), (input_layer, output_layer)
+    if build_model:
+        nb_conv_layers = 3 + 5 * (len(feature_maps) - 1)
+        model_name = f"unet-{nb_conv_layers}{'D' if dropout > 0.0 else ''}{model_name_suffix}"
+        return Model(inputs=input_layer, outputs=output_layer, name=model_name)
+    else:
+        return input_layer, output_layer
 
 
 def _downsampling_block(x, nb_filters, conv_padding):
@@ -56,5 +59,5 @@ def _upsampling_block(x, skip, nb_filters, crop_px, conv_padding):
 
 
 if __name__ == '__main__':
-    model, _ = UNet(input_size=(572, 572, 3))
+    model = UNet(input_size=(572, 572, 3))
     model.summary()
