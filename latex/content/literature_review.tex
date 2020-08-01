@@ -246,7 +246,7 @@ In \cite{denseseg17}, Jégou et al.\ proposed a configuration for the DenseNet c
 \label{sec:w-net}
 Both U-Net and DenseNet architectures are based on the idea of supervised learning. There are also some reference architectures that approach the image segmentation task with unsupervised learning. The \emph{W-Net} architecture presented in~\cite{wnet17} is one example.
 
-In general, the W-Net architecture consists of two major parts. The first part generates a $k$-category segmentation of the input image. Subsequently, the second part tries to reconstruct the original image only from the segmentation. This is a very common architectural pattern called \emph{encoder-decoder}, often used for unsupervised learning tasks. The loss function then calculates the deviation between the reconstructed and the original image, i.~e. there is no ground truth required. Because of that, the network detects all segmentation categories on its own by clustering the pixels into similar groups. The downside is, that the chosen categories may be completely useless considering the question at hand.
+In general, the W-Net architecture consists of two major parts. The first part generates a $k$-category segmentation of the input image. Subsequently, the second part tries to reconstruct the original image only from the segmentation. The loss function then calculates the deviation between the reconstructed and the original image, i.~e. there is no ground truth required. Because of that, the network detects all segmentation categories on its own by clustering the pixels into similar groups. The downside is, that the chosen categories may be completely useless considering the question at hand.
 
 Figure~\ref{fig:wnet_architecture} illustrates the W-Net architecture. The network is split into an encoder part $U_{Enc}$ and a decoder part $U_{Dec}$. The parts themselves are very much based on the U-Net architecture introduced in section~\ref{sec:unet}. Each part has its own contracting path followed by an expansive path with skip connections between layers with matching spatial extents.
 
@@ -265,15 +265,15 @@ In their paper~\cite{wnet17}, Xia and Kulis propose to follow up the initial seg
 
 
 \subsection{Architecture Comparison}
+Overall, all of the discussed reference architectures follow the \emph{encoder-decoder} architectural pattern. In the encoder, the number of feature maps is increased while the spatial dimensions are reduced. In a symmetrical fashion, the decoder decreases the number of feature maps while increasing the spatial dimensions. This is a very common pattern that is used by many image segmentation architectures~\cite{imseg_survey20}. It enables to capture enough context for each pixel and still provides precise localization.
+
+It is difficult to compare the actual performance of the three architectures, since they were all trained and evaluated on different datasets with differing metrics. However, some metrics are reviewed considering the context and complexity of their particular challenge. Additionally, figure~\ref{fig:segmentation_examples} provides visual examples of the segmentation results of the three different approaches.
+
+U-Net was trained and evaluated for the ISBI cell tracking challenge~\cite{isbi_challenge}. The challenge consists of two datasets, both showing biological cells scanned with different microscopy techniques. For both datasets the main objective was to provide a binary classification for the cell images, where a distinction between cell and non-cell pixels must be made. Also the precise detection of boundaries between adjacent cells was a key point of interest for this challenge. The models achieved an average IoU of $92.03\%$ for the PhC-U373 and $77.56\%$ for the DIC-HeLa datasets~\cite{unet15}. One example segmentation for the DIC-HeLa dataset is shown in Figure~\ref{fig:exseg_unet}.
+
+
+
 \WIP{
-% TODO: have a look at \cite{imseg_survey20}
-
-overall, all three reference architectures that were introduced, share common architectural pattern. All have some kind of contracting path followed by expansive path. In general, it is very common to have decrease spatial size of feature maps while increasing number of feature maps (contracting path) for CNNs. it is natural to just invert that part if the result should be of same resolution as original image.
-
-Hard to compare the actual performance of three architectures, since all were trained on different datasets with different metrics. Still, we look at some numbers and take into account the specific task with its difficulty. Also, figure~\ref{fig:segmentation_examples} show some results for segmentation, to get a feeling for what was achieved.
-
-U-Net was trained and evaluated for ISBI cell tracking challenge described in \cite{isbi_challenge}. Two different datasets in the challenge, both showing cells scanned with different microscopy techniques. achieved an average IoU of $92\%$ for PhC-U373 and $77.5\%$ for DIC-HeLa respectively \cite{unet15}. One examples for DIC-HeLa dataset is shown in figure~\ref{fig:exseg_unet}. This is a binary segmentation with two classes (cell, not-cell), meaning the prediction tells if pixel belongs to a cell or not.
-
 DenseNet for segmentation was trained and evaluated with CamVid dataset \cite{camvid_challenge}. This is database of urban scene videos fully labelled with 32 different classes. Classes include moving objects (like pedestrian, bicyclist, car), road (driveable road, lane marking, etc), ceiling types (sky, tunnel) and fixed objects (buildings, fences, etc). DenseNet achieved mean IoU of $66.9\%$, which is less than U-Net had for their challenge. On the other hand, the challenge is much more sophisticated (see figure~\ref{fig:exseg_densenet}). As another metric, authors present $91.5\%$ pixel-wise accuracy. This shows, predictions in general are of high quality, only outlining of the objects could be improved.
 
 W-Net trained on PASCAL VOC 2012 dataset and evaluated with Berkeley Segmentation Database (BSDS500). Both datasets contain hundreds of images with labelled segmentations. But since W-Net is unsupervised labels are not used during training, but only for evaluation. Metrics are a bit different in this case, because there are multiple ground-truth segmentations for each image. Two metrics of interest: \emph{probabilistic rand index} (PRI) is a form of pixel-wise accuracy. Other metric is \emph{segmentation covering} (SC), which is extended IoU. In detail explanation of metrics can be found in \cite{hierarchy_imgseg11}.
