@@ -27,13 +27,31 @@ Another approach was selected as follows. dataset contains huge segments that al
 % TODO: add table with category distribution of multisegment
 }
 
-\subsection{Building the Neural Network}
+\subsection{Experiments with U-Net}
+\WIP{
+U-Net was first architecture to explore and experiment with. Model based on findings of \cite{unet15} and explained in detail in section \ref{sec:unet}. Keras implementation used for this thesis listed in appendix~\ref{app:code}.
+
+input image size was chosen as $572\times 572$ pixels, same as authors used. because no padding used in convolutional layers, label/prediction size is smaller, $388\times 388$ pixels for standard U-Net architecture. architecture was also evaluated with fewer layers, label size respectively larger.
+
+\begin{itemize}
+    \item show the architectures of all U-Net models
+    \item describe the idea behind the architectural decisions
+\end{itemize}
+}
+
+\subsection{Experiments with FC-DenseNet}
 \WIP{
 \begin{itemize}
-    \item show the chosen architectures of all tested models
+    \item show the architectures of all FC-DenseNet models
     \item describe the idea behind the architectural decisions
-    \item analyze how the NN works internally (e. g. visualize feature/confidence maps)
-    \item explain the data format for the resulting database
+\end{itemize}
+}
+
+\subsection{Experiments with W-Net}
+\WIP{
+\begin{itemize}
+    \item show the architectures of all W-Net models
+    \item describe the idea behind the architectural decisions
 \end{itemize}
 }
 
