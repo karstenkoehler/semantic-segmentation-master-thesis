@@ -9,7 +9,6 @@ All implementations done in Python with popular Keras framework and TensorFlow b
 
 \subsection{Preparing the training and test dataset}
 \WIP{
-
 \cite{DLbook16}[p.~101f]
 before training we have to think about how to evaluate the models afterwards. goal is to have a model that is able to generalize, meaning it should work on data that is has not seen during training. Therefore, dataset is split into two disjoint sets of data, one called the \emph{training set} and the other called \emph{test set}. During training, only data from the training set is presented to the model. afterwards, performance is measured against the test set. That way the metrics provide a more objective view on the performance.
 
@@ -19,11 +18,13 @@ test set should not be used to make any choices about the model. To optimize hyp
 \cite{val_split18}
 There are many ways to pick data for test and validation set. An insight into common techniques is provided by \cite{val_split18}. For this thesis, test set is selected based on imbalance between categories. For each category choose $10\%$ of samples randomly and add them to test set. This is to achieve fair results taking into account all categories accordingly. Validation set also $10\%$ of training set, but chosen randomly over all samples without considering segmentation categories.
 
+as said in \ref{sec:dataset_considerations}, big imbalance between categories in the dataset. this might lead to unwanted biases while training the model. for examples, if network predicts only forest all the time, accuracy would be around $65\%$ measured over entire dataset. plain number is not too bad, but obviously segmentation predictions would be useless.
 
-\begin{itemize}
-    \item explain any transformations that have been applied to the dataset
-    \item state how the labels were defined/represented
-\end{itemize}
+there are some techniques to tackle those issues. one approach is to add class weights for calculating the loss function. by doing that, incorrect predictions for some classes can be punished more than others. this will result in the model being optimized in a different way, reducing the predictions for the over-represented classes. However, this was not found to work great with given dataset. all experiments had the models end up to only predict a single class for every pixel.
+
+Another approach was selected as follows. dataset contains huge segments that all belong to same class. it was expected, that this circumstance leads to the models learning that most examples only contain one class instead of learning the differences between classes. because of that, the dataset used for training and validation was reduced by a great margin. Basically, all image files that consist of only one class for every pixel are dropped. on the one hand, this affects class imbalance, because large partitions of forests and agricultural regions are dropped, but mostly small streets and rivers are rather kept. on the other hand, this creates incentives for the models to learn the differences between classes.
+
+% TODO: add table with category distribution of multisegment
 }
 
 \subsection{Building the Neural Network}
