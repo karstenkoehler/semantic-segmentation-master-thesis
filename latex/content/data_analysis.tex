@@ -131,11 +131,15 @@ While the exact tile and label size depends on the network architecture, there i
 
 To extract the image files for those tile definitions, one straightforward way would be to join the raster table \texttt{dop\_rgb} with tile table containing the tile geometries using the PostGIS \texttt{ST\_Union} and \texttt{ST\_Intersection} functions. However, this was found to take a very long time to compute. Instead, a geospatial visualization software called \emph{QGIS} was used to do those computations. It offers a Python API which allows to run batch exports of a PostGIS raster table according to the bounding boxes defining the tiles.
 
-\WIP{
-with all the tiles outlined, it is possible to generate images/label now. This can be done using the PostGIS raster bands and merging/intersecting them in a smart way. Still this would take a long time. It was found that this process is faster when using QGIS, an application to show/render geospatial data. it has a python API, allowing to run automatized exports. This is the way we go, rendering all tiles with image data and also all tiles with the segmentation info.
+The Python script to export all image files can be found in appendix~\ref{app:code}. Before running the script, QGIS has to be configured with all the layers necessary to render the tiles. QGIS offers to connect directly to a PostgreSQL database with the PostGIS extension. The raster columns from the database tables \texttt{dop\_rgb} and \texttt{dop\_nir} can simply be loaded as raster layers. For the segmentation labels multiple layers are required, each representing one category with a specified color. Thus, the geometry column from the \texttt{geom\_segments} table is loaded multiple times, each time filtered by a different segmentation category.
 
-unfortunately, for rendering the segmentation info QGIS does interpolation for borders between segments. This is not what we want, because for the labels each pixel should clearly belong to one category. Thus, we have another script to correct the rendered labels. this just takes the interpolated pixels and assigns them to one of the adjacent categories in the label. After that, the images and labels are ready to use.
-}
+After all the layers have been configured, the script for the export can be executed. It reads all the tiling information from the database and distributes the rendering tasks to a few QGIS worker threads. Each worker thread is responsible for rendering the specific part of the map layers and saving it as PNG image file.
+
+Since the tiles have been precisely aligned with the raster data, the RGB and NIR image files are pixel-perfect copies of the original dataset. However, as the labels are converted from vector space to pixel space during the export, QGIS performs color interpolation on the boundaries between adjacent segments. This is disadvantageous, because the interpolated pixels are no longer clearly assigned to a single category. To overcome this issue, another Python script (see appendix~\ref{app:code}) iterates over all the label files and assigns proper colors to the interpolated pixels according to adjacent pixels.
+
+Because of that process, it can happen that the segmentation maps in the exported label files slightly deviate from the labels provided in the initial dataset. However, in any case the difference is less than a few decimetres, which is acceptable in the context of this thesis.
+
+After the export process is done, the images are ready to use for training. Figure~\ref{fig:dop_with_labels} shows some examples of images with their respective labels.
 
 \begin{figure}
     \newcommand{\DopLabelImageWidth}{0.23\textwidth}
