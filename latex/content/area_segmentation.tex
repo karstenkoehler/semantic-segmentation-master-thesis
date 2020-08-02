@@ -1,8 +1,25 @@
 \section{Segmentation of land zones}
 \label{sec:segmentation}
 
-\subsection{Preparing the dataset}
 \WIP{
+now fundamentals of training were laid out and dataset is prepared. this section focuses on implementing reference architectures from section \ref{sec:ref_archs}. Each model first trained and evaluated with original hyperparameters from authors of papers. afterwards, slight modifications are applied to each model, to find potential optimizations suitable for the given task.
+
+All implementations done in Python with popular Keras framework and TensorFlow backend. Was chosen because well established framework with extensive tooling, lots of documentation online and a great community. Also proven to be production-ready and used successfully by broad variety of companies for all kinds of tasks. case studies can be found at \url{https://www.tensorflow.org/about/case-studies}. more information on tools and hardware is to be found in appendix \ref{app:tools_hardware}.
+}
+
+\subsection{Preparing the training and test dataset}
+\WIP{
+
+\cite{DLbook16}[p.~101f]
+before training we have to think about how to evaluate the models afterwards. goal is to have a model that is able to generalize, meaning it should work on data that is has not seen during training. Therefore, dataset is split into two disjoint sets of data, one called the \emph{training set} and the other called \emph{test set}. During training, only data from the training set is presented to the model. afterwards, performance is measured against the test set. That way the metrics provide a more objective view on the performance.
+
+\cite{DLbook16}[p.~119]
+test set should not be used to make any choices about the model. To optimize hyperparameters for the model, another split of training data, called \emph{validation set} is introduced. Training set is used to learn parameters, validation set is used to estimate generalization error without consulting the test set. Only after hyperparameters and model weights are optimized all the way, test set is used to measure overall performance of the model.
+
+\cite{val_split18}
+There are many ways to pick data for test and validation set. An insight into common techniques is provided by \cite{val_split18}. For this thesis, test set is selected based on imbalance between categories. For each category choose $10\%$ of samples randomly and add them to test set. This is to achieve fair results taking into account all categories accordingly. Validation set also $10\%$ of training set, but chosen randomly over all samples without considering segmentation categories.
+
+
 \begin{itemize}
     \item explain any transformations that have been applied to the dataset
     \item state how the labels were defined/represented
@@ -23,6 +40,7 @@
 \WIP{
 \begin{itemize}
     \item have a look at the segments that were found by the NN
+    \item show segmentation results of large areas
     \item compare segments to the real landscape in the dataset
     \item discuss practical use of those results for identifying emergency landing fields
     \item evaluate results and assess which data to use for the vegetation analysis
