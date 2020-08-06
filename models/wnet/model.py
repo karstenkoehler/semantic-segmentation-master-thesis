@@ -2,74 +2,69 @@ import os
 import time
 
 import cv2
-import matplotlib.pyplot as plt
 import numpy as np
-from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
-from tensorflow.keras.models import load_model
-from tensorflow.keras.optimizers import Adam
 from tensorflow.keras.callbacks import CSVLogger, ReduceLROnPlateau
 from tensorflow.keras.losses import MSE
+from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
 from tensorflow.keras.metrics import CategoricalCrossentropy
+from tensorflow.keras.models import load_model
+from tensorflow.keras.optimizers import Adam
+from tensorflow.python.keras.losses import categorical_crossentropy
 
 from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
-from models.common.common import get_gids_from_database, split_to_tiles
+from models.common.common import get_gids_from_database, one_hot_encoding, one_hot_to_rgb
 from models.common.data_generator import initialize_train_and_validation_generators
+from models.common.metrics import TF_CUSTOM_METRICS, ArgmaxMeanIoU
 from models.wnet.wnet import WNet
 
 
-def predict(gids, model_path, num_classes=1000):
-    model = load_model(model_path)
+def predict(gids, model_path, mode="train"):
+    model = load_model(model_path, TF_CUSTOM_METRICS)
 
+    images = []
+    labels = []
     for gid in gids:
-        image = cv2.imread(os.path.join("E:", "data", "wnet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images = split_to_tiles(image / 255, 224)
+        image = cv2.imread(os.path.join("E:", "data", "wnet", mode, "images", f"{gid}.png"), cv2.IMREAD_COLOR)
+        images.append(image / 255)
 
-        final_prediction = np.empty([0, 2240, 1])
-        row = np.empty([224, 0, 1])
+        label = cv2.imread(os.path.join("E:", "data", "wnet", mode, "labels", f"{gid}.png"), cv2.IMREAD_GRAYSCALE)
+        labels.append(one_hot_encoding(label))
 
-        for idx, img in enumerate(images):
-            pred = model.predict(np.array([images[idx]]))
-            tile = np.argmax(pred[0], axis=2).reshape((224, 224, 1))
-            # print(np.unique(tile.reshape((224*224,))))
-            row = np.hstack([row, tile])
-            if row.shape[1] >= 2240:
-                # row = np.argmax(row, axis=2)
-                final_prediction = np.vstack([final_prediction, row])
-                row = np.empty([224, 0, 1])
+    pred = model.predict(np.array(images))
+    losses = categorical_crossentropy(labels, pred)
+    losses = np.mean(losses, axis=(1, 2))
 
-        # FIXME: use common.one_hot_to_rgb instead
-        cmap = plt.cm.get_cmap("hsv", num_classes)
-        final_prediction = final_prediction.reshape((2240, 2240))
-        plt.imsave(f"images/{gid}-pred.png", final_prediction, cmap=cmap)
+    argmax_mean_iou = ArgmaxMeanIoU(num_classes=6)
+    for idx, p in enumerate(pred):
+        argmax_mean_iou.update_state(labels[idx], p)
+        iou = argmax_mean_iou.result().numpy()
+
+        print(f"{gids[idx]}: loss={losses[idx]:02f}     iou={iou:02f}")
+
+        cv2.imwrite(f"images/{mode}/{gids[idx]}-prediction.png", one_hot_to_rgb(p))
+        cv2.imwrite(f"images/{mode}/{gids[idx]}-label.png", one_hot_to_rgb(labels[idx]))
+        cv2.imwrite(f"images/{mode}/{gids[idx]}-image.png", images[idx] * 255)
 
 
-def restore(gids, model_path):
-    model = load_model(model_path)
+def restore(gids, model_path, mode="train"):
+    model = load_model(model_path, TF_CUSTOM_METRICS)
 
+    images = []
     for gid in gids:
-        image = cv2.imread(os.path.join("E:", "data", "wnet", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images = split_to_tiles(image / 255, 224)
+        image = cv2.imread(os.path.join("E:", "data", "wnet", mode, "images", f"{gid}.png"), cv2.IMREAD_COLOR)
+        images.append(image / 255)
 
-        final_prediction = np.empty([0, 2240, 3])
-        row = np.empty([224, 0, 3])
+    pred = model.predict(np.array(images))
 
-        for idx, img in enumerate(images):
-            pred = model.predict(np.array([images[idx]]))
-
-            row = np.hstack([row, pred[0]])
-            if row.shape[1] >= 2240:
-                final_prediction = np.vstack([final_prediction, row])
-                row = np.empty([224, 0, 3])
-
-        final_prediction = final_prediction * 255
-        # print(f"restore min_max: {np.min(final_prediction)}, {np.max(final_prediction)}")
-        cv2.imwrite(f"images/{gid}-restore.png", final_prediction)
+    for idx, p in enumerate(pred):
+        cv2.imwrite(f"images/{mode}/{gids[idx]}-restored.png", p * 255)
 
 
 def do_training(initial_learning_rate=0.001):
     gids = get_gids_from_database("wnet")
     training_gen, validation_gen = initialize_train_and_validation_generators("wnet", gids, batch_size=10,
-                                                                              label_target_size=256, use_image_as_label=True)
+                                                                              label_target_size=256,
+                                                                              use_image_as_label=True)
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
@@ -96,8 +91,8 @@ def do_training(initial_learning_rate=0.001):
 
 
 if __name__ == '__main__':
-    # predict([51], "weights/1595520768/epoch_0_encoder_model.hdf5")
-    # restore([51], "weights/1595520768/run-00__epoch-05__val-loss-1.48.hdf5")
+    # predict([431], "weights/1596694200_WNet-46D-6/WNet-46D-6-Encoder_epoch_20.hdf5")
+    # restore([431], "weights/1596694200_WNet-46D-6/WNet-46D-6_epoch_20.hdf5")
     # exit(0)
 
     do_training()
