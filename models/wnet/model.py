@@ -69,7 +69,7 @@ def restore(gids, model_path):
 def do_training(initial_learning_rate=0.001):
     gids = get_gids_from_database("wnet")
     training_gen, validation_gen = initialize_train_and_validation_generators("wnet", gids, batch_size=10,
-                                                                              label_target_size=256)
+                                                                              label_target_size=256, use_image_as_label=True)
     steps_per_epoch = next(training_gen)
     validation_steps = next(validation_gen)
 
