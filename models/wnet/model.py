@@ -1,5 +1,4 @@
 import os
-import os
 import time
 
 import cv2
@@ -7,9 +6,10 @@ import matplotlib.pyplot as plt
 import numpy as np
 from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
 from tensorflow.keras.models import load_model
-from tensorflow.python.keras.callbacks import CSVLogger, ReduceLROnPlateau
-from tensorflow.python.keras.losses import MSE
-from tensorflow.python.keras.metrics import CategoricalCrossentropy
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.callbacks import CSVLogger, ReduceLROnPlateau
+from tensorflow.keras.losses import MSE
+from tensorflow.keras.metrics import CategoricalCrossentropy
 
 from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
 from models.common.common import get_gids_from_database, split_to_tiles
@@ -66,7 +66,7 @@ def restore(gids, model_path):
         cv2.imwrite(f"images/{gid}-restore.png", final_prediction)
 
 
-def do_training():
+def do_training(initial_learning_rate=0.001):
     gids = get_gids_from_database("wnet")
     training_gen, validation_gen = initialize_train_and_validation_generators("wnet", gids, batch_size=10,
                                                                               label_target_size=256)
@@ -75,8 +75,8 @@ def do_training():
 
     full_model, encoder_model = WNet()
     metrics = [Accuracy(), CategoricalAccuracy(), CategoricalCrossentropy()]
-    optimizer = None
-    full_model.compile(optimizer=optimizer, loss=MSE(), metrics=metrics)
+    optimizer = Adam(lr=initial_learning_rate)
+    full_model.compile(optimizer=optimizer, loss=MSE, metrics=metrics)
 
     start_time = int(time.time())
     model_path = f"weights/{start_time}_{full_model.name}/"
