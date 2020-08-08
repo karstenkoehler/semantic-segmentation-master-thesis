@@ -1,4 +1,5 @@
 import numpy as np
+import matplotlib.pyplot as plt
 import psycopg2
 
 from scripts.common.constants import POSTGRES_CONNECTION_DSN, LABEL_GRAYSCALE_VALUES, LABEL_RGB_VALUES
@@ -34,15 +35,19 @@ def one_hot_encoding(label):
 
 
 def one_hot_to_rgb(prediction, color_palette=None):
-    if color_palette is None:
-        color_palette = np.array(LABEL_RGB_VALUES)
-
     if np.ndim(prediction) != 3:
         raise ValueError("prediction should have 3 dimensions")
 
-    if np.shape(prediction)[2] != 6:
-        # FIXME: support more than 6 classes for RGB encoding
-        raise NotImplementedError("only supported with exactly 6 classes")
+    num_colors = np.shape(prediction)[2]
+    if color_palette is None:
+        color_palette = np.array(LABEL_RGB_VALUES)
+
+    if num_colors != 6:
+        color_palette = plt.cm.get_cmap("hsv", num_colors)
+        classes = np.argmax(prediction, axis=2) / num_colors
+        fn = map_to_color(color_palette)
+        classes = np.array(list(map(fn, classes)))
+        return classes * 255
 
     classes = np.argmax(prediction, axis=2)
 
@@ -50,6 +55,13 @@ def one_hot_to_rgb(prediction, color_palette=None):
     for idx, col in enumerate(color_palette):
         rgb_encoded[classes == idx] = col
     return rgb_encoded
+
+
+def map_to_color(color_palette):
+    def fn(x):
+        result = color_palette(x)
+        return result[:, :-1]
+    return fn
 
 
 def split_to_tiles(img, tile_size):
