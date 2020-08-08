@@ -188,15 +188,14 @@ After the export process is done, the images are ready to use for training. Figu
 
 \subsection{Considerations about the dataset}
 \label{sec:dataset_considerations}
-\WIP{
-shapes in the labels are not super accurate. on macroscopic point of view, they cover all segments on large areas. but borders between segments are oftentimes poorly represented. meaning transition between forest and agriculture or coastal line along rivers modelled very roughly. to get really good training results one should preferably use pixel-perfect labels. for purpose of this thesis, where the goal is to identify suitable emergency landing areas, this might not be a big issue as we are looking for open wide areas and don't care to much about perfect borders. But anyway, keep it in mind during model training.
-% TODO: show images/labels to support this argument
 
-Another thing is distribution of segmentation classes in the dataset. table~\ref{tab:seg-breakdown} shows relative coverage of the area with the categories. you can see that around 65\% of the data set consist of forest. On the other hand the area of traffic and water combined is still under 1\%. In general, this is really bad for training DNNs. Will lead the network to predicting forest way more often than water/traffic. For optimal results the categories should be well balanced inside the training dataset. So this is also a point to consider later on.
-% TODO: find a paper to support this argument
-}
+Even though the chosen dataset generally offers many advantages, it still has some downsides. The two main points of concern are on one side the imbalanced distribution of categories and on the other side the precision of the labels.
 
-\begin{table}[h]
+Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area coverages of the categories in the dataset. Around $65\%$ of the dataset consists of area covered by forest. Furthermore, both traffic zones and water are below $1\%$ respectively. Forest, buildings and agriculture are the three dominant classes in this dataset. In total, those three classes make up almost $97\%$ of the dataset. This can also be seen in figure~\ref{fig:dop_label_all} on page~\pageref{fig:dop_label_all}.
+
+In general, such a striking imbalance between classes can have a significant impact on the model if not properly addressed. For example, it could happen that the model predicts the dominant class for all pixels all the time. In fact, a model can achieve $65\%$ categorical accuracy for the chosen dataset if it only predicts forest for every input. Obviously, this prediction is useless for any production use. There are many ways to tackle this issue, some common ways are shown in~\cite{imbalanced_data09}. Section~\ref{sec:prepare_train_test} will further elaborate on this topic.
+
+\begin{table}
 \centering
 \begin{tabular}{|l|r|r|r|r|r|}
 \hline
@@ -214,4 +213,8 @@ traffic      & 788,878     $m^2$ & 0.32\%   \\ \hline
 \label{tab:seg-breakdown}
 \end{table}
 
+\WIP{
+shapes in the labels are not super accurate. on macroscopic point of view, they cover all segments on large areas. but borders between segments are oftentimes poorly represented. meaning transition between forest and agriculture or coastal line along rivers modelled very roughly. to get really good training results one should preferably use pixel-perfect labels. for purpose of this thesis, where the goal is to identify suitable emergency landing areas, this might not be a big issue as we are looking for open wide areas and don't care to much about perfect borders. But anyway, keep it in mind during model training.
+% TODO: show images/labels to support this argument
+}
 \newpage
