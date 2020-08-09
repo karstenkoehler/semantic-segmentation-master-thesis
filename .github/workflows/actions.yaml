@@ -13,6 +13,12 @@ jobs:
         with:
           working_directory: latex
           root_file: thesis.tex
+      - name: Compress PDF
+          uses: jy95/ghostscript-action@v1
+          with:
+            file: 'latex/thesis.pdf'
+            output: 'latex/thesis-compressed.pdf'
+            arbitrary-parameters: '-dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer'
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -30,6 +36,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: latex/thesis.pdf
+          asset_path: latex/thesis-compressed.pdf
           asset_name: thesis-v${{ github.run_number }}.pdf
           asset_content_type: application/pdf
