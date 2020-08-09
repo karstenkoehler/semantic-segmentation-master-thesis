@@ -14,11 +14,11 @@ jobs:
           working_directory: latex
           root_file: thesis.tex
       - name: Compress PDF
-          uses: jy95/ghostscript-action@v1
-          with:
-            file: 'latex/thesis.pdf'
-            output: 'latex/thesis-compressed.pdf'
-            arbitrary-parameters: '-dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer'
+        uses: jy95/ghostscript-action@v1
+        with:
+          file: 'latex/thesis.pdf'
+          output: 'latex/thesis-compressed.pdf'
+          arbitrary-parameters: '-dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer'
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
