@@ -18,7 +18,7 @@ jobs:
         with:
           file: 'latex/thesis.pdf'
           output: 'latex/thesis-compressed.pdf'
-          arbitrary-parameters: '-dCompatibilityLevel=1.4 -dPDFSETTINGS=/printer'
+          arbitrary-parameters: '-dCompatibilityLevel=1.5 -dPDFSETTINGS=/printer'
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
