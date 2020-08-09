@@ -160,17 +160,57 @@ Because the function to use is predefined, pooling layers do not contain any tra
     \label{fig:pooling}
 \end{figure}
 
-\subsubsection{Other Important Concepts}
+\subsubsection{Performance Metrics}
+
+\begin{figure}
+    \newcommand{\CategoricalAccuracyImageWidth}{0.3\textwidth}
+
+    \centering
+    \hfill
+    \begin{subfigure}{\CategoricalAccuracyImageWidth}
+        \includegraphics[width=\textwidth]{images/categorical_accuracy_image}
+        \caption{Original Image}
+        \label{fig:ca_image}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{\CategoricalAccuracyImageWidth}
+        \includegraphics{images/categorical_accuracy_label}
+        \caption{Ground Truth}
+        \label{fig:ca_truth}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{\CategoricalAccuracyImageWidth}
+        \includegraphics{images/categorical_accuracy_prediction}
+        \caption{Model Prediction}
+        \label{fig:ca_prediction}
+    \end{subfigure}
+    \hfill
+    \caption{Drawbacks for categorical accuracy regarding dominant classes~\cite{tds_segmentation18}}
+    \label{fig:categorical_accuracy}
+\end{figure}
+
 \WIP{
+\cite{tf_whitepaper15}
+categorical accuracy measures the ratio of correct label predictions compared to total number of predictions. predictions are considered as correct if class with highest score matches class in label. for image segmentation, categorical accuracy can be seen as percentage of pixels in the image that were predicted correctly (see equation~\ref{eq:categorical_accuracy}). In general, yields good impression for prediction performance.
+
+\begin{equation}
+    \label{eq:categorical_accuracy}
+    \text{Accuracy} = \frac{\#\text{correct predictions}}{\#\text{total predictions}}
+\end{equation}
+
+Drawbacks when it comes to imbalanced class distributions in images. for example, if there is dominant class in most images (like background class), predictions can always predict dominant class and categorical accuracy will be very good. Figure~\ref{fig:categorical_accuracy} shows example for this. Categorical accuracy for this case will evaluate to around $95\%$, but predictions are worthless. Consequence is that high categorical accuracy does not imply good segmentation predictions.
+
+another metric which is not prone to this is intersection over union (IoU) like in~\cite{pascal_voc15}. defines ratio between area of overlap in predictions to union of prediction and ground truth (see equation~\ref{eq:mean_iou}). IoU computed for each class separately and then averaged over all classes. Calculating that for example in figure~\ref{fig:categorical_accuracy} above, mean IoU is around $47\%$ (assuming $95\%$ for background and $0\%$ for ships). Mean IoU is much better metric for success, because it returns more stable results.
+
+\begin{equation}
+    \label{eq:mean_iou}
+    \text{IoU} = \frac{\text{true pos.}}{\text{true pos.}+\text{false pos.}+\text{false neg.}}
+\end{equation}
+
 \begin{itemize}
-    \item Batch Normalization
-    \item ReLU Activation
+    \item metrics: Mean IoU, Categorical Accuracy
+    \item losses: MSE, binary crossentropy, categorical crossentropy
 \end{itemize}
-
-reducing labelling effort with \cite{scribble16}. only provide scribbles instead of pixel-level segmentation masks.
-
-\cite{decoupled15}
-semi-supervised learning approach. combine small number of strong annotations with large number of weak annotations. few images with full segmentation masks are enough, but need many images with labelled classes. authors separate classification from segmentation network. can make use of existing classification networks. add a bridge layer to extract activation map from classification network. this is fed into segmentation network, which uses upsampling to output pixel-level segmentation mask.
 }
 
 \subsection{Reference Architectures}
