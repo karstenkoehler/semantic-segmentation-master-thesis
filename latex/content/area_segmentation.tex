@@ -29,6 +29,29 @@ Another approach was selected as follows. dataset contains huge segments that al
 }
 
 \subsection{Experiments with U-Net}
+
+\begin{figure}
+    \newcommand{\UnetMetricsImageWidth}{0.32\textwidth}
+    \centering
+    \begin{subfigure}{\UnetMetricsImageWidth}
+        \input{content/tikz/unet_loss}
+        \caption{Loss}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{\UnetMetricsImageWidth}
+        \input{content/tikz/unet_cat_acc}
+        \caption{Categorical Accuracy}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{\UnetMetricsImageWidth}
+        \input{content/tikz/unet_iou}
+        \caption{Mean IoU}
+    \end{subfigure}
+
+    \caption{Training metrics of different variations of U-Net}
+    \label{fig:}
+\end{figure}
+
 \WIP{
 U-Net was first architecture to explore and experiment with. Model based on findings of \cite{unet15} and explained in detail in section \ref{sec:unet}. Keras implementation used for this thesis listed in appendix~\ref{app:code}.
 
