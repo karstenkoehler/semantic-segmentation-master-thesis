@@ -145,7 +145,12 @@ Außerdem räume ich dem Lehrgebiet das Recht ein, die Arbeit für eigene Lehr- 
 \usepackage{tikz}
 \usepackage{pgfplots}
 \pgfplotsset{
-  every axis plot post/.append style={mark=x}
+  every axis plot post/.append style={
+    mark=x,
+    label style={font=\tiny},
+    tick label style={font=\tiny},
+  },
+  every tick label/.append style={font=\tiny}
 }
 
 % hide draft label
