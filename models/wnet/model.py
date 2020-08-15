@@ -31,16 +31,7 @@ def predict(gids, model_path, mode="train"):
         labels.append(one_hot_encoding(label))
 
     pred = model.predict(np.array(images))
-    losses = categorical_crossentropy(labels, pred)
-    losses = np.mean(losses, axis=(1, 2))
-
-    argmax_mean_iou = ArgmaxMeanIoU(num_classes=6)
     for idx, p in enumerate(pred):
-        argmax_mean_iou.update_state(labels[idx], p)
-        iou = argmax_mean_iou.result().numpy()
-
-        print(f"{gids[idx]}: loss={losses[idx]:02f}     iou={iou:02f}")
-
         cv2.imwrite(f"images/{mode}/{gids[idx]}-prediction.png", one_hot_to_rgb(p))
         cv2.imwrite(f"images/{mode}/{gids[idx]}-label.png", one_hot_to_rgb(labels[idx]))
         cv2.imwrite(f"images/{mode}/{gids[idx]}-image.png", images[idx] * 255)
