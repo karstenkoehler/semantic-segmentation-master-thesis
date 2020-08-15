@@ -1,12 +1,21 @@
 \section{Analysis of vegetation density}
 \label{sec:vegetation_analysis}
 
-\subsection{Preparing the dataset}
+\subsection{Normalized Difference Vegetation Index}
 \WIP{
-\begin{itemize}
-    \item explain differences to the dataset used for segmentation
-    \item state how the labels were defined/represented
-\end{itemize}
+\cite{gisg_ndvi20}
+Normalized Difference Vegetation Index (NDVI) is indicator for vegetation density. based on fact, that heathly vegetation absorbs most of visible red and blue light, but reflect green and NIR light. That's why plants appear to be green, because they reflect most light in this wavelenghts.
+
+NDVI ranges from $-1$ to $1$. Negative values indicate high probability for water. Positive values imply vegetation, where higher values mean more/denser vegetation. Values around 0 just tell that there is no vegetation, but does not tell about land cover. Could be desert, rocks or urban areas.
+
+
+\cite{measuring_vegetation00}
+first use of vegetation analysis was driven by National Oceanic and Atmospheric Administration (NOAA), US agency focusing on conditions of the environment. They launched satellites carrying an Advanced Very-High-Resolution Radiometer (AVHRR) instrument to measure earth's reflectance in five spectral bands. Two of sensors are sensitive to wavelengths ranging from $550$ to $700$ nanometers (red light), an $730$ to $1000$ nanometers (near-infrared light). the NDVI is based on those two values. \ref{eq:ndvi} shows formula to calculate NDVI.
+
+\begin{equation}
+    \text{NDVI} = \frac{\text{NIR}-\text{Red}}{\text{NIR}+\text{Red}}
+    \label{eq:ndvi}
+\end{equation}
 }
 
 \subsection{Building the Neural Network}
