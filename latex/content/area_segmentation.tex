@@ -125,15 +125,14 @@ best results yield model with full $23$ convolution layers. with dropout, model 
 \end{figure}
 
 \begin{figure}
-    \newcommand{\DensenetPredictionsImageWidth}{0.13\textwidth}
+    \newcommand{\DensenetPredictionsImageWidth}{0.15\textwidth}
     \centering
 
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/101444-image} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/101444-label} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/101444-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/101444-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103/101444-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/101444-prediction}
+    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/101444-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/101444-prediction}
 
     \vspace{3mm}
@@ -141,8 +140,7 @@ best results yield model with full $23$ convolution layers. with dropout, model 
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/291991-label} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/291991-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/291991-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103/291991-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/291991-prediction}
+    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/291991-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/291991-prediction}
 
     \vspace{3mm}
@@ -150,8 +148,7 @@ best results yield model with full $23$ convolution layers. with dropout, model 
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/436897-label} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/436897-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/436897-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103/436897-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/436897-prediction}
+    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/436897-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/436897-prediction}
 
     \vspace{3mm}
@@ -159,8 +156,7 @@ best results yield model with full $23$ convolution layers. with dropout, model 
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/626312-label} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/626312-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/626312-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103/626312-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/626312-prediction}
+    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/626312-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/626312-prediction}
 
     \vspace{3mm}
@@ -168,16 +164,17 @@ best results yield model with full $23$ convolution layers. with dropout, model 
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/768909-label} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/768909-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/768909-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103/768909-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/768909-prediction}
+    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/768909-prediction} \hfill
     \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/768909-prediction}
 
     \begin{tikzpicture}
-        \node[align=center] at (-1.2, 0) {\tiny Input};
-        \node[align=center] at (2.0, 0) {\tiny Ground Truth};
-        \node[align=center] at (5.0, 0) {\tiny U-Net-18D};
-        \node[align=center] at (8.1, 0) {\tiny U-Net-23};
-        \node[align=center] at (11, 0) {\tiny U-Net-23D};
+        \node[align=center] at (0, 0) {};
+        \node[align=center] at (0.8, 0) {\tiny Input};
+        \node[align=center] at (3.35, 0) {\tiny Ground Truth};
+        \node[align=center] at (5.95, 0) {\tiny DenseNet-103D};
+        \node[align=center] at (8.45, 0) {\tiny DenseNet-103CD};
+        \node[align=center] at (10.9, 0) {\tiny DenseNet-67D};
+        \node[align=center] at (13.5, 0) {\tiny DenseNet-56D};
     \end{tikzpicture}
     \caption{Selected predictions of different variantions of FC-DenseNet}
     \label{fig:densenet_prediction_images}
