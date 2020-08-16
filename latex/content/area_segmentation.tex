@@ -33,18 +33,28 @@ Another approach was selected as follows. dataset contains huge segments that al
 \WIP{
 U-Net was first architecture to explore and experiment with. Model based on findings of \cite{unet15} and explained in detail in section \ref{sec:unet}. Keras implementation used for this thesis listed in appendix~\ref{app:code}.
 
-input image size was chosen as $572\times 572$ pixels, same as authors used. because no padding used in convolutional layers, label/prediction size is smaller, $388\times 388$ pixels for standard U-Net architecture. architecture was also evaluated with fewer layers, label size respectively larger.
+input image size was chosen as $572\times 572$ pixels, same as authors used. because no padding used in convolutional layers, label/prediction size is smaller, $388\times 388$ pixels for standard U-Net architecture. architecture was also evaluated with fewer/more layers, label size respectively larger/smaller.
+
+all models trained with stochastic gradient descent optimizer with learning rate of $0.1$ and momentum of $0.99$. learning rate is reduced after every epoch to finetune model towards the end of training. Loss function was set to categorical crossentropy.
 
 based on original model a few other configurations have been explored. base model called \texttt{U-Net-23D}. Number in the name is number of convolution layers in the model. \texttt{D} at the end if dropout layer is used for regularization. one model trained with class weights, this has \texttt{CW} at the end of name.
 
 \ref{fig:unet_train_metrics} shows training metrics from unet models. plots are loss, categorical accuracy, mean iou per epoch calculated from validation set during training. validation data was not used for updating weights, only for evaluation. thus, the numbers provide good evidence of models generalization ability.
 
-clearly visible that \texttt{U-Net-23D-CW} did not perform well. Training was stopped after 5 epochs, because no improvement. loss was lower than other models, this is natural, because weigts reduce the loss for some classes, but does not increase it for the others. also other metrics show that this model performed very poorly.
+clearly visible that both \texttt{U-Net-23D-CW} and \texttt{U-Net-28D} did not perform well. Training was stopped after 5 epochs, because no improvement. loss for \texttt{U-Net-23D-CW} was lower than other models, this is natural, because weigts reduce the loss for some classes, but does not increase it for the others. also other metrics show that this model performed very poorly. investigation showed that \texttt{U-Net-23D-CW} only predicts forest for all pixels. \texttt{U-Net-28D} only predicts agriculture.
+% TODO: validate cat. accuracy for both. 28D seems OK, but 23D-CW seems too low for forest
 
 for \texttt{U-Net-18D} first few epochs show improvement on all metrics. level out after around 5 epochs, then only minor changes. could be that the model reached its capacity. fewer conv layers means less parameters and thus reduced ability to learn and generalize features. end up with $61\%$ categorical accuracy and $21.7\%$ mean IoU.
 
 best results yield model with full $23$ convolution layers. with dropout, model learns a bit faster. after 20 epochs both variants arrive at around $74\%$ categorical accuracy and $42.2\%$ mean iou.
 
+\ref{fig:unet_prediction_images} shows model predictions in test set compared to original image and ground truth. Because of U-Net architecture, label covers smaller area than original image. red border in original image indicates the area that label covers. As discussed in section \ref{sec:dataset_considerations}, labels are not super accuracy.
+
+For \texttt{U-Net-18D} you can see that predictions ignore water. Also roads are identified as buildings instead. reduced number of parameters are not enough to make accurate predictions for those.
+
+\texttt{U-Net-23D} and \texttt{U-Net-23} show much better results, predictions very similar to each other. first row shows that inaccurate labels are okay, model are able to abstract away the inaccurate borders. compared to original image, predictions represent riverbanks way better than ground truth.
+
+second row shows that both models also have trouble with traffic class. both detect the road that is not described in ground truth, but label it as buildings instead of traffic.
 }
 
 \begin{figure}
