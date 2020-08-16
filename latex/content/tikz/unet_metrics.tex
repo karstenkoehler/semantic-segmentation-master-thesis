@@ -2,7 +2,7 @@
 \begin{tikzpicture}[scale=\tikzscale]
     \begin{axis}[
         mark=x,
-        cycle list name=color,
+        cycle list name=mycolorlist,
         name=unetplot1,
         xmin=1, xmax=20,
     ]
@@ -100,7 +100,7 @@
     \end{axis}
      \begin{axis}[
         mark=x,
-        cycle list name=color,
+        cycle list name=mycolorlist,
         name=unetplot2,
         at=(unetplot1.right of south east), anchor=left of south west,
         legend style={at={(0.5,-0.25)},anchor=north},
@@ -207,7 +207,7 @@
 
     \begin{axis}[
         mark=x,
-        cycle list name=color,
+        cycle list name=mycolorlist,
         at=(unetplot2.right of south east), anchor=left of south west,
         xmin=1, xmax=20,
     ]

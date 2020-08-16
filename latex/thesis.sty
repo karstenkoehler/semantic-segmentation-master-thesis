@@ -144,6 +144,13 @@ Außerdem räume ich dem Lehrgebiet das Recht ein, die Arbeit für eigene Lehr- 
 
 \usepackage{tikz}
 \usepackage{pgfplots}
+\pgfplotscreateplotcyclelist{mycolorlist}{%
+blue,every mark/.append style={fill=blue!80!black},mark=*\\%
+red,every mark/.append style={fill=red!80!black},mark=square*\\%
+brown!60!black,every mark/.append style={fill=brown!80!black},mark=x\\%
+black,mark=star\\%
+green!60!black,every mark/.append style={fill=green!80!black},mark=diamond*\\%
+}
 \pgfplotsset{
   every axis plot post/.append style={
     mark=x,
