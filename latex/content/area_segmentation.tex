@@ -120,10 +120,18 @@ second row shows that both models also have trouble with traffic class. both det
 
 \subsection{Experiments with FC-DenseNet}
 \WIP{
-\begin{itemize}
-    \item show the architectures of all FC-DenseNet models
-    \item describe the idea behind the architectural decisions
-\end{itemize}
+next look at results of FC-DenseNet as introduced in \ref{sec:densenet}. Also slight variations of architecture explored. also categorical crossentropy loss, but RMSProp optimizer instead of SGD. Also initial learning rate ($0.001$) lower as U-Net, as proposed by authors in \cite{denseseg17}.
+
+Original model named \texttt{FC-DenseNet-103D} with $103$ convolution layers and dropout for regularization. Two other architectures proposed in \cite{denseseg17} with fewer convolution layers, $67$ and $56$ respectively. Also one model with compression layers before each transition down layer to condense input as in \cite{densenet18}. Compression was set to $0.5$, meaning number of feature maps is halved before transition down layer. Model has additional C in name to indicate compression.
+
+according to metrics presented in \ref{fig:densenet_train_metrics} best model is \texttt{FC-DenseNet-103D}. Best results for all three metrics with loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Other variants have fewer parameters, so less capacity to learn generalization.
+
+All models show some oscillations during middle epochs of training. Towards end of training at epoch 20, oscillation is reduced but not gone. this may come from learning rate being too high and model overshooting minimums in loss function. since learning rate is reduced after each epoch, this explains convergence towards the end.
+
+taking into account the practical usability, it is usefull to look at actual predictions. figure \ref{fig:densenet_prediction_images} shows original image, ground truth and predictions of the models. \texttt{FC-DenseNet-103D}
+ predictions are very fragmented for some regions. this indicates that confidence for predictions is rather low. other models do not show so much fragmentation.
+
+From a visual aspect, \texttt{FC-DenseNet-103CD} and \texttt{FC-DenseNet-67D} seem to deliver best results. especially predictions for water are rather nice. However, predictions for traffic are very bad. Not a single model delivers predictions for traffic, all of them confuse it with buildings.
 }
 
 \begin{figure}
