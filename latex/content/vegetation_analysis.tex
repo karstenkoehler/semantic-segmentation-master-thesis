@@ -35,6 +35,24 @@ first use of vegetation analysis was driven by National Oceanic and Atmospheric 
 \end{equation}
 }
 
+\subsubsection{Enhanced Vegetation Index}
+\WIP{
+better measuring instruments were launched, for example Terra\footnote{see \url{https://terra.nasa.gov/}} mission of National Aeronautics and Space Administration (NASA). satellite carries a sensor called Moderate Resolution Imaging Spectroradiometer (MODIS). instruments capture wavelengths from $400~\text{nm}$ to $14400~\text{nm}$ in resolution up to $250$ meters \cite{modis2002}. more accurate data led to adjustments in calculations, eventually resulting in Enhanced Vegetation Index (EVI).
+
+Enhanced Vegetation Index similar to NDVI. Has some additional factors to correct atmospheric conditions and background noise. This means, EVI is more sensitive in areas with dense vegetation.
+
+Equation \ref{eq:evi} shows how EVI is calculated. $C_1$ and $C_2$ are coefficients to reduce aerosol influences in red color band using the blue color band. $L$ is adjustment to address canopy background noise. $G$ value is gain factor for linear scale. Values chosen in original mission are $C_1=6$, $C_2=7.5$, $L=1$ and $G=2.5$. \cite{modis2002}
+
+\begin{equation}
+    \text{EVI} = G * \frac{
+        \text{NIR}-\text{Red}
+    }{
+        \text{NIR} + C_1 * \text{Red} - C_2 * \text{Blue} + L
+    }
+    \label{eq:evi}
+\end{equation}
+}
+
 \subsection{Building the Neural Network}
 \WIP{
 \begin{itemize}
