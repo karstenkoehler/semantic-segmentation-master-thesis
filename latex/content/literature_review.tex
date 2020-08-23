@@ -161,6 +161,16 @@ Because the function to use is predefined, pooling layers do not contain any tra
 \end{figure}
 
 \subsubsection{Performance Metrics}
+A major part in the design of neural networks is the evaluation of a model's performance. There are numerous metrics and indicators to assess how well a model operates on a given set of data. They heavily depend on the task which the model is trying to solve. For this thesis we focus on two metrics, both of which are used to gauge results for semantic segmentation challenges.
+
+The \emph{categorical accuracy} measures the ratio between correct label predictions compared to the total number of predictions made~\cite{tf_whitepaper15}. Predictions are considered to be correct if the class with the highest score in the prediction matches the class of the label. In the context of segmentation of a single image, categorical accuracy can be seen as the percentage of pixels that were predicted correctly (see equation~\ref{eq:categorical_accuracy}).
+
+\begin{equation}
+    \label{eq:categorical_accuracy}
+    \text{Accuracy} = \frac{\text{num. correct predictions}}{\text{num. total predictions}}
+\end{equation}
+
+Although this metric is generally useful for a first impression of performance, it has a major drawback when it comes to class imbalances~\cite{tds_segmentation18}. If there is a dominant class, which takes up a majority of the pixels (like e.~g. a background class), the performance estimation of categorical accuracy can be very misleading. Figure~\ref{fig:categorical_accuracy_drawbacks} demonstrates such a case. The categorical accuracy is computed to be around $95\%$ and seems very promising. But a look at the actual predictions show that the model clearly missed the developer's intent. The consequence is, that a high categorical accuracy does not necessarily imply strong segmentation results.
 
 \begin{figure}
     \newcommand{\CategoricalAccuracyImageWidth}{0.3\textwidth}
@@ -186,21 +196,13 @@ Because the function to use is predefined, pooling layers do not contain any tra
     \end{subfigure}
     \hfill
     \caption{Drawbacks for categorical accuracy regarding dominant classes~\cite{tds_segmentation18}}
-    \label{fig:categorical_accuracy}
+    \label{fig:categorical_accuracy_drawbacks}
 \end{figure}
 
+There are some ways to overcome this issue, for example to calculate and check the categorical accuracy for each class separately. However, in general it is recommended to also integrate other metrics into the evaluation process in order to obtain a wider perspective.
+
 \WIP{
-\cite{tf_whitepaper15}
-categorical accuracy measures the ratio of correct label predictions compared to total number of predictions. predictions are considered as correct if class with highest score matches class in label. for image segmentation, categorical accuracy can be seen as percentage of pixels in the image that were predicted correctly (see equation~\ref{eq:categorical_accuracy}). In general, yields good impression for prediction performance.
-
-\begin{equation}
-    \label{eq:categorical_accuracy}
-    \text{Accuracy} = \frac{\#\text{correct predictions}}{\#\text{total predictions}}
-\end{equation}
-
-Drawbacks when it comes to imbalanced class distributions in images. for example, if there is dominant class in most images (like background class), predictions can always predict dominant class and categorical accuracy will be very good. Figure~\ref{fig:categorical_accuracy} shows example for this. Categorical accuracy for this case will evaluate to around $95\%$, but predictions are worthless. Consequence is that high categorical accuracy does not imply good segmentation predictions.
-
-another metric which is not prone to this is intersection over union (IoU) like in~\cite{pascal_voc15}. defines ratio between area of overlap in predictions to union of prediction and ground truth (see equation~\ref{eq:mean_iou}). IoU computed for each class separately and then averaged over all classes. Calculating that for example in figure~\ref{fig:categorical_accuracy} above, mean IoU is around $47\%$ (assuming $95\%$ for background and $0\%$ for ships). Mean IoU is much better metric for success, because it returns more stable results.
+another metric which is not prone to this is intersection over union (IoU) like in~\cite{pascal_voc15}. defines ratio between area of overlap in predictions to union of prediction and ground truth (see equation~\ref{eq:mean_iou}). IoU computed for each class separately and then averaged over all classes. Calculating that for example in figure~\ref{fig:categorical_accuracy_drawbacks} above, mean IoU is around $47\%$ (assuming $95\%$ for background and $0\%$ for ships). Mean IoU is much better metric for success, because it returns more stable results.
 
 \begin{equation}
     \label{eq:mean_iou}
