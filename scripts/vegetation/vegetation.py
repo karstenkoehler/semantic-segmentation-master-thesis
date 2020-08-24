@@ -39,6 +39,13 @@ def savi(r, g, b, nir, l=0.5):
     cv2.imwrite(f"C:/thesis-data/tiles/savi.png", savi)
 
 
+# modified soil-adjusted vegetation index
+def msavi(r, g, b, nir):
+    msavi = (2 * nir + 1 - np.sqrt(np.square(2 * nir + 1) - 8 * nir - r)) / 2
+    msavi = np.interp(msavi, (np.min(msavi), np.max(msavi)), (0, 255))
+    cv2.imwrite(f"C:/thesis-data/tiles/msavi.png", msavi)
+
+
 r, g, b, a = cv2.split(image)
 
 cv2.imwrite(f"C:/thesis-data/tiles/red.png", r)
@@ -50,3 +57,4 @@ ndvi(r, g, b, a)
 rvi(r, g, b, a)
 evi(r, g, b, a)
 savi(r, g, b, a)
+msavi(r, g, b, a)
