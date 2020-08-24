@@ -53,6 +53,38 @@ Equation \ref{eq:evi} shows how EVI is calculated. $C_1$ and $C_2$ are coefficie
 \end{equation}
 }
 
+\subsubsection{Soil-Adjusted Vegetation Indices}
+\WIP{
+another approach to improve NDVI is \emph{Soil Adjusted Vegetation Index} (SAVI) \cite{savi88}. Huete found NDVI to be unstable with factors like soil color and moisture. Introduced a canopy background adjustment factor $L$ to correct unwanted influence of soil variations. In his experiments, he found value of $L=0.5$ works best to eliminate side effects without further calibration. equation \ref{eq:savi} shows exact calculation.
+
+\begin{equation}
+    \displaystyle
+    \text{SAVI} =
+    \bigg(
+      \frac{\text{NIR} - \text{Red}}
+      {\text{NIR} + \text{Red} + L}
+    \bigg) * \big(1 + L \big)
+    \label{eq:savi}
+\end{equation}
+
+one issue with SAVI is that proper soil adjustment depends on vegetation density. Without prior knowledge regarding vegetation it is hard to find value of $L$ that works good for everything. Qi et~al. presented a functional $L$ factor to replace in SAVI. Calculation shown in \ref{eq:msavi}. entire derivation is to be found in \cite{msavi94}.
+
+\begin{equation}
+    \displaystyle
+    \text{MSAVI} = \frac
+      {
+        2 \text{NIR} + 1
+        - \sqrt{
+          \big(2 \text{NIR}\big)^2
+          - 8 \big(\text{NIR} - \text{Red}\big)
+        }
+      }
+      {2}
+    \label{eq:msavi}
+\end{equation}
+}
+
+
 \subsection{Experiments}
 \WIP{
 \begin{itemize}
