@@ -201,19 +201,20 @@ Although this metric is generally useful for a first impression of performance, 
 
 There are some ways to overcome this issue, for example to calculate and check the categorical accuracy for each class separately. However, in general it is recommended to also integrate other metrics into the evaluation process in order to obtain a wider perspective.
 
-\WIP{
-another metric which is not prone to this is intersection over union (IoU) like in~\cite{pascal_voc15}. defines ratio between area of overlap in predictions to union of prediction and ground truth (see equation~\ref{eq:mean_iou}). IoU computed for each class separately and then averaged over all classes. Calculating that for example in figure~\ref{fig:categorical_accuracy_drawbacks} above, mean IoU is around $47\%$ (assuming $95\%$ for background and $0\%$ for ships). Mean IoU is much better metric for success, because it returns more stable results.
+The \emph{intersection over union} (IoU) is another metric which is commonly used to evaluate for segmentation results~\cite{pascal_voc15}. It is computed using two values:
+\begin{enumerate}
+    \item the area of intersection of the prediction with the ground truth, which is equal to the number of correctly predicted pixels
+    \item and the area of union of both prediction and ground truth, which includes correct predictions as well as false positives and false negatives.
+\end{enumerate}
+
+The IoU is defined as the ratio between those two values (see equation~\ref{eq:mean_iou}). For multi-class challenges, the IoU is computed separately for each class and then averaged over all classes. This is then called \emph{Mean IoU}.
 
 \begin{equation}
     \label{eq:mean_iou}
     \text{IoU} = \frac{\text{true pos.}}{\text{true pos.}+\text{false pos.}+\text{false neg.}}
 \end{equation}
 
-\begin{itemize}
-    \item metrics: Mean IoU, Categorical Accuracy
-    \item losses: MSE, binary crossentropy, categorical crossentropy
-\end{itemize}
-}
+Coming back to the example in figure~\ref{fig:categorical_accuracy_drawbacks}, the Mean IoU is at around $47\%$ (assuming $\sim 0\%$ for ships and $\sim 95\%$ for background). While the metric also does not form a perfect indicator for real-world usability of the predictions, it still directly correlates to segmentation quality. This means a high Mean IoU will always have strong segmentation results.
 
 \subsection{Reference Architectures}
 \label{sec:ref_archs}
