@@ -1,11 +1,9 @@
 \section{Segmentation of land zones}
 \label{sec:segmentation}
 
-\WIP{
-now fundamentals of training were laid out and dataset is prepared. this section focuses on implementing reference architectures from section \ref{sec:ref_archs}. Each model first trained and evaluated with original hyperparameters from authors of papers. afterwards, slight modifications are applied to each model, to find potential optimizations suitable for the given task.
+Now that all fundamentals are covered, this chapter focuses on the implementation of the neural networks. Each reference architecture from section~\ref{sec:ref_archs} will be trained and evaluated with the original hyperparameters first. Afterwards, slight modifications are applied to the architectures, to look for optimization opportunities for the task at hand.
 
-All implementations done in Python with popular Keras framework and TensorFlow backend. Was chosen because well established framework with extensive tooling, lots of documentation online and a great community. Also proven to be production-ready and used successfully by broad variety of companies for all kinds of tasks. case studies can be found at \url{https://www.tensorflow.org/about/case-studies}. more information on tools and hardware is to be found in appendix \ref{app:tools_hardware}.
-}
+All implementation are done in Python with the popular Keras framework backed by TensorFlow~\cite{tf_whitepaper15}. It is a well established framework with extensive tooling, lots of documentation and a great open-source community. Also it is proven to be production-ready by a broad variety of companies for all kinds of tasks\footnote{Case studies can be found at \url{https://www.tensorflow.org/about/case-studies}}. More information about tools and hardware used throughout this thesis is listed in appendix~\ref{app:tools_hardware}
 
 \subsection{Preparing the training and test dataset}
 \label{sec:prepare_train_test}
