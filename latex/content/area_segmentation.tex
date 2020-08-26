@@ -12,10 +12,11 @@ Since the goal is to have a model that is able to generalize, it is recommended 
 
 The test set should only be used to evaluate the performance, but not decide on hyperparameters or architecture of the model. Otherwise, the model may become too closely aligned with the test set, i.~e. it is no longer possible to evaluate the generalization ability of the model with it. For such decisions another split of the training set is made, which is then called \emph{validation set}~\cite[p.~119]{DLbook16}. This set is used to estimate the generalization error during training and optimization without consulting the test set. Only after all optimizations have been done and no further changes to the model are planned, the test set is used to evaluate the final performance of the model.
 
-\WIP{
-\cite{val_split18}
-There are many ways to pick data for test and validation set. An insight into common techniques is provided by \cite{val_split18}. For this thesis, test set is selected based on imbalance between categories. For each category choose $10\%$ of samples randomly and add them to test set. This is to achieve fair results taking into account all categories accordingly. Validation set also $10\%$ of training set, but chosen randomly over all samples without considering segmentation categories.
+There are many ways to pick the samples for the test and validation sets. \cite{val_split18} provides an insight into commonly used techniques. For this thesis, the test set respects the class imbalance that is found within the full dataset (see section~\ref{sec:dataset_considerations}). This is to achieve fair evaluation results which are not biased by any particular class. For each class, $10\%$ of the samples containing this class were chosen and added to the test set. The remaining samples are randomly distributed among training and validation set at a ratio of $9:1$.
 
+\subsection{Tackling class imbalance}
+\label{sec:class_imbalance}
+\WIP{
 as said in \ref{sec:dataset_considerations}, big imbalance between categories in the dataset. this might lead to unwanted biases while training the model. for examples, if network predicts only forest all the time, accuracy would be around $65\%$ measured over entire dataset. plain number is not too bad, but obviously segmentation predictions would be useless.
 
 there are some techniques to tackle those issues. one approach is to add class weights for calculating the loss function. by doing that, incorrect predictions for some classes can be punished more than others. this will result in the model being optimized in a different way, reducing the predictions for the over-represented classes. However, this was not found to work great with given dataset. all experiments had the models end up to only predict a single class for every pixel.
