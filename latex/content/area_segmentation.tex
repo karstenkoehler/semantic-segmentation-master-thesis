@@ -7,13 +7,12 @@ All implementation are done in Python with the popular Keras framework backed by
 
 \subsection{Preparing the training and test dataset}
 \label{sec:prepare_train_test}
+
+Since the goal is to have a model that is able to generalize, it is recommended to measure its performance on data that it has not seen during training. Therefore, the dataset is split in two disjoint sets of data called \emph{training set} and \emph{test set}~\cite{DLbook16}[p.~101f]. During training, only samples from the training set are presented to the model. Afterwards, the performance is measured with samples from the test set. That way, models which just memorize the training examples perform rather bad compared to models which learn features on a generalized level.
+
+The test set should only be used to evaluate the performance, but not decide on hyperparameters or architecture of the model. Otherwise, the model may become too closely aligned with the test set, i.~e. it is no longer possible to evaluate the generalization ability of the model with it. For such decisions another split of the training set is made, which is then called \emph{validation set}~\cite{DLbook16}[p.~119]. This set is used to estimate the generalization error during training and optimization without consulting the test set. Only after all optimizations have been done and no further changes to the model are planned, the test set is used to evaluate the final performance of the model.
+
 \WIP{
-\cite{DLbook16}[p.~101f]
-before training we have to think about how to evaluate the models afterwards. goal is to have a model that is able to generalize, meaning it should work on data that is has not seen during training. Therefore, dataset is split into two disjoint sets of data, one called the \emph{training set} and the other called \emph{test set}. During training, only data from the training set is presented to the model. afterwards, performance is measured against the test set. That way the metrics provide a more objective view on the performance.
-
-\cite{DLbook16}[p.~119]
-test set should not be used to make any choices about the model. To optimize hyperparameters for the model, another split of training data, called \emph{validation set} is introduced. Training set is used to learn parameters, validation set is used to estimate generalization error without consulting the test set. Only after hyperparameters and model weights are optimized all the way, test set is used to measure overall performance of the model.
-
 \cite{val_split18}
 There are many ways to pick data for test and validation set. An insight into common techniques is provided by \cite{val_split18}. For this thesis, test set is selected based on imbalance between categories. For each category choose $10\%$ of samples randomly and add them to test set. This is to achieve fair results taking into account all categories accordingly. Validation set also $10\%$ of training set, but chosen randomly over all samples without considering segmentation categories.
 
