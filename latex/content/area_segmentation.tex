@@ -60,15 +60,7 @@ The best results with regards to the metrics achieve both \texttt{U-Net-23D} and
 The metrics already allow to draw some conclusions about the configurations. However, it is useful to also look at the visual results before starting the discussion.
 
 \subsubsection{Images}
-\WIP{
-\ref{fig:unet_prediction_images} shows model predictions in test set compared to original image and ground truth. Because of U-Net architecture, label covers smaller area than original image. red border in original image indicates the area that label covers. As discussed in section \ref{sec:dataset_considerations}, labels are not super accuracy.
-
-For \texttt{U-Net-18D} you can see that predictions ignore water. Also roads are identified as buildings instead. reduced number of parameters are not enough to make accurate predictions for those.
-
-\texttt{U-Net-23D} and \texttt{U-Net-23} show much better results, predictions very similar to each other. first row shows that inaccurate labels are okay, model are able to abstract away the inaccurate borders. compared to original image, predictions represent riverbanks way better than ground truth.
-
-second row shows that both models also have trouble with traffic class. both detect the road that is not described in ground truth, but label it as buildings instead of traffic.
-}
+While the metrics provide a quick overview over larger parts of the data set, looking at concrete samples offers a deeper insight into the model's behavior in certain situations. Figure~\ref{fig:unet_prediction_images} depicts predictions from some configurations after training, together with the original image and the ground truth. The red square in the original image indicates the area that is covered in the prediction. As already raised in section~\ref{sec:dataset_considerations}, the ground truth labels are not super accurate with regards to the original image.
 
 \begin{figure}
     \newcommand{\UnetPredictionsImageWidth}{0.18\textwidth}
@@ -115,13 +107,17 @@ second row shows that both models also have trouble with traffic class. both det
         \node[align=center] at (8.1, 0) {\tiny U-Net-23};
         \node[align=center] at (11, 0) {\tiny U-Net-23D};
     \end{tikzpicture}
-    \caption{Selected predictions of different variantions of U-Net}
+    \caption{Selected predictions of different configurations of U-Net}
     \label{fig:unet_prediction_images}
 \end{figure}
 
+The third column of the figure visualizes predictions of the \texttt{U-Net-18D} configuration. The predictions do not contain any \texttt{water} class. Instead, water bodies are predicted to be either \texttt{forest} or \texttt{buildings}. This explains why the categorical accuracy and mean IoU are lower compared to the \texttt{U-Net-23} configurations.
 
+Both \texttt{U-Net-23} and \texttt{U-Net-23D} show better results for the \texttt{water} class. They are able to detect water surfaces correctly. However, sometimes shadows of other objects are also considered to be \texttt{water} (middle row). The first row shows that in some cases the predictions are even better than the labels.
 
+All configurations struggle with the \texttt{traffic} class. In most situations, roads are incorrectly projected to \texttt{buildings}. Only \texttt{U-Net-23} has some correct predictions for the \texttt{traffic} class.
 
+Based on the images shown in figure~\ref{fig:unet_prediction_images}, it is not possible to analyze the predictions with regards to the distinction between \texttt{forest} and \texttt{agriculture}. This will be considered later on in section~\ref{sec:segmentation_discussion}.
 
 \subsection{Experiments with FC-DenseNet}
 \WIP{
@@ -199,7 +195,7 @@ From a visual aspect, \texttt{FC-DenseNet-103CD} and \texttt{FC-DenseNet-67D} se
         \node[align=center] at (10.9, 0) {\tiny DenseNet-67D};
         \node[align=center] at (13.5, 0) {\tiny DenseNet-56D};
     \end{tikzpicture}
-    \caption{Selected predictions of different variantions of FC-DenseNet}
+    \caption{Selected predictions of different configurations of FC-DenseNet}
     \label{fig:densenet_prediction_images}
 \end{figure}
 
@@ -212,6 +208,7 @@ From a visual aspect, \texttt{FC-DenseNet-103CD} and \texttt{FC-DenseNet-67D} se
 }
 
 \subsection{Discussion}
+\label{sec:segmentation_discussion}
 \WIP{
 \begin{itemize}
     \item have a look at the segments that were found by the NN
