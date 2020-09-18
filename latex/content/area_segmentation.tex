@@ -30,16 +30,16 @@ For this reason, a different approach was chosen to address the class imbalance 
 % TODO: add table with category distribution of multisegment and discuss it
 
 \subsection{Experiments with U-Net}
+The reference architecture that was explored first is the U-Net as introduced in section~\ref{sec:unet}. The architecture was implemented with the Keras framework. The code with all implementation details is listed in appendix~\ref{app:code}.
 
+The default input size for images was set to $572\times 572$ pixels. Those are the same dimensions as the authors of U-Net used in their initial approach~\cite{unet15}. Because of the unpadded convolutional layers, the dimensions of the predictions are smaller than the original input image. For the standard configuration in U-Net the output size is $388\times 388$ pixels. Depending on the number of convolutional layers, these dimensions may vary.
+
+All U-Net models were trained with a stochastic gradient descent optimizer. The initial learning rate was set to $0.1$ and reduced after every epoch, to allow finetuning of the weights towards the end of the training. A batch size of $4$ was used in combination with Nesterov momentum~\cite{nesterov83} of $0.99$ to speed up the training process and avoid oscillations. The loss was computed using a categorical crossentropy function.
+
+Starting from the model with its original hyperparameter configuration, a few other configurations have been explored. To distinguish between the configurations, a naming convention is established. The original configuration is called \texttt{U-Net-23D}, where the number represents the exact number of convolutional layers in the model. The suffix \texttt{D} indicates that a dropout layer was added before the expansive path to provide regularization during the training.
+
+\subsubsection{Metrics}
 \WIP{
-U-Net was first architecture to explore and experiment with. Model based on findings of \cite{unet15} and explained in detail in section \ref{sec:unet}. Keras implementation used for this thesis listed in appendix~\ref{app:code}.
-
-input image size was chosen as $572\times 572$ pixels, same as authors used. because no padding used in convolutional layers, label/prediction size is smaller, $388\times 388$ pixels for standard U-Net architecture. architecture was also evaluated with fewer/more layers, label size respectively larger/smaller.
-
-all models trained with stochastic gradient descent optimizer with learning rate of $0.1$ and momentum of $0.99$. learning rate is reduced after every epoch to finetune model towards the end of training. Loss function was set to categorical crossentropy.
-
-based on original model a few other configurations have been explored. base model called \texttt{U-Net-23D}. Number in the name is number of convolution layers in the model. \texttt{D} at the end if dropout layer is used for regularization. one model trained with class weights, this has \texttt{CW} at the end of name.
-
 \ref{fig:unet_train_metrics} shows training metrics from unet models. plots are loss, categorical accuracy, mean iou per epoch calculated from validation set during training. validation data was not used for updating weights, only for evaluation. thus, the numbers provide good evidence of models generalization ability.
 
 clearly visible that both \texttt{U-Net-23D-CW} and \texttt{U-Net-28D} did not perform well. Training was stopped after 5 epochs, because no improvement. loss for \texttt{U-Net-23D-CW} was lower than other models, this is natural, because weigts reduce the loss for some classes, but does not increase it for the others. also other metrics show that this model performed very poorly. investigation showed that \texttt{U-Net-23D-CW} only predicts forest for all pixels. \texttt{U-Net-28D} only predicts agriculture.
@@ -49,6 +49,7 @@ for \texttt{U-Net-18D} first few epochs show improvement on all metrics. level o
 
 best results yield model with full $23$ convolution layers. with dropout, model learns a bit faster. after 20 epochs both variants arrive at around $74\%$ categorical accuracy and $42.2\%$ mean iou.
 
+\subsubsection{Images}
 \ref{fig:unet_prediction_images} shows model predictions in test set compared to original image and ground truth. Because of U-Net architecture, label covers smaller area than original image. red border in original image indicates the area that label covers. As discussed in section \ref{sec:dataset_considerations}, labels are not super accuracy.
 
 For \texttt{U-Net-18D} you can see that predictions ignore water. Also roads are identified as buildings instead. reduced number of parameters are not enough to make accurate predictions for those.
