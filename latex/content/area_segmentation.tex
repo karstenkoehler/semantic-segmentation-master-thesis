@@ -39,25 +39,7 @@ All U-Net models were trained with a stochastic gradient descent optimizer. The 
 Starting from the model with its original hyperparameter configuration, a few other configurations have been explored. To distinguish between the configurations, a naming convention is established. The original configuration is called \texttt{U-Net-23D}, where the number represents the exact number of convolutional layers in the model. The suffix \texttt{D} indicates that a dropout layer was added before the expansive path to provide regularization during the training.
 
 \subsubsection{Metrics}
-\WIP{
-\ref{fig:unet_train_metrics} shows training metrics from unet models. plots are loss, categorical accuracy, mean iou per epoch calculated from validation set during training. validation data was not used for updating weights, only for evaluation. thus, the numbers provide good evidence of models generalization ability.
-
-clearly visible that both \texttt{U-Net-23D-CW} and \texttt{U-Net-28D} did not perform well. Training was stopped after 5 epochs, because no improvement. loss for \texttt{U-Net-23D-CW} was lower than other models, this is natural, because weigts reduce the loss for some classes, but does not increase it for the others. also other metrics show that this model performed very poorly. investigation showed that \texttt{U-Net-23D-CW} only predicts forest for all pixels. \texttt{U-Net-28D} only predicts agriculture.
-% TODO: validate cat. accuracy for both. 28D seems OK, but 23D-CW seems too low for forest
-
-for \texttt{U-Net-18D} first few epochs show improvement on all metrics. level out after around 5 epochs, then only minor changes. could be that the model reached its capacity. fewer conv layers means less parameters and thus reduced ability to learn and generalize features. end up with $61\%$ categorical accuracy and $21.7\%$ mean IoU.
-
-best results yield model with full $23$ convolution layers. with dropout, model learns a bit faster. after 20 epochs both variants arrive at around $74\%$ categorical accuracy and $42.2\%$ mean iou.
-
-\subsubsection{Images}
-\ref{fig:unet_prediction_images} shows model predictions in test set compared to original image and ground truth. Because of U-Net architecture, label covers smaller area than original image. red border in original image indicates the area that label covers. As discussed in section \ref{sec:dataset_considerations}, labels are not super accuracy.
-
-For \texttt{U-Net-18D} you can see that predictions ignore water. Also roads are identified as buildings instead. reduced number of parameters are not enough to make accurate predictions for those.
-
-\texttt{U-Net-23D} and \texttt{U-Net-23} show much better results, predictions very similar to each other. first row shows that inaccurate labels are okay, model are able to abstract away the inaccurate borders. compared to original image, predictions represent riverbanks way better than ground truth.
-
-second row shows that both models also have trouble with traffic class. both detect the road that is not described in ground truth, but label it as buildings instead of traffic.
-}
+During training, some metrics were collected to measure the predictive performance of the models (see section~\ref{sec:metrics} for details on the metrics). The plots in figure~\ref{fig:unet_train_metrics} present the epoch-wise loss, categorical accuracy and mean IoU for each U-Net configuration. The computation of the metrics was performed using the validation data set. This set only contains samples that were not fed into the model for updating its weights. Thus, the metrics provide good evidence for the model's ability to generalize.
 
 \begin{figure}
     \newcommand{\UnetMetricsImageWidth}{0.32\textwidth}
@@ -66,6 +48,27 @@ second row shows that both models also have trouble with traffic class. both det
     \caption{Training metrics of different variations of U-Net}
     \label{fig:unet_train_metrics}
 \end{figure}
+
+It is clearly visible that \texttt{U-Net-28D} does not perform well. For all three metrics it yields the worst results. Also, it does show any significant improvement over time, which is why the training was stopped after five epochs. On a closer investigation of the bad performance, it was found that the model always predicts the \texttt{agriculture} class for every pixel.
+\WIP{Confidence for predictions? What is the root cause for this behavior? Too deep, so features are lost throughout the network?}
+% TODO: calculate confidence, give reasons for this behavior
+
+The configuration \texttt{U-Net-18D} shows some improvements regarding the metrics in the first few epochs of training. After the fifth epoch the graphs flatten out and show only minor improvements. The training was stopped after ten epochs in total, where it hits around $60.8\%$ categorical accuracy and $21.6\%$ mean IoU. The \texttt{U-Net-18D} configuration was the one with the least number of parameters. Fewer parameters directly affect the ability to learn and generalize a broad range of features. The assumption is that the capacity of the model is not sufficient to comprehend the full space of features involved in this challenge.
+
+The best results with regards to the metrics achieve both \texttt{U-Net-23D} and \texttt{U-Net-23}. They both show similar rates of improvements, which level out after $25$ epochs. The configuration with dropout layers features a slightly faster learning behavior, but both arrive at around $74\%$ categorical accuracy and $42.2\%$ mean IoU in the end.
+
+The metrics already allow to draw some conclusions about the configurations. However, it is useful to also look at the visual results before starting the discussion.
+
+\subsubsection{Images}
+\WIP{
+\ref{fig:unet_prediction_images} shows model predictions in test set compared to original image and ground truth. Because of U-Net architecture, label covers smaller area than original image. red border in original image indicates the area that label covers. As discussed in section \ref{sec:dataset_considerations}, labels are not super accuracy.
+
+For \texttt{U-Net-18D} you can see that predictions ignore water. Also roads are identified as buildings instead. reduced number of parameters are not enough to make accurate predictions for those.
+
+\texttt{U-Net-23D} and \texttt{U-Net-23} show much better results, predictions very similar to each other. first row shows that inaccurate labels are okay, model are able to abstract away the inaccurate borders. compared to original image, predictions represent riverbanks way better than ground truth.
+
+second row shows that both models also have trouble with traffic class. both detect the road that is not described in ground truth, but label it as buildings instead of traffic.
+}
 
 \begin{figure}
     \newcommand{\UnetPredictionsImageWidth}{0.18\textwidth}
