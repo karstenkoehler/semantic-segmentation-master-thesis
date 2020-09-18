@@ -37,6 +37,7 @@ The default input size for images was set to $572\times 572$ pixels. Those are t
 All U-Net models were trained with a stochastic gradient descent optimizer. The initial learning rate was set to $0.1$ and reduced after every epoch, to allow finetuning of the weights towards the end of the training. A batch size of $4$ was used in combination with Nesterov momentum~\cite{nesterov83} of $0.99$ to speed up the training process and avoid oscillations. The loss was computed using a categorical crossentropy function.
 
 Starting from the model with its original hyperparameter configuration, a few other configurations have been explored. To distinguish between the configurations, a naming convention is established. The original configuration is called \texttt{U-Net-23D}, where the number represents the exact number of convolutional layers in the model. The suffix \texttt{D} indicates that a dropout layer was added before the expansive path to provide regularization during the training.
+% TODO: list configurations, give reasons for them
 
 \subsubsection{Metrics}
 During training, some metrics were collected to measure the predictive performance of the models (see section~\ref{sec:metrics} for details on the metrics). The plots in figure~\ref{fig:unet_train_metrics} present the epoch-wise loss, categorical accuracy and mean IoU for each U-Net configuration. The computation of the metrics was performed using the validation data set. This set only contains samples that were not fed into the model for updating its weights. Thus, the metrics provide good evidence for the model's ability to generalize.
@@ -120,15 +121,24 @@ All configurations struggle with the \texttt{traffic} class. In most situations,
 Based on the images shown in figure~\ref{fig:unet_prediction_images}, it is not possible to analyze the predictions with regards to the distinction between \texttt{forest} and \texttt{agriculture}. This will be considered later on in section~\ref{sec:segmentation_discussion}.
 
 \subsection{Experiments with FC-DenseNet}
+In the next step, the FC-DenseNet reference architecture is investigated with regards to the segmentation challenge. Again, we analyze the original architecture like described in section~\ref{sec:densenet} as well as some variations with slightly modified hyperparameters.
+
+For this architecture the dimensions of input and output are equally set to $256\times 256$. Since the convolutional layers in this architecture use padding, the dimensions are independent from the number of layers.
+
+The loss is again calculated by a categorical crossentropy function. During training, the weight updates are applied using a RMSprop~\cite{rmsprop14} optimizer. The learning rate is initialized with $0.001$ (according to~\cite{denseseg17}) and decreased after each epoch.
+
+Another naming convention is applied to distinguish the variations of the FC-DenseNet models. The reference model is called \texttt{FCDN-103D}, again indicating the number of convolutional layers and the use of dropout. The letter \texttt{C} denotes the application of compression layers before transition-down layers to condense the outputs of dense blocks (see~\cite{denseseg17} for details). The compression rate of those layers is set to $0.5$, i.~e. the number of feature maps is halved.
+% TODO: list configurations, give reasons for them
+
+\subsubsection{Metrics}
 \WIP{
-next look at results of FC-DenseNet as introduced in \ref{sec:densenet}. Also slight variations of architecture explored. also categorical crossentropy loss, but RMSProp optimizer instead of SGD. Also initial learning rate ($0.001$) lower as U-Net, as proposed by authors in \cite{denseseg17}.
-
-Original model named \texttt{FC-DenseNet-103D} with $103$ convolution layers and dropout for regularization. Two other architectures proposed in \cite{denseseg17} with fewer convolution layers, $67$ and $56$ respectively. Also one model with compression layers before each transition down layer to condense input as in \cite{densenet18}. Compression was set to $0.5$, meaning number of feature maps is halved before transition down layer. Model has additional C in name to indicate compression.
-
 according to metrics presented in \ref{fig:densenet_train_metrics} best model is \texttt{FC-DenseNet-103D}. Best results for all three metrics with loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Other variants have fewer parameters, so less capacity to learn generalization.
 
 All models show some oscillations during middle epochs of training. Towards end of training at epoch 20, oscillation is reduced but not gone. this may come from learning rate being too high and model overshooting minimums in loss function. since learning rate is reduced after each epoch, this explains convergence towards the end.
+}
 
+\subsubsection{Images}
+\WIP{
 taking into account the practical usability, it is usefull to look at actual predictions. figure \ref{fig:densenet_prediction_images} shows original image, ground truth and predictions of the models. \texttt{FC-DenseNet-103D}
  predictions are very fragmented for some regions. this indicates that confidence for predictions is rather low. other models do not show so much fragmentation.
 
@@ -190,10 +200,10 @@ From a visual aspect, \texttt{FC-DenseNet-103CD} and \texttt{FC-DenseNet-67D} se
         \node[align=center] at (0, 0) {};
         \node[align=center] at (0.8, 0) {\tiny Input};
         \node[align=center] at (3.35, 0) {\tiny Ground Truth};
-        \node[align=center] at (5.95, 0) {\tiny DenseNet-103D};
-        \node[align=center] at (8.45, 0) {\tiny DenseNet-103CD};
-        \node[align=center] at (10.9, 0) {\tiny DenseNet-67D};
-        \node[align=center] at (13.5, 0) {\tiny DenseNet-56D};
+        \node[align=center] at (5.95, 0) {\tiny FCDN-103D};
+        \node[align=center] at (8.45, 0) {\tiny FCDN-103CD};
+        \node[align=center] at (10.9, 0) {\tiny FCDN-67D};
+        \node[align=center] at (13.5, 0) {\tiny FCDN-56D};
     \end{tikzpicture}
     \caption{Selected predictions of different configurations of FC-DenseNet}
     \label{fig:densenet_prediction_images}
