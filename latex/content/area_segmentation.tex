@@ -67,7 +67,7 @@ The best results with regards to the metrics achieve both \texttt{U-Net-23D} and
 The metrics already allow to draw some conclusions about the configurations. However, it is useful to also look at the visual results before starting the discussion.
 
 \subsubsection{Images}
-While the metrics provide a quick overview over larger parts of the data set, looking at concrete samples offers a deeper insight into the model's behavior in certain situations. Figure~\ref{fig:unet_prediction_images} depicts predictions from some configurations after training, together with the original image and the ground truth. The red square in the original image indicates the area that is covered in the prediction. As already raised in section~\ref{sec:dataset_considerations}, the ground truth labels are not super accurate with regards to the original image.
+While the metrics provide a quick overview over larger parts of the data set, looking at concrete samples offers a deeper insight into the model's behavior in certain situations. Figure~\ref{fig:unet_prediction_images} depicts predictions in the test set from some configurations, together with the original image and the ground truth. The red square in the original image indicates the area that is covered in the prediction. As already raised in section~\ref{sec:dataset_considerations}, the ground truth labels are not super accurate with regards to the original image.
 
 \begin{figure}
     \newcommand{\UnetPredictionsImageWidth}{0.18\textwidth}
@@ -139,20 +139,6 @@ Another naming convention is applied to distinguish the variations of the FC-Den
 \subsubsection{Metrics}
 The training metrics for all FC-DenseNet configurations are presented in figure~\ref{fig:densenet_train_metrics}. Although there are some strong oscillations, most of the configurations show ongoing improvements over the course of 20 epochs. Towards the end of the training the oscillations faint and the graphs converge.
 
-This behavior is a sign that the initial learning rate was set too high. The weights in the model are then adjusted too drastically, so that minima of the loss function are skipped. The learning rate shrinks towards the end of the training, which explains the reduced oscillations.
-
-According to figure~\ref{fig:densenet_train_metrics}, \texttt{FCDN-103D} yields the best results. At the end of the training the metrics are at a loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Those numbers are substantially better than the other configurations, which probably relies on the fact that this configuration also has the highest number of parameters.
-
-The other three configurations report fairly uniform results in terms of metrics. This is very interesting with regards to performance and computational efficiency. \texttt{FCDN-103DC} has more than twice the number of parameters than \texttt{FCDN-56D} ($5.9~\text{M}$ compared to $2.7~\text{M}$) and still many more than \texttt{FCDN-67D} ($4.0~\text{M}$). This means that the configurations with fewer parameters store their information much more efficiently.
-
-\subsubsection{Images}
-\WIP{
-taking into account the practical usability, it is usefull to look at actual predictions. figure \ref{fig:densenet_prediction_images} shows original image, ground truth and predictions of the models. \texttt{FC-DenseNet-103D}
- predictions are very fragmented for some regions. this indicates that confidence for predictions is rather low. other models do not show so much fragmentation.
-
-From a visual aspect, \texttt{FC-DenseNet-103CD} and \texttt{FC-DenseNet-67D} seem to deliver best results. especially predictions for water are rather nice. However, predictions for traffic are very bad. Not a single model delivers predictions for traffic, all of them confuse it with buildings.
-}
-
 \begin{figure}
     \newcommand{\DensenetMetricsImageWidth}{0.32\textwidth}
     \centering
@@ -160,6 +146,15 @@ From a visual aspect, \texttt{FC-DenseNet-103CD} and \texttt{FC-DenseNet-67D} se
     \caption{Training metrics of different variations of FC-DenseNet}
     \label{fig:densenet_train_metrics}
 \end{figure}
+
+This behavior is a sign that the initial learning rate was set too high. The weights in the model are then adjusted too drastically, so that minima of the loss function are skipped. The learning rate shrinks towards the end of the training, which explains the reduced oscillations.
+
+According to figure~\ref{fig:densenet_train_metrics}, \texttt{FCDN-103D} yields the best results. At the end of the training the metrics are at a loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Those numbers are substantially better than the other configurations, which probably relies on the fact that this configuration also has the highest number of parameters.
+
+The other three configurations report fairly uniform results in terms of metrics. This is very interesting with regards to performance and computational efficiency. \texttt{FCDN-103DC} has more than twice the number of parameters than \texttt{FCDN-56D} ($5.9~\text{M}$ compared to $2.7~\text{M}$) and still many more than \texttt{FCDN-67D} ($4.0~\text{M}$). This means that the configurations with fewer parameters store their information much more efficiently.
+
+\subsubsection{Images}
+Figure~\ref{fig:densenet_prediction_images} shows some sample predictions made by the FC-DenseNet configuration. The original images and ground truth labels are included for reference. All images were taken from the test data set.
 
 \begin{figure}
     \newcommand{\DensenetPredictionsImageWidth}{0.15\textwidth}
@@ -216,6 +211,14 @@ From a visual aspect, \texttt{FC-DenseNet-103CD} and \texttt{FC-DenseNet-67D} se
     \caption{Selected predictions of different configurations of FC-DenseNet}
     \label{fig:densenet_prediction_images}
 \end{figure}
+
+While \texttt{FCDN-103D} performed very well in the metrics, the actual results have some shortcomings. The segments are not separated clearly and form some very fragmented regions. In order to use these predictions meaningfully, they would first have to be smoothed out. The same observations apply in an attenuated form to \texttt{FCDN-56D}. The  other two configurations do not exhibit this behavior.
+
+None of the configurations was able to predict the \texttt{traffic} class correctly. Mostly it is confused with the \texttt{buildings} class.
+
+From a purely visual point of view \texttt{FCDN-103CD} and \texttt{FCDN-67D} deliver the best results. Especially the predictions for the \texttt{water} class seem very promising.
+
+The differentiation between the \texttt{agriculture} and \texttt{forest} classes is noticeable. In reality, the transition between those two classes is seamless and hardly perceivable. So it is expected that the predictions are subject to minor fluctuations.
 
 \subsection{Experiments with W-Net}
 \WIP{
