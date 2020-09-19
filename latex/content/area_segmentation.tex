@@ -123,7 +123,7 @@ Based on the images shown in figure~\ref{fig:unet_prediction_images}, it is not 
 \subsection{Experiments with FC-DenseNet}
 In the next step, the FC-DenseNet reference architecture is investigated with regards to the segmentation challenge. Again, we analyze the original architecture like described in section~\ref{sec:densenet} as well as some variations with slightly modified hyperparameters.
 
-For this architecture the dimensions of input and output are equally set to $256\times 256$. Since the convolutional layers in this architecture use padding, the dimensions are independent from the number of layers.
+For this architecture the dimensions of input and output are equally set to $224\times 224$. Since the convolutional layers in this architecture use padding, the dimensions are independent from the number of layers.
 
 The loss is again calculated by a categorical crossentropy function. During training, the weight updates are applied using a RMSprop~\cite{rmsprop14} optimizer. The learning rate is initialized with $0.001$ (according to~\cite{denseseg17}) and decreased after each epoch.
 
