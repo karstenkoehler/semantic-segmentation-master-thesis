@@ -8,7 +8,7 @@ def ndvi(r, g, b, nir, result_path=""):
     minus = (nir - r).astype(np.float32)
     plus = (nir + r).astype(np.float32)
     ndvi = np.divide(minus, plus, out=np.zeros_like(minus), where=plus != 0)
-    ndvi = np.interp(ndvi, (-1, 1), (0, 255))
+    ndvi = np.interp(ndvi, (0, 1), (0, 255))
     cv2.imwrite(os.path.join(result_path, "ndvi.png"), ndvi)
 
 
@@ -17,7 +17,7 @@ def rvi(r, g, b, nir, result_path=""):
     r = r.astype(np.float32)
     nir = nir.astype(np.float32)
     rvi = np.divide(nir, r, out=np.zeros_like(nir), where=r != 0)
-    rvi = np.interp(rvi, (0, np.quantile(rvi, 0.99)), (0, 255))
+    rvi = np.interp(rvi, (0, 20), (0, 255))
     cv2.imwrite(os.path.join(result_path, "rvi.png"), rvi)
 
 
@@ -33,14 +33,14 @@ def evi(r, g, b, nir, result_path=""):
 # soil-adjusted vegetation index
 def savi(r, g, b, nir, l=0.5, result_path=""):
     savi = ((nir - r) / (nir + r + l)) * (1 + l)
-    savi = np.interp(savi, (0, np.quantile(savi, 0.99)), (0, 255))
+    savi = np.interp(savi, (0, 20), (0, 255))
     cv2.imwrite(os.path.join(result_path, "savi.png"), savi)
 
 
 # modified soil-adjusted vegetation index
 def msavi(r, g, b, nir, result_path=""):
     msavi = (2 * nir + 1 - np.sqrt(np.square(2 * nir + 1) - 8 * nir - r)) / 2
-    msavi = np.interp(msavi, (np.min(msavi), np.max(msavi)), (0, 255))
+    msavi = np.interp(msavi, (0, 80), (0, 255))
     cv2.imwrite(os.path.join(result_path, "msavi.png"), msavi)
 
 
