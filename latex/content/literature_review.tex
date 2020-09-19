@@ -7,9 +7,10 @@
 }
 
 \subsection{Deep Learning Basics}
-\emph{Deep Learning} is a new field of machine learning that makes use of \emph{Deep Neural Networks} (DNN)~\cite[pp.~125f]{nn_intro96}. In an abstract point of view, a DNN is just a mathematical function to map a given input vector to an output vector. It is assembled from densely-connected units called \emph{neurons} (or \emph{perceptrons}). Usually, the neurons are grouped into layers~\cite[p.~125]{nn_intro96} (see figure~\ref{fig:layered_architecture}). The first layer of the DNN has direct access to the input vector, thus it is called the \emph{input layer}. In contrast, the last layer of the DNN produces the output vector and is therefore called \emph{output layer}. In between, there is an arbitrary number of \emph{hidden layers} that make up for the depth of the neural network.
+\emph{Deep Learning} is a new field of machine learning that makes use of \emph{Deep Neural Networks} (DNN)~\cite[pp.~125f]{nn_intro96}. In an abstract point of view, a DNN is just a mathematical function to map a given input vector to an output vector. It is assembled from densely-connected units called \emph{neurons} (or \emph{perceptrons}).
 
-% TODO: increase spacing above image
+Usually, the neurons are grouped into layers~\cite[p.~125]{nn_intro96} (see figure~\ref{fig:layered_architecture}). The first layer of the DNN has direct access to the input vector, thus it is called the \emph{input layer}. In contrast, the last layer of the DNN produces the output vector and is therefore called \emph{output layer}. In between, there is an arbitrary number of \emph{hidden layers} that make up for the depth of the neural network.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/generic_layered_architecture}
@@ -17,9 +18,10 @@
     \label{fig:layered_architecture}
 \end{figure}
 
-Each neuron is itself a small computational unit that applies several mathematical operations, namely an \emph{input function} and an \emph{activation function}. Traditionally, the neurons of subsequent layers are densely connected, meaning a neuron of layer $k$ receives the output values from all neurons in layer $k-1$. Based on those values, the input function calculates the \emph{net input} for the neuron. In most cases this is done by using weights on the connections to perform a weighted sum over all values. The net input is then passed through the activation function whose main purpose is to break the linearity of the DNN. For the activation function there are plenty of options to choose from. An overview of commonly used activation functions can be found in~\cite{act_funcs18} and includes for example a binary step function, a sigmoid function or rectified linear units (ReLU). Figure~\ref{fig:perceptron} depicts all the calculations done inside of a neuron.
+Each neuron is itself a small computational unit that applies several mathematical operations, namely an \emph{input function} and an \emph{activation function}. Traditionally, the neurons of subsequent layers are densely connected, meaning a neuron of layer $k$ receives the output values from all neurons in layer $k-1$. Based on those values, the input function calculates the \emph{net input} for the neuron. In most cases this is done by using weights on the connections to perform a weighted sum over all values.
 
-% TODO: find/create better matching illustration, or explain the figure a bit more
+The net input is then passed through the activation function whose main purpose is to break the linearity of the DNN. For the activation function there are plenty of options to choose from. An overview of commonly used activation functions can be found in~\cite{act_funcs18} and includes for example a binary step function, a sigmoid function or rectified linear units (ReLU). Some activation functions require a threshold value to control the sensitivity of the neuron. Figure~\ref{fig:perceptron} depicts all the calculations done inside of a neuron.
+
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/perceptron}
