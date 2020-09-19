@@ -5,12 +5,15 @@ After the segmentation of the surface into different classes, the second objecti
 One method for analyzing vegetation density with remotely sensed data are \emph{spectral vegetation indices}. This chapter focuses on investigating several spectral vegetation indices and their usefulness with the data set presented in chapter~\ref{sec:dataset_analysis}.
 
 \subsection{Spectral Vegetation Indices}
-\WIP{
-\cite{glv03}
-Spectral vegetation indices (SVI) are indicator for vegetation density. based on fact, that healthy vegetation absorbs most of visible red and blue light, but reflect green and NIR light. in fact, reflections of green lights are significantly higher than other spectrums. other materials dont show this bump in green spectrum, instead show steady rise in reflectance as wavelengths increase.
+Spectral vegetation indices provide ways to indicate the vegetation density based on reflectances of visible and near-infrared (NIR) light spectrums. They rely on the fact that healthy vegetation absorbs most of the visible red and blue light while reflecting great portions of green light~\cite{glv03}.
 
-SVIs compare difference between visible and NIR light. the greater the difference, the greater the amount of green vegetation in the scene. There are various indices that each combine data from multiple spectral bands to a single value indicating the vegetation health and density. Most of them use simple algebraic formulas. Some of the commonly used indices are now introduced.
-}
+Actually, the reflections of green light on plants is significantly higher than all other spectrums. This is what makes plants and vegetation appear green to the human eye. Other materials on earth's surface do not share this increased reflectance levels in the green spectrum. Building upon this knowledge, SVIs try to relate different spectral bands of light to predict vegetation density.
+
+Most SVIs compare the difference between visible red light and NIR light~\cite{glv03}. The lower the amount of red light, the higher the density of green vegetation in the scene.
+
+There are various indices that each combine the spectral bands in unique ways and perform slightly different color corrections. Most of the indices use simple algebraic formulas. In the end, they all produce a single scalar value indicating the density of the vegetation.
+
+The next sections introduce some of the widely used vegetation indices.
 
 \subsubsection{Ratio Vegetation Index}
 \WIP{
