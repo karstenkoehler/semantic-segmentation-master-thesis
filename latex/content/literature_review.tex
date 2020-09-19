@@ -108,9 +108,11 @@ The last task to mention here is called \emph{instance segmentation}~\cite{mask-
 \subsection{Convolutional Neural Networks}
 \label{sec:cnn}
 
-One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing of image or video data. Traditionally, the layers in DNNs are densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of the input data into account. The following sections explain the commonly used operations in CNNs.
-% TODO: name general architecture with conv, pool and fc layers
-% TODO: go more into detail, why is CNN for grid-like good, why is dense for grid-like bad?
+One subclass of neural networks is called \emph{Convolutional Neural Network} (CNN) ~\cite[p.~359]{praxiseinstieg_ml17}. These types of networks show great results on data with a grid-like topology. Thus, they are often used for processing image or video data that essentially consists of a grid of colored pixels.
+
+Traditionally, the layers in DNNs are densely connected, meaning every neuron of one layer is connected to every neuron in the next layer. For grid-like data this is not very efficient, because cells close to each other are often more likely to be correlated. Although this relationship also exists in densely-connected architectures, it requires a lot of computational power to learn the exact spatial correlations. Hence it is better to embed the spatial concept directly into the architectural design of the network.
+
+Instead of dense connections, CNNs use operations called \emph{convolution} and \emph{pooling}, which allow to take spatial properties of the input data into account. The following sections explain those commonly used operations in CNNs.
 
 \subsubsection{Convolution}
 \label{sec:convolution}
