@@ -131,11 +131,13 @@ Another naming convention is applied to distinguish the variations of the FC-Den
 % TODO: list configurations, give reasons for them
 
 \subsubsection{Metrics}
-\WIP{
-according to metrics presented in \ref{fig:densenet_train_metrics} best model is \texttt{FC-DenseNet-103D}. Best results for all three metrics with loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Other variants have fewer parameters, so less capacity to learn generalization.
+The training metrics for all FC-DenseNet configurations are presented in figure~\ref{fig:densenet_train_metrics}. Although there are some strong oscillations, most of the configurations show ongoing improvements over the course of 20 epochs. Towards the end of the training the oscillations faint and the graphs converge.
 
-All models show some oscillations during middle epochs of training. Towards end of training at epoch 20, oscillation is reduced but not gone. this may come from learning rate being too high and model overshooting minimums in loss function. since learning rate is reduced after each epoch, this explains convergence towards the end.
-}
+This behavior is a sign that the initial learning rate was set too high. The weights in the model are then adjusted too drastically, so that minima of the loss function are skipped. The learning rate shrinks towards the end of the training, which explains the reduced oscillations.
+
+According to figure~\ref{fig:densenet_train_metrics}, \texttt{FCDN-103D} yields the best results. At the end of the training the metrics are at a loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Those numbers are substantially better than the other configurations, which probably relies on the fact that this configuration also has the highest number of parameters.
+
+The other three configurations report fairly uniform results in terms of metrics. This is very interesting with regards to performance and computational efficiency. \texttt{FCDN-103DC} has more than twice the number of parameters than \texttt{FCDN-56D} ($5.9~\text{M}$ compared to $2.7~\text{M}$) and still many more than \texttt{FCDN-67D} ($4.0~\text{M}$). This means that the configurations with fewer parameters store their information much more efficiently.
 
 \subsubsection{Images}
 \WIP{
