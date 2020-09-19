@@ -53,6 +53,12 @@ During training, some metrics were collected to measure the predictive performan
 It is clearly visible that \texttt{U-Net-28D} does not perform well. For all three metrics it yields the worst results. Also, it does show any significant improvement over time, which is why the training was stopped after five epochs. On a closer investigation of the bad performance, it was found that the model always predicts the \texttt{agriculture} class for every pixel.
 \WIP{Confidence for predictions? What is the root cause for this behavior? Too deep, so features are lost throughout the network?}
 % TODO: calculate confidence, give reasons for this behavior
+% buildings   0.21715826
+% water   0.02491541
+% forest   0.34937066
+% traffic   0.01290903
+% urban greens   0.03881836
+% agriculture   0.35714394
 
 The configuration \texttt{U-Net-18D} shows some improvements regarding the metrics in the first few epochs of training. After the fifth epoch the graphs flatten out and show only minor improvements. The training was stopped after ten epochs in total, where it hits around $60.8\%$ categorical accuracy and $21.6\%$ mean IoU. The \texttt{U-Net-18D} configuration was the one with the least number of parameters. Fewer parameters directly affect the ability to learn and generalize a broad range of features. The assumption is that the capacity of the model is not sufficient to comprehend the full space of features involved in this challenge.
 
