@@ -16,15 +16,16 @@ There are various indices that each combine the spectral bands in unique ways an
 The next sections introduce some of the widely used vegetation indices.
 
 \subsubsection{Ratio Vegetation Index}
-\WIP{
-\cite{glv03}
-Ratio Vegetation Index (RVI) is simply ratio between NIR light and red light (equation \ref{eq:rvi}). Values for non-vegetation area are generally around $1$, because similar reflectance of NIR and red light. index can not go below $0$ for practical reasons (can not be less than no reflectance). Higher means more vegetation, high values typically reaching up to magnitude of $30$. however, there is no upper bound.
+The simplest SVI is the \emph{Ratio Vegetation Index} (RVI). It is represented by the ratio between NIR and red light~\cite{glv03} (see equation~\ref{eq:rvi}). Higher values indicate denser vegetation.
 
 \begin{equation}
     \text{RVI} = \frac{\text{NIR}}{\text{Red}}
     \label{eq:rvi}
 \end{equation}
-}
+
+Non-vegetated areas typically are below or near $1$. In that case the reflectance for NIR and red light are in the same order of magnitude. With increasing vegetation density, the amount of reflected red light shrinks, causing the index to grow. Extremely dense vegetation reaches a size of up to $30$.
+
+The lower bound for the index is $0$, because negative values for the reflectances are not possible. On the other hand, there is no upper limit for the index. This makes it difficult to define from when exactly a vegetation is considered to be dense.
 
 \subsubsection{Normalized Difference Vegetation Index}
 \WIP{
