@@ -28,19 +28,16 @@ Non-vegetated areas typically are below or near $1$. In that case the reflectanc
 The lower bound for the index is $0$, because negative values for the reflectances are not possible. On the other hand, there is no upper limit for the index. This makes it difficult to define from when exactly a vegetation is considered to be dense.
 
 \subsubsection{Normalized Difference Vegetation Index}
-\WIP{
-\cite{gisg_ndvi20}
-NDVI ranges from $-1$ to $1$. Negative values indicate high probability for water. Positive values imply vegetation, where higher values mean more/denser vegetation. Values around 0 just tell that there is no vegetation, but does not tell about land cover. Could be desert, rocks or urban areas.
+One of the first approaches to monitor changes in global vegetation was driven by the National Oceanic and Atmospheric Administration (NOAA), a US agency focusing on the conditions of the environment. With the help of satellites and high-resolution radiometers they measured the earth's reflectance in five spectral bands, including red and NIR wavelengths. To support their analysis, they introduced a new vegetation index called the \emph{Normalized Difference Vegetation Index} (NDVI)~\cite{measuring_vegetation00}.
 
-
-\cite{measuring_vegetation00}
-first use of vegetation analysis was driven by National Oceanic and Atmospheric Administration (NOAA), US agency focusing on conditions of the environment. They launched satellites carrying an Advanced Very-High-Resolution Radiometer (AVHRR) instrument to measure earth's reflectance in five spectral bands. Two of sensors are sensitive to wavelengths ranging from $550$ to $700$ nanometers (red light), an $730$ to $1000$ nanometers (near-infrared light). the NDVI is based on those two values. \ref{eq:ndvi} shows formula to calculate NDVI.
+The NDVI was able to solve some of the shortcomings of the RVI. For example, because of the way it is calculated (see equation~\ref{eq:ndvi}), it is limited to the range of $-1$ to $1$. This makes it easier to categorize density levels for vegetation.
 
 \begin{equation}
     \text{NDVI} = \frac{\text{NIR}-\text{Red}}{\text{NIR}+\text{Red}}
     \label{eq:ndvi}
 \end{equation}
-}
+
+Values close to $1$ indicate a high probability for dense, green vegetation~\cite{gisg_ndvi20}. For lower values the density of the vegetation decreases. Values near $0$ do not allow for any precise conclusions about the surface conditions, except that living vegetation is very unlikely at that location. The negative range of values mostly consists of water.
 
 \subsubsection{Enhanced Vegetation Index}
 \WIP{
