@@ -40,12 +40,9 @@ The NDVI was able to solve some of the shortcomings of the RVI. For example, bec
 Values close to $1$ indicate a high probability for dense, green vegetation~\cite{gisg_ndvi20}. For lower values the density of the vegetation decreases. Values near $0$ do not allow for any precise conclusions about the surface conditions, except that living vegetation is very unlikely at that location. The negative range of values mostly consists of water.
 
 \subsubsection{Enhanced Vegetation Index}
-\WIP{
-better measuring instruments were launched, for example Terra\footnote{see \url{https://terra.nasa.gov/}} mission of National Aeronautics and Space Administration (NASA). satellite carries a sensor called Moderate Resolution Imaging Spectroradiometer (MODIS). instruments capture wavelengths from $400~\text{nm}$ to $14400~\text{nm}$ in resolution up to $250$ meters \cite{modis2002}. more accurate data led to adjustments in calculations, eventually resulting in Enhanced Vegetation Index (EVI).
+As time passes, improved measuring instruments were launched, like the Terra mission\footnote{see \url{https://terra.nasa.gov/}} of the National Aeronautics and Space Administration (NASA). The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
 
-Enhanced Vegetation Index similar to NDVI. Has some additional factors to correct atmospheric conditions and background noise. This means, EVI is more sensitive in areas with dense vegetation.
-
-Equation \ref{eq:evi} shows how EVI is calculated. $C_1$ and $C_2$ are coefficients to reduce aerosol influences in red color band using the blue color band. $L$ is adjustment to address canopy background noise. $G$ value is gain factor for linear scale. Values chosen in original mission are $C_1=6$, $C_2=7.5$, $L=1$ and $G=2.5$. \cite{modis2002}
+The EVI is calculated similarly to the NDVI, but has some additional factors to correct the influence of atmospheric conditions and background noise (see equation~\ref{eq:evi}). This means that EVI is more sensitive and offers more reliable information about the vegetation.
 
 \begin{equation}
     \text{EVI} = G * \frac{
@@ -55,7 +52,8 @@ Equation \ref{eq:evi} shows how EVI is calculated. $C_1$ and $C_2$ are coefficie
     }
     \label{eq:evi}
 \end{equation}
-}
+
+$C_1$ and $C_2$ are coefficients to reduce the effects of aerosols. To filter out the distortions in the best possible way, also the spectral band of blue light is consulted for this. $L$ is a constant adjustment to address the issues of canopy background noise. Finally, $G$ is called the \emph{gain factor} and is used for linear scaling of the index. The values chosen in the original Terra mission are $C_1=6$, $C_2=7.5$, $L=1$ and $G=2.5$~\cite{modis2002}.
 
 \subsubsection{Soil-Adjusted Vegetation Indices}
 \WIP{
