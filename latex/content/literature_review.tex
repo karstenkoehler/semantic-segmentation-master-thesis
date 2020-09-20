@@ -116,22 +116,18 @@ Instead of dense connections, CNNs use operations called \emph{convolution} and 
 
 \subsubsection{Convolution}
 \label{sec:convolution}
-% TODO: explain depthwise/pointwise convolution difference \cite{depthwise_conv17}
-% TODO: explain transposed convolution
-% TODO: be more precise with input/output of neurons
-\emph{Convolution} is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value. The concept is shown in figure~\ref{fig:convolution}. The notation $n_{k,~i,~j}$ represents a neuron at row~$i$ and column~$j$ in layer~$k$. For a convolutional layer, neuron $n_{k,~i,~j}$ is connected to all neurons $n_{k-1,~i,~j}$ to $n_{k-1,~i + f_w -1,~j + f_h -1}$. The neurons in layer~$k-1$ are therefore called receptive field of $n_{k,~i,~j}$ with a kernel width of $f_w$ and kernel height of $f_h$.~\cite[p.~361 f]{praxiseinstieg_ml17}
+\emph{Convolution} is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value~\cite[p.~361 f]{praxiseinstieg_ml17}. The concept is shown in figure~\ref{fig:convolution}. The multiplication kernel is moved pixel by pixel across the original image, calculating the output values for the convoluted image. Depending on the values in the kernel, this technique highlights certain features in the original image.
 
-% TODO replace image with proper illustration
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/convolution_template}
-    \caption{Receptive field of a convolution operation}
+    \include{content/tikz/convolution}
+    \caption{Receptive field of a convolution operation~\cite[modified]{github-latex20}}
     \label{fig:convolution}
 \end{figure}
 
 There are different ways to handle the edges of the grid. If no special action is taken, the output layer will be smaller in terms of edge length. For this reason \emph{zero padding} is often used to enlarge the input layer before convolution is performed. With an appropriate padding it is possible to preserve the width and height of the layer. Another parameter that affect the size of the output layer is called \emph{stride}, that controls the distance between to neighbouring receptive fields.~\cite[p.~361]{praxiseinstieg_ml17}
 
-The trainable parameters in a convolution layer are the weights and biases used for the matrix multiplication introduced earlier. One specific set of weights and biases is called a \emph{filter}. It is responsible for detecting one single feature of the input layer. The output of a filter is thus referred to as \emph{feature map}. To inspect multiple features of the input, a convolution layer usually consists of multiple filters that are trained and calculated independently. In the end, the output of a convolution layer are multiple feature maps, each highlighting one single feature of the input.~\cite[p.~363 f]{praxiseinstieg_ml17}
+The trainable parameters in a convolution layer are the weights and biases (i.~e. the kernel) used for the matrix multiplication introduced earlier. One specific set of weights and biases is called a \emph{filter}. It is responsible for detecting one single feature of the input layer. The output of a filter is thus referred to as \emph{feature map}. To inspect multiple features of the input, a convolution layer usually consists of multiple filters that are trained and calculated independently. In the end, the output of a convolution layer are multiple feature maps, each highlighting one single feature of the input.~\cite[p.~363 f]{praxiseinstieg_ml17}
 
 As stated by Goodfellow et al.\ in~\cite{DLbook16} the convolution operation has some properties that are highly valuable to build an efficient and powerful neural network. Compared to traditional DNNs, convolution layers have only few connections between to subsequent layers. This is because the kernel is much smaller than the input. Especially for images, which can have millions of pixels, this helps to reduce the number of parameters to train. Furthermore, the convolution reuses the same parameters for an entire feature map. Besides increasing the statistical efficiency of the model, it also makes the operation equivariant to translation in the input.
 
@@ -156,7 +152,7 @@ Figure~\ref{fig:pooling} shows an example of a $2\times 2$ max pooling operation
 \begin{figure}[h]
     \centering
     \include{content/tikz/pooling}
-    \caption{Max pooling}
+    \caption{Max pooling~\cite[modified]{github-latex20}}
     \label{fig:pooling}
 \end{figure}
 
