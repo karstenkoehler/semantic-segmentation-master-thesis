@@ -151,10 +151,11 @@ Unlike convolution, which is used to extract features from the input, \emph{pool
 
 Because the function to use is predefined, pooling layers do not contain any trainable parameters. But still they are configurable with the same hyperparameters as convolution layers, namely kernel size, stride and padding. In addition, you can not only do pooling along the two axis of the input, but also along the third axis, which are the feature maps.~\cite[p.~370]{praxiseinstieg_ml17}
 
-% TODO replace image with proper illustration
+Figure~\ref{fig:pooling} shows an example of a $2\times 2$ max pooling operation. The amount of available information is halved on each spatial axis. In total, this results in a loss of $75\%$ of the data points, only keeping the highest activations. Usually this is not too bad, since low activation levels generally contribute less to the overall result than high ones.
+
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/maxpool_template}
+    \include{content/tikz/pooling}
     \caption{Max pooling}
     \label{fig:pooling}
 \end{figure}
