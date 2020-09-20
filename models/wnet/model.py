@@ -1,10 +1,11 @@
 import os
 import time
-
+import random
 import cv2
 import numpy as np
-from tensorflow.keras.callbacks import CSVLogger, ReduceLROnPlateau
-from tensorflow.keras.losses import MSE
+import tensorflow as tf
+
+from tensorflow.keras.callbacks import CSVLogger
 from tensorflow.keras.metrics import Accuracy, CategoricalAccuracy
 from tensorflow.keras.metrics import CategoricalCrossentropy
 from tensorflow.keras.models import load_model
@@ -14,7 +15,7 @@ from tensorflow.python.keras.losses import categorical_crossentropy
 from models.common.callbacks import metrics_to_csv_logger, save_model_on_epoch_end
 from models.common.common import get_gids_from_database, one_hot_encoding, one_hot_to_rgb
 from models.common.data_generator import initialize_train_and_validation_generators
-from models.common.metrics import TF_CUSTOM_METRICS, ArgmaxMeanIoU
+from models.common.metrics import TF_CUSTOM_METRICS
 from models.wnet.wnet import WNet
 
 
@@ -74,14 +75,17 @@ def do_training(initial_learning_rate=0.001):
         save_model_on_epoch_end(encoder_model.name, encoder_model, model_path),
         metrics_to_csv_logger(model_path + "/batch.csv", ["loss"] + metrics_to_log),
         CSVLogger(model_path + "/epoch.csv", separator=";"),
-        ReduceLROnPlateau(monitor='loss', factor=0.1, patience=3, verbose=1, min_delta=1e-4, min_lr=1e-6),
     ]
-    full_model.fit(training_gen, epochs=10, steps_per_epoch=steps_per_epoch,
+    full_model.fit(training_gen, epochs=1, steps_per_epoch=steps_per_epoch,
                    validation_data=validation_gen, validation_steps=validation_steps,
                    callbacks=callbacks)
 
 
 if __name__ == '__main__':
+    np.random.seed(1595840929)
+    random.seed(1595840929)
+    tf.random.set_seed(1595840929)
+
     # gids = [63585, 224817, 19743, 78905, 102574, 119756]
     # predict(gids, "weights/1596694200_WNet-46D-6/WNet-46D-6-Encoder_epoch_9.hdf5", mode="test")
     # restore(gids, "weights/1596694200_WNet-46D-6/WNet-46D-6_epoch_9.hdf5", mode="test")

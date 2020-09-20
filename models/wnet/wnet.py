@@ -1,4 +1,5 @@
 from tensorflow.keras.models import Model
+import tensorflow.keras.backend as K
 
 from models.unet.unet import UNet
 
@@ -9,6 +10,7 @@ def WNet(feature_maps=None, nb_classes=6, dropout=0.65, model_name_suffix=""):
 
     encoder_input, encoder_output = UNet(input_size=(256, 256, 3), feature_maps=feature_maps, nb_classes=nb_classes,
                                          dropout=dropout, conv_padding="same", build_model=False)
+    encoder_output = K.one_hot(K.argmax(encoder_output), nb_classes)
     _, decoder_output = UNet(input_layer=encoder_output, nb_classes=3, output_layer_activation="sigmoid",
                              dropout=dropout, feature_maps=feature_maps, conv_padding="same", build_model=False)
 
