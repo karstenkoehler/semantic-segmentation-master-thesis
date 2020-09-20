@@ -56,8 +56,7 @@ The EVI is calculated similarly to the NDVI, but has some additional factors to 
 $C_1$ and $C_2$ are coefficients to reduce the effects of aerosols. To filter out the distortions in the best possible way, also the spectral band of blue light is consulted for this. $L$ is a constant adjustment to address the issues of canopy background noise. Finally, $G$ is called the \emph{gain factor} and is used for linear scaling of the index. The values chosen in the original Terra mission are $C_1=6$, $C_2=7.5$, $L=1$ and $G=2.5$~\cite{modis2002}.
 
 \subsubsection{Soil-Adjusted Vegetation Indices}
-\WIP{
-another approach to improve NDVI is \emph{Soil Adjusted Vegetation Index} (SAVI) \cite{savi88}. Huete found NDVI to be unstable with factors like soil color and moisture. Introduced a canopy background adjustment factor $L$ to correct unwanted influence of soil variations. In his experiments, he found value of $L=0.5$ works best to eliminate side effects without further calibration. equation \ref{eq:savi} shows exact calculation.
+Another approach to improve the NDVI was made $1988$ by Alfredo Huete. He found NDVI to be unstable with factors like the soil color and moisture. Thus, he introduced the \emph{Soil-Adjusted Vegetation Index} (SAVI)~\cite{savi88} as another way to estimate vegetation density.
 
 \begin{equation}
     \displaystyle
@@ -69,7 +68,9 @@ another approach to improve NDVI is \emph{Soil Adjusted Vegetation Index} (SAVI)
     \label{eq:savi}
 \end{equation}
 
-one issue with SAVI is that proper soil adjustment depends on vegetation density. Without prior knowledge regarding vegetation it is hard to find value of $L$ that works good for everything. Qi et~al. presented a functional $L$ factor to replace in SAVI. Calculation shown in \ref{eq:msavi}. entire derivation is to be found in \cite{msavi94}.
+As can be seen in equation~\ref{eq:savi}, Huete added a factor $L$ to correct unwanted influences of soil variations. In his experiments, he found $L=0.5$ to work best as a generic factor without further calibration~\cite{savi88}.
+
+One issue with SAVI is, that proper soil adjustment also depends on vegetation density. Without any prior knowledge regarding vegetation it is difficult to find a value of $L$ that fits every situation. Qi et~al. presented another variation of SAVI, where they expressed $L$ with functional elements only~\cite{msavi94}. This version is called \emph{Modified Soil-Adjusted Vegetation Index} (MSAVI). It is listed in equation~\ref{eq:msavi}.
 
 \begin{equation}
     \displaystyle
@@ -84,7 +85,6 @@ one issue with SAVI is that proper soil adjustment depends on vegetation density
     {2}
     \label{eq:msavi}
 \end{equation}
-}
 
 \subsection{Experiments}
 \WIP{
@@ -132,19 +132,6 @@ one issue with SAVI is that proper soil adjustment depends on vegetation density
     \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/ndvi/4} \hfill
     \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/ndvi/5}
 
-    \caption{Vegetation analysis using NDVI}
-    \label{fig:vegetation_ndvi_examples}
-\end{figure}
-
-\begin{figure}
-    \centering
-
-    \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/original/1} \hfill
-    \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/original/2} \hfill
-    \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/original/3} \hfill
-    \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/original/4} \hfill
-    \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/original/5}
-
     \vspace{3mm}
     \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/evi/1} \hfill
     \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/evi/2} \hfill
@@ -152,8 +139,8 @@ one issue with SAVI is that proper soil adjustment depends on vegetation density
     \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/evi/4} \hfill
     \includegraphics[width=\VegetationIndicesImageWidth]{images/vegetation/evi/5}
 
-    \caption{Vegetation analysis using EVI}
-    \label{fig:vegetation_evi_examples}
+    \caption{Vegetation analysis using NDVI and EVI}
+    \label{fig:vegetation_ndvi_examples}
 \end{figure}
 
 % INFO: no bounds for (M)SAVI. Interpolated from SAVI 0-20, MSAVI 0-80
