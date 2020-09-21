@@ -222,10 +222,19 @@ The differentiation between the \texttt{agriculture} and \texttt{forest} classes
 
 \subsection{Experiments with W-Net}
 \WIP{
-\begin{itemize}
-    \item show the architectures of all W-Net models
-    \item describe the idea behind the architectural decisions
-\end{itemize}
+Lastly, look at W-Net architecture presented in section \ref{sec:wnet}. Implementation for U-Net is reused, but instead with separable conv layers and zero padding.
+
+W-Net is trained unsupervised, meaning the labels of the data set are not used. instead, original image is used as both input and label. the model has to figure out the classes by itself.
+
+Image size for this set to $256\times 256$ pixels. For training we employ Adam optimizer with learning rate of $0.001$. Loss is calculated by a categorical crossentropy function.
+
+Unlike original architecture, we don't use two-part training function. instead, results of encoder are argmaxed and fed into decoder. that way, only six distinct values ever reach decoder. So encoder has to provide meaningful classes, in order for the decoder to produce useful results.
+}
+
+\subsubsection{Metrics}
+\subsubsection{Images}
+\WIP{
+
 }
 
 \begin{figure}
