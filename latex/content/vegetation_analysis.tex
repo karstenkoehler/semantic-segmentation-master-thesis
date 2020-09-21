@@ -88,10 +88,32 @@ One issue with SAVI is, that proper soil adjustment also depends on vegetation d
 
 \subsection{Experiments}
 \WIP{
-\begin{itemize}
-    \item compute vegetation indices for some images
-    \item compare results to the real landscape in the dataset
-\end{itemize}
+evaluate SVI on given dataset. some example image with mostly agriculture and forest selected. assumption: forest does not necessarily have more vegetation. depends on type of trees and crops.
+
+images also include living and dead vegetation to see if indices can tell the difference. best case is very distinct values for living/dead vegetation.
+
+%%% RVI
+\ref{fig:vegetation_rvi_examples} has results from RVI. challenge was to find proper visualization, because not limited. over entire dataset, values in range from 0 up to above 100 were found. not taking outliers into account. mapped values from 0-20 to 8-bit B/W image. Dark spots is no vegetation, lighter spots is increasing vegetation.
+
+Figure shows, brightest spots are green forests. Forest without leaves or needles are much darker. this is plausible.
+
+For agricultural field the separation is not as easy. RVI shows different shades of gray for those, so density of vegetation differs. You can see that index value correlates with saturation of green color in the image.
+
+%%% NDVI, EVI
+Figure \ref{fig:vegetation_ndvi_examples} shows results of NDVI and EVI. Both were mapped from range $-1$ to $1$, bright meaning more vegetation. There are big differences in the vegetation predictions.
+
+for example, first column. NDVI predicts very dense vegetation except lane tracks. EVI is quite the opposite, lane tracks are brighter than the rest (i. e. more vegetation on tracks).
+
+Regarding other images, EVI highlights forest pretty well. Trees with leaves or needles show bright spots, whereas ones without leaves or needles are rather dark. This differentiation is not as clear in NDVI.
+
+However, NDVI is more sensitive on agricultural fields. second column highlights one part of the field significantly, where RGB only shows slight difference.
+
+%%% SAVI, MSAVI
+Lastly, figure \ref{fig:vegetation_savi_examples} shows SAVI and MSAVI results. In general, results of MSAVI were way bigger than SAVI. Can be seen, as images from MSAVI were brighter than SAVI.
+
+Both tell no big difference for forest areas. SAVI all areas are very dark, independently from presence of leaves and needles. MSAVI generally brighter. but MSAVI slightly better, small difference between types (see 3rd column).
+
+For agriculture, both show different shades of gray. second and fifth column best visualized. However, results are not consistent. The two SVIs highlight different spots of the images.
 }
 
 \newcommand{\VegetationIndicesImageWidth}{0.18\textwidth}
@@ -173,6 +195,13 @@ One issue with SAVI is, that proper soil adjustment also depends on vegetation d
 
 \subsection{Discussion}
 \WIP{
+actual vegetation can only be estimated based on visual aspects of dataset. Dataset doesn't tell anything about real situation of vegetation for the areas. So it is hard to tell if results from SVIs are accurate.
+
+data set consists of RGB and NIR light values. exact spectral bands are not known.
+% TODO: which hardware used for data? how collected?
+
+predicions of different SVIs are not consistent. spots with dense vegetation vary depending on the SVI used. which one is right? hard to tell without seeing the actual vegetation situation.
+
 \begin{itemize}
     \item raise concerns about dataset limitation regarding the indices
     \item discuss practical use of those results for identifying emergency landing fields
