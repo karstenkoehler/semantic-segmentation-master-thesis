@@ -229,8 +229,71 @@ The differentiation between the \texttt{agriculture} and \texttt{forest} classes
 }
 
 \begin{figure}
+    \newcommand{\WnetPredictionsImageWidth}{0.10\textwidth}
     \centering
-    \includegraphics[width=\textwidth]{images/wnet/combined}
+
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/19743-image} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/19743-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/19743-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/19743-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/19743-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/19743-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/19743-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/19743-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/19743-restored}
+
+    \vspace{2mm}
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/63585-image} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/63585-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/63585-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/63585-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/63585-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/63585-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/63585-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/63585-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/63585-restored}
+
+    \vspace{2mm}
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/78905-image} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/78905-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/78905-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/78905-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/78905-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/78905-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/78905-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/78905-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/78905-restored}
+
+    \vspace{2mm}
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/102574-image} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/102574-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/102574-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/102574-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/102574-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/102574-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/102574-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/102574-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/102574-restored}
+
+    \vspace{2mm}
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/224817-image} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/224817-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/224817-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/224817-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/224817-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/224817-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/224817-restored} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/224817-prediction} \hfill
+    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/224817-restored}
+
+    \begin{tikzpicture}
+        \node[align=center] at (0, 0) {};
+        \node[align=center] at (0.8, 0) {\tiny Input};
+        \node[align=center] at (3.35, 0) {\tiny W-Net-36D-6};
+        \node[align=center] at (5.95, 0) {\tiny W-Net-46D-6};
+        \node[align=center] at (8.45, 0) {\tiny W-Net-36D-20};
+        \node[align=center] at (10.9, 0) {\tiny W-Net-46D-20};
+    \end{tikzpicture}
     \caption{Selected predictions of different configurations of W-Net}
     \label{fig:wnet_prediction_images}
 \end{figure}
