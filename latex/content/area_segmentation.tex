@@ -30,6 +30,7 @@ For this reason, a different approach was chosen to address the class imbalance 
 % TODO: add table with category distribution of multisegment and discuss it
 
 \subsection{Experiments with U-Net}
+\label{sec:unet_experiments}
 The reference architecture that was explored first is the U-Net as introduced in section~\ref{sec:unet}. The architecture was implemented with the Keras framework. The code with all implementation details is listed in appendix~\ref{app:code}.
 
 The default input size for images was set to $572\times 572$ pixels. Those are the same dimensions as the authors of U-Net used in their initial approach~\cite{unet15}. Because of the unpadded convolutional layers, the dimensions of the predictions are smaller than the original input image. For the standard configuration in U-Net the output size is $388\times 388$ pixels. Depending on the number of convolutional layers, these dimensions may vary.
@@ -221,15 +222,17 @@ From a purely visual point of view \texttt{FCDN-103CD} and \texttt{FCDN-67D} del
 The differentiation between the \texttt{agriculture} and \texttt{forest} classes is noticeable. In reality, the transition between those two classes is seamless and hardly perceivable. So it is expected that the predictions are subject to minor fluctuations.
 
 \subsection{Experiments with W-Net}
-\WIP{
-Lastly, look at W-Net architecture presented in section \ref{sec:wnet}. Implementation for U-Net is reused, but instead with separable conv layers and zero padding.
+Lastly, the W-Net architecture presented in section~\ref{sec:wnet} is implemented. For that, big parts of the U-Net implementation could be reused, because W-Net essentially consists of two subsequent U-Nets. In contrast to the original U-Net architecture however, the W-Net employs zero padding for the convolutional layers, so that input and output dimensions are equal.
 
-W-Net is trained unsupervised, meaning the labels of the data set are not used. instead, original image is used as both input and label. the model has to figure out the classes by itself.
+The W-Net architecture was designed for unsupervised training. This means, the labels of the data set are not consulted during training. Instead, the original images are used as both input and label. This way, the model has to learn an appropriate distribution of classes all by itself. Since this setup allows for arbitrary numbers of classes, the number is appended to the model name as a suffix. Otherwise, the naming convention is the same as for U-Net in section~\ref{sec:unet_experiments}.
 
-Image size for this set to $256\times 256$ pixels. For training we employ Adam optimizer with learning rate of $0.001$. Loss is calculated by a categorical crossentropy function.
+Unlike the original architecture proposed in~\cite{wnet17} the training function was not split in two parts. Instead, the output of the encoder was altered to represent a clean one-hot encoding of the class with the highest prediction. This was done for two reasons:
 
-Unlike original architecture, we don't use two-part training function. instead, results of encoder are argmaxed and fed into decoder. that way, only six distinct values ever reach decoder. So encoder has to provide meaningful classes, in order for the decoder to produce useful results.
-}
+First, that way the decoder only has $n$ distinct values from which it has to reconstruct the image (where $n$ is the number of classes). Thus, it is not possible to use intermediate vectors to encode additional states. This makes image reconstruction for the decoder a lot harder.
+
+Additionally, the classes predicted by the encoder have to be picked very carefully in order to allow any meaningful reconstruction of the images at all. The goal is that the encoder is really sophisticated with regards to class predictions.
+
+As a part of the thesis, many different options were explored for the optimizer and loss function to use for training. In the end, the results were all equally weak. The configurations presented in the next sections were trained using an Adam optimizer with a learning rate of $0.001$ and a categorical crossentropy loss function.
 
 \subsubsection{Metrics}
 \WIP{
