@@ -232,6 +232,13 @@ Unlike original architecture, we don't use two-part training function. instead, 
 }
 
 \subsubsection{Metrics}
+\WIP{
+metrics for W-Net are different from the ones presented for U-Net and FC-DenseNet. Since no labels used in training, it is not possible to calculate categorical accuracy and mean IoU. this is because class predictions of encoder does not necessarily match with predefined classes in labels.
+
+only metric presented in figure \ref{fig:wnet_train_metrics} is categorical crossentropy loss function. since models do not show any improvements during training we only train a single epoch. graphs plots loss per batch in training data. shows difference between original image and reconstructed image from W-Net. Notice scale on y-axis, barely any improvement over all batches.
+
+all configurations show similar behavior in training. first few batches show adequate improvement. then, model starts to become worse again. at this point, no satisfying explanation for this behavior can be given.
+}
 
 \begin{figure}
     \centering
