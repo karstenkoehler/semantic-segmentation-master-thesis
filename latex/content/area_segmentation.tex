@@ -249,7 +249,13 @@ all configurations show similar behavior in training. first few batches show ade
 
 \subsubsection{Images}
 \WIP{
+figure \ref{fig:wnet_prediction_images} shows visual results of W-Net configurations from test set. two images per configuration: one is predicted segmentation, other is reconstructed image. colors in predictions are not related to any of classes mentioned earlier, but rather are what model learned to differentiate.
 
+clearly noticeable that most configurations did not learn broad variety of classes. mostly show one dominant class. especially for configurations with 20 internal classes this is surprising. they do not use condensed feature space to encode any information. thus, those configs were not able to produce valid reconstruction for image.
+
+for 6 internal classes, reconstructions look better. especially \texttt{W-Net-46D-6} shows coarse texture of original image. this is also only config that makes notable use of 2 internal classes. Still, does not use entire feature space to encode information.
+
+in summary, results of W-Net were very disappointing. Before results would have been applicable to solve real segmentation class, postprocessing would have to be performed on outputs. Due to poor segmentation results this was not done and W-Net in general will not be considered further throughout the thesis.
 }
 
 \begin{figure}
