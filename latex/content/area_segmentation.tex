@@ -235,13 +235,7 @@ Additionally, the classes predicted by the encoder have to be picked very carefu
 As a part of the thesis, many different options were explored for the optimizer and loss function to use for training. In the end, the results were all equally weak. The configurations presented in the next sections were trained using an Adam optimizer with a learning rate of $0.001$ and a categorical crossentropy loss function.
 
 \subsubsection{Metrics}
-\WIP{
-metrics for W-Net are different from the ones presented for U-Net and FC-DenseNet. Since no labels used in training, it is not possible to calculate categorical accuracy and mean IoU. this is because class predictions of encoder does not necessarily match with predefined classes in labels.
-
-only metric presented in figure \ref{fig:wnet_train_metrics} is categorical crossentropy loss function. since models do not show any improvements during training we only train a single epoch. graphs plots loss per batch in training data. shows difference between original image and reconstructed image from W-Net. Notice scale on y-axis, barely any improvement over all batches.
-
-all configurations show similar behavior in training. first few batches show adequate improvement. then, model starts to become worse again. at this point, no satisfying explanation for this behavior can be given.
-}
+The metrics for W-Net are different from the ones presented for U-Net and FC-DenseNet. Since no labels were used during training, it is not possible to calculate the categorical accuracy and mean IoU. This is because the class predictions learned by the encoder do not necessarily match with the predefined classes in the labels.
 
 \begin{figure}
     \centering
@@ -249,6 +243,10 @@ all configurations show similar behavior in training. first few batches show ade
     \caption{Training metrics of different variations of W-Net}
     \label{fig:wnet_train_metrics}
 \end{figure}
+
+The only metric shown in figure~\ref{fig:wnet_train_metrics} is the categorical crossentropy loss during training. Since no configuration has major improvements (note the small range on the y-axis), training is stopped after a single epoch. Thus, the graph plots the loss per batch in the training set.
+
+All configurations show similar behavior during the training. Over the first few batches of data, there is an adequate improvement on the loss. Only after a few more batches, the predictions become worse again. Interestingly, the graphs for all configurations look like they all follow the same pattern. At the time of writing, no safisfying explanation can be given for those incidents.
 
 \subsubsection{Images}
 \WIP{
