@@ -249,15 +249,7 @@ The only metric shown in figure~\ref{fig:wnet_train_metrics} is the categorical 
 All configurations show similar behavior during the training. Over the first few batches of data, there is an adequate improvement on the loss. Only after a few more batches, the predictions become worse again. Interestingly, the graphs for all configurations look like they all follow the same pattern. At the time of writing, no safisfying explanation can be given for those incidents.
 
 \subsubsection{Images}
-\WIP{
-figure \ref{fig:wnet_prediction_images} shows visual results of W-Net configurations from test set. two images per configuration: one is predicted segmentation, other is reconstructed image. colors in predictions are not related to any of classes mentioned earlier, but rather are what model learned to differentiate.
-
-clearly noticeable that most configurations did not learn broad variety of classes. mostly show one dominant class. especially for configurations with 20 internal classes this is surprising. they do not use condensed feature space to encode any information. thus, those configs were not able to produce valid reconstruction for image.
-
-for 6 internal classes, reconstructions look better. especially \texttt{W-Net-46D-6} shows coarse texture of original image. this is also only config that makes notable use of 2 internal classes. Still, does not use entire feature space to encode information.
-
-in summary, results of W-Net were very disappointing. Before results would have been applicable to solve real segmentation class, postprocessing would have to be performed on outputs. Due to poor segmentation results this was not done and W-Net in general will not be considered further throughout the thesis.
-}
+Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net configurations extracted from the test set. For each configuration two images are displayed. The first one is the predicted class segmentation. The class colors in the predictions are not related to any of the classes mentioned earlier. They rather represent what the respective encoder learned to differentiate in the images. The second image is the reconstruction of the original image predicted by the decoder from the class segmentation.
 
 \begin{figure}
     \newcommand{\WnetPredictionsImageWidth}{0.10\textwidth}
@@ -328,6 +320,12 @@ in summary, results of W-Net were very disappointing. Before results would have 
     \caption{Selected predictions of different configurations of W-Net}
     \label{fig:wnet_prediction_images}
 \end{figure}
+
+It is clearly visible that most configurations did not learn a broad variety of classes. The predictions show mostly one dominant class and sporadic occurances of other classes. Especially for the configurations with 20 available classes this is surprising. They do not make use of the available feature space to encode more information of the original image. This is probably the reason why those configuration also were not able to reconstruct the original images properly.
+
+For the configurations with 6 available classes, the reconstructions look much better. Especially \texttt{W-Net-46D-6} reassembles the rough structure of the original image. This is also the only configuration that makes notable use of at least two of the available classes. But still, four classes remain mostly unused.
+
+In summary, the results of W-Net were very disappointing. Before any of the results could be used to solve the real segmentation challenge, the output would have to be post-processed. This includes merging over-segmented classes and mapping the identified classes to the predefined ones. Due to the poor segmentation results this step was omitted. Also, W-Net in general will not be considered any further throughout this thesis.
 
 \subsection{Discussion}
 \label{sec:segmentation_discussion}
