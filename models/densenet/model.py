@@ -1,5 +1,4 @@
 import os
-import os
 import random
 import time
 
@@ -15,40 +14,39 @@ from tensorflow.python.keras.metrics import CategoricalCrossentropy
 from tensorflow.python.keras.optimizer_v2.rmsprop import RMSProp
 
 from models.common.callbacks import save_model_on_epoch_end, metrics_to_csv_logger
-from models.common.common import one_hot_to_rgb, split_to_tiles, get_gids_from_database
+from models.common.common import one_hot_to_rgb, get_gids_from_database, one_hot_encoding
 from models.common.data_generator import initialize_train_and_validation_generators
-from models.common.metrics import ArgmaxMeanIoU, weighted_categorical_crossentropy
+from models.common.metrics import ArgmaxMeanIoU, TF_CUSTOM_METRICS
 from models.densenet.densenet import DenseNet
 
 
-def predict(gids, model_path):
-    dependencies = {
-        'wcce': weighted_categorical_crossentropy(class_weights=[
-            0.02471,  # buildings
-            0.54651,  # water
-            0.01185,  # forest
-            1.00000,  # traffic
-            0.16433,  # urban greens
-            0.01470,  # agriculture
-        ])
-    }
-    model = load_model(model_path, custom_objects=dependencies)
+def predict(gids, model_path, mode="train"):
+    model = load_model(model_path, custom_objects=TF_CUSTOM_METRICS)
 
+    images = []
+    labels = []
     for gid in gids:
-        image = cv2.imread(os.path.join("E:", "data", "densenet", "train", "images", f"{gid}.png"), cv2.IMREAD_COLOR)
-        images = split_to_tiles(image / 255, 256)
+        image = cv2.imread(os.path.join("E:", "data", "densenet", mode, "images", f"{gid}.png"), cv2.IMREAD_COLOR)
+        images.append(image / 255)
 
-        final_prediction = np.empty([0, 2560, 3])
-        row = np.empty([256, 0, 3])
+        label = cv2.imread(os.path.join("E:", "data", "densenet", mode, "labels", f"{gid}.png"), cv2.IMREAD_GRAYSCALE)
+        labels.append(one_hot_encoding(label))
 
-        for idx, img in enumerate(images):
-            pred = model.predict(np.array([images[idx]]))
-            row = np.hstack([row, one_hot_to_rgb(pred[0])])
-            if row.shape[1] >= 2560:
-                final_prediction = np.vstack([final_prediction, row])
-                row = np.empty([256, 0, 3])
+    pred = model.predict(np.array(images))
+    losses = categorical_crossentropy(labels, pred)
+    losses = np.mean(losses, axis=(1, 2))
 
-        cv2.imwrite(f"images/{gid}-pred.png", final_prediction)
+    argmax_mean_iou = ArgmaxMeanIoU(num_classes=6)
+    for idx, p in enumerate(pred):
+        argmax_mean_iou.update_state(labels[idx], p)
+        iou = argmax_mean_iou.result().numpy()
+
+        print(f"{gids[idx]}: loss={losses[idx]:02f}     iou={iou:02f}")
+
+        cv2.imwrite(f"images/{mode}/{gids[idx]}-prediction.png", one_hot_to_rgb(p))
+        cv2.imwrite(f"images/{mode}/{gids[idx]}-label.png", one_hot_to_rgb(labels[idx]))
+        cv2.imwrite(f"images/{mode}/{gids[idx]}-image.png", images[idx] * 255)
+
 
 
 def lr_schedule(initial_lr=0.01, factor=5, power=2):
@@ -91,7 +89,7 @@ if __name__ == '__main__':
     random.seed(1595840929)
     tf.random.set_seed(1595840929)
 
-    # predict([44], "weights/1593860558/run-00__epoch-02__val-loss-1.70.hdf5")
+    # predict([1278], "weights/1596568933_FC-DenseNet-67D/FC-DenseNet-67D_epoch_19.hdf5", mode="test")
     # exit(0)
 
     do_training()
