@@ -8,6 +8,7 @@ img
 weights
 
 models/**/images
+**/__pycache__
 
 *.aux
 *.bbl
