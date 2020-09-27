@@ -339,4 +339,37 @@ In summary, the results of W-Net were very disappointing. Before any of the resu
 \end{itemize}
 }
 
+
+\begin{figure}
+    \newcommand{\DiscussionImageWidth}{0.23\textwidth}
+    \centering
+
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/716.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/716.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/716.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/716.png}
+
+    \vspace{2mm}
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/755.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/755.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/755.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/755.png}
+
+    \vspace{2mm}
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/3434.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/3434.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/3434.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/3434.png}
+
+    \begin{tikzpicture}
+        \node[align=center] at (0, 0) {};
+        \node[align=center] at (0.5, 0) {\tiny Input};
+        \node[align=center] at (4.4, 0) {\tiny Label};
+        \node[align=center] at (8.3, 0) {\tiny FC-DenseNet-67D};
+        \node[align=center] at (12, 0) {\tiny U-Net-23D};
+    \end{tikzpicture}
+    \caption{Large scale predictions of FC-DenseNet-67D and U-Net-23D}
+    \label{fig:segmentation_discussion}
+\end{figure}
+
 \newpage
