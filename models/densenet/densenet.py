@@ -5,7 +5,7 @@ from tensorflow.keras.regularizers import l2
 
 
 def DenseNet(dense_block_layers=None, growth_rate=16, initial_nb_filters=48, compression=1.0, dropout=0.2,
-             model_name_suffix="", input_size=(256, 256, 3)):
+             model_name_suffix="", input_size=(224, 224, 3)):
     nb_filters = initial_nb_filters
     nb_conv_layers = 0
 
