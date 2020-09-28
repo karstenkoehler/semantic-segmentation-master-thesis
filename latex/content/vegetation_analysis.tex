@@ -2,7 +2,7 @@
 \label{sec:vegetation_analysis}
 After the segmentation of the surface into different classes, the second objective of this thesis is to draw conclusions on vegetation density. Vegetation is one of the main factors to consider when looking for suitable emergency landing fields. Lower vegetation density increases the chances of a successful emergency landing.
 
-One method for analyzing vegetation density with remotely sensed data are \emph{spectral vegetation indices}. This chapter focuses on investigating several spectral vegetation indices and their usefulness with the data set presented in chapter~\ref{sec:dataset_analysis}.
+One method for analyzing vegetation density with remotely sensed data are \emph{spectral vegetation indices} (SVIs). This chapter focuses on investigating several spectral vegetation indices and their usefulness with the data set presented in chapter~\ref{sec:dataset_analysis}.
 
 \subsection{Spectral Vegetation Indices}
 Spectral vegetation indices provide ways to indicate the vegetation density based on reflectances of visible and near-infrared (NIR) light spectrums. They rely on the fact that healthy vegetation absorbs most of the visible red and blue light while reflecting great portions of green light~\cite{glv03}.
@@ -87,18 +87,15 @@ One issue with SAVI is, that proper soil adjustment also depends on vegetation d
 \end{equation}
 
 \subsection{Experiments}
+To evaluate the usability of the SVIs this section focuses on applying them to some images picked from the data set. The images mostly consist of agricultural and forest areas. Special care was taken to ensure that the images contain many variations of vegetation. 
+
+For the purpose of visualization, the output values of the indices are mapped to represent an 8-bit grayscale image. The brightness of the image indicates the density of the vegetation, with brighter patches implying denser vegetation. For the indices that do not have fixed limits, the ranges were selected in a way that resulted in a meaningful visualization. 
+
+Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection calculated with the RVI. Over the entire data set, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization. 
+
+In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is not so straightforward but still visible. For example, the fields in the last image shows only slightly different shades of gray. 
+
 \WIP{
-evaluate SVI on given dataset. some example image with mostly agriculture and forest selected. assumption: forest does not necessarily have more vegetation. depends on type of trees and crops.
-
-images also include living and dead vegetation to see if indices can tell the difference. best case is very distinct values for living/dead vegetation.
-
-%%% RVI
-\ref{fig:vegetation_rvi_examples} has results from RVI. challenge was to find proper visualization, because not limited. over entire dataset, values in range from 0 up to above 100 were found. not taking outliers into account. mapped values from 0-20 to 8-bit B/W image. Dark spots is no vegetation, lighter spots is increasing vegetation.
-
-Figure shows, brightest spots are green forests. Forest without leaves or needles are much darker. this is plausible.
-
-For agricultural field the separation is not as easy. RVI shows different shades of gray for those, so density of vegetation differs. You can see that index value correlates with saturation of green color in the image.
-
 %%% NDVI, EVI
 Figure \ref{fig:vegetation_ndvi_examples} shows results of NDVI and EVI. Both were mapped from range $-1$ to $1$, bright meaning more vegetation. There are big differences in the vegetation predictions.
 
@@ -195,6 +192,10 @@ For agriculture, both show different shades of gray. second and fifth column bes
 
 \subsection{Discussion}
 \WIP{
+assumption: forest does not necessarily have more vegetation. depends on type of trees and crops.
+
+images also include living and dead vegetation to see if indices can tell the difference. best case is very distinct values for living/dead vegetation.
+
 actual vegetation can only be estimated based on visual aspects of dataset. Dataset doesn't tell anything about real situation of vegetation for the areas. So it is hard to tell if results from SVIs are accurate.
 
 data set consists of RGB and NIR light values. exact spectral bands are not known.
