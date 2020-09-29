@@ -91,30 +91,7 @@ To evaluate the usability of the SVIs this section focuses on applying them to s
 
 For the purpose of visualization, the output values of the indices are mapped to represent an 8-bit grayscale image. The brightness of the image indicates the density of the vegetation, with brighter patches implying denser vegetation. For the indices that do not have fixed limits, the ranges were selected in a way that resulted in a meaningful visualization. 
 
-Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection calculated with the RVI. Over the entire data set, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization. 
-
-In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is not so straightforward but still visible. For example, the fields in the last image shows only slightly different shades of gray. 
-
-\WIP{
-%%% NDVI, EVI
-Figure \ref{fig:vegetation_ndvi_examples} shows results of NDVI and EVI. Both were mapped from range $-1$ to $1$, bright meaning more vegetation. There are big differences in the vegetation predictions.
-
-for example, first column. NDVI predicts very dense vegetation except lane tracks. EVI is quite the opposite, lane tracks are brighter than the rest (i. e. more vegetation on tracks).
-
-Regarding other images, EVI highlights forest pretty well. Trees with leaves or needles show bright spots, whereas ones without leaves or needles are rather dark. This differentiation is not as clear in NDVI.
-
-However, NDVI is more sensitive on agricultural fields. second column highlights one part of the field significantly, where RGB only shows slight difference.
-
-%%% SAVI, MSAVI
-Lastly, figure \ref{fig:vegetation_savi_examples} shows SAVI and MSAVI results. In general, results of MSAVI were way bigger than SAVI. Can be seen, as images from MSAVI were brighter than SAVI.
-
-Both tell no big difference for forest areas. SAVI all areas are very dark, independently from presence of leaves and needles. MSAVI generally brighter. but MSAVI slightly better, small difference between types (see 3rd column).
-
-For agriculture, both show different shades of gray. second and fifth column best visualized. However, results are not consistent. The two SVIs highlight different spots of the images.
-}
-
 \newcommand{\VegetationIndicesImageWidth}{0.18\textwidth}
-% INFO: no upper bound for RVI. Calculated biggest values and interpolated from 0-20 to 0-255 for visualization
 \begin{figure}
     \centering
 
@@ -134,6 +111,29 @@ For agriculture, both show different shades of gray. second and fifth column bes
     \caption{Vegetation analysis using RVI}
     \label{fig:vegetation_rvi_examples}
 \end{figure}
+
+Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection calculated with the RVI. Over the entire data set, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization. 
+
+In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is not so straightforward but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields. 
+
+In figure~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualization also expresses that range. As can be seen, the projection for the two indices are quite different. 
+
+For example, the leftmost image is very bright for NDVI but rather dark for EVI. In fact, EVI's results are almost the exact opposite of NDVI for this image. While the lane tracks in this image are dark for NDVI, they are actually brighter in the EVI. These conflicting results for agricultural fields are also visible in the other images. 
+
+Although the results contradict each other, when viewed for each index separately the result could be plausible. Both NDVI and EVI indicate different levels of vegetation for agricultural fields, even if the colored images only show minor differences. Particularly in the second and fifth image this becomes evident.
+
+With regards to forests, NDVI performs rather bad. The middle image shows that there is almost no difference in the projection, regardless of the foliage. In contrast, EVI is able to make a clear distinction. For trees with foliage there are large bright spots in the projections.
+
+\WIP{
+%%% SAVI, MSAVI
+Lastly, figure \ref{fig:vegetation_savi_examples} shows SAVI and MSAVI results. In general, results of MSAVI were way bigger than SAVI. Can be seen, as images from MSAVI were brighter than SAVI.
+
+Both tell no big difference for forest areas. SAVI all areas are very dark, independently from presence of leaves and needles. MSAVI generally brighter. but MSAVI slightly better, small difference between types (see 3rd column).
+
+For agriculture, both show different shades of gray. second and fifth column best visualized. However, results are not consistent. The two SVIs highlight different spots of the images.
+}
+
+
 
 \begin{figure}
     \centering
