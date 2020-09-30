@@ -118,23 +118,6 @@ In the RVI the spots with most vegetation are green forests. Forests without fol
 
 In figure~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualization also expresses that range. As can be seen, the projection for the two indices are quite different. 
 
-For example, the leftmost image is very bright for NDVI but rather dark for EVI. In fact, EVI's results are almost the exact opposite of NDVI for this image. While the lane tracks in this image are dark for NDVI, they are actually brighter in the EVI. These conflicting results for agricultural fields are also visible in the other images. 
-
-Although the results contradict each other, when viewed for each index separately the result could be plausible. Both NDVI and EVI indicate different levels of vegetation for agricultural fields, even if the colored images only show minor differences. Particularly in the second and fifth image this becomes evident.
-
-With regards to forests, NDVI performs rather bad. The middle image shows that there is almost no difference in the projection, regardless of the foliage. In contrast, EVI is able to make a clear distinction. For trees with foliage there are large bright spots in the projections.
-
-\WIP{
-%%% SAVI, MSAVI
-Lastly, figure \ref{fig:vegetation_savi_examples} shows SAVI and MSAVI results. In general, results of MSAVI were way bigger than SAVI. Can be seen, as images from MSAVI were brighter than SAVI.
-
-Both tell no big difference for forest areas. SAVI all areas are very dark, independently from presence of leaves and needles. MSAVI generally brighter. but MSAVI slightly better, small difference between types (see 3rd column).
-
-For agriculture, both show different shades of gray. second and fifth column best visualized. However, results are not consistent. The two SVIs highlight different spots of the images.
-}
-
-
-
 \begin{figure}
     \centering
 
@@ -162,7 +145,14 @@ For agriculture, both show different shades of gray. second and fifth column bes
     \label{fig:vegetation_ndvi_examples}
 \end{figure}
 
-% INFO: no bounds for (M)SAVI. Interpolated from SAVI 0-20, MSAVI 0-80
+For example, the leftmost image is very bright for NDVI but rather dark for EVI. In fact, EVI's results are almost the exact opposite of NDVI for this image. While the lane tracks in this image are dark for NDVI, they are actually brighter in the EVI. These conflicting results for agricultural fields are also visible in the other images. 
+
+Although the results contradict each other, when viewed for each index separately the result could be plausible. Both NDVI and EVI indicate different levels of vegetation for agricultural fields, even if the colored images only show minor differences. Particularly in the second and fifth image this becomes evident.
+
+With regards to forests, NDVI performs rather bad. The middle image shows that there is almost no difference in the projection, regardless of the foliage. In contrast, EVI is able to make a clear distinction. For trees with foliage there are large bright spots in the projections.
+
+Lastly, figure~\ref{fig:vegetation_savi_examples} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yielded much higher values than SAVI. That is why the visualizations of MSAVI are much brighter. 
+
 \begin{figure}
     \centering
 
@@ -189,6 +179,10 @@ For agriculture, both show different shades of gray. second and fifth column bes
     \caption{Vegetation analysis using SAVI and MSAVI}
     \label{fig:vegetation_savi_examples}
 \end{figure}
+
+Both SAVI and MSAVI do not tell a big difference about forest areas. Regardless of any foliage, the indices always show similar projections.
+
+For agriculture however, both indices are very opinionated. Even in spots where the original images hardly show any differences, SAVI and MSAVI project a considerable contrast in vegetation density. Again, the second and fifth image show this very clearly.
 
 \subsection{Discussion}
 \WIP{
