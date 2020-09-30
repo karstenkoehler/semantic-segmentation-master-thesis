@@ -386,4 +386,18 @@ conclusion: results of both U-Net and DenseNet are very useful. U-Net prediction
     \label{fig:segmentation_discussion}
 \end{figure}
 
+\subsection{Deployment}
+\WIP{
+
+two selected models are provided as docker images. docker image includes all dependencies like Python interpreter and packages. also model definition and trained weights. this allows easy usage for inference.
+
+docker images are publicly available in docker hub in \texttt{imageseg/terrain-segmentation} repository. two tags in the repository, one for U-Net the other for DenseNet.
+
+\begin{itemize}
+    \item Thoughts how to provide the trained models for practical use.
+    \item designing an API
+    \item packaging into a docker image
+\end{itemize}
+}
+
 \newpage
