@@ -186,21 +186,17 @@ For agriculture however, both indices are very opinionated. Even in spots where 
 
 \subsection{Discussion}
 \WIP{
-assumption: forest does not necessarily have more vegetation. depends on type of trees and crops.
+assumption: forest does not necessarily have more vegetation. depends on type of trees and heavilty on foliage. also type of crops make big difference. 
 
-images also include living and dead vegetation to see if indices can tell the difference. best case is very distinct values for living/dead vegetation.
+chosen images include living and dead vegetation to see if indices can tell the difference. best case is very distinct values for living/dead vegetation.
 
 actual vegetation can only be estimated based on visual aspects of dataset. Dataset doesn't tell anything about real situation of vegetation for the areas. So it is hard to tell if results from SVIs are accurate.
 
-data set consists of RGB and NIR light values. exact spectral bands are not known.
+data set consists of RGB and NIR light values. most SVIs are created for specific set of hardware. mostly deployed on satellites, so SVIs take into account atmospheric effects on data. however, images in our data set are taken from airplanes with different cameras. so data set might not be applicable for the SVIs. \footnote{\url{https://www.opengeodata.nrw.de/produkte/geobasis/lbi/dop/dop_jp2_f10/}}
 % TODO: which hardware used for data? how collected?
 
 predicions of different SVIs are not consistent. spots with dense vegetation vary depending on the SVI used. which one is right? hard to tell without seeing the actual vegetation situation.
 
-\begin{itemize}
-    \item raise concerns about dataset limitation regarding the indices
-    \item discuss practical use of those results for identifying emergency landing fields
-\end{itemize}
-}
+conclusion: use SVIs with care, because results vary a lot. with more information about image data, better assessment for projections can be made. maybe also play with factors in SVIs to adjust for implications of very specific hardware.
 
 \newpage
