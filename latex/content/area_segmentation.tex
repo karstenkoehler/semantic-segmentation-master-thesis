@@ -128,6 +128,7 @@ All configurations struggle with the \texttt{traffic} class. In most situations,
 Based on the images shown in figure~\ref{fig:unet_prediction_images}, it is not possible to analyze the predictions with regards to the distinction between \texttt{forest} and \texttt{agriculture}. This will be considered later on in section~\ref{sec:segmentation_discussion}.
 
 \subsection{Experiments with FC-DenseNet}
+\label{sec:densenet_experiments}
 In the next step, the FC-DenseNet reference architecture is investigated with regards to the segmentation challenge. Again, we analyze the original architecture like described in section~\ref{sec:densenet} as well as some variations with slightly modified hyperparameters.
 
 For this architecture the dimensions of input and output are equally set to $224\times 224$. Since the convolutional layers in this architecture use padding, the dimensions are independent from the number of layers.
@@ -325,21 +326,34 @@ It is clearly visible that most configurations did not learn a broad variety of 
 
 For the configurations with 6 available classes, the reconstructions look much better. Especially \texttt{W-Net-46D-6} reassembles the rough structure of the original image. This is also the only configuration that makes notable use of at least two of the available classes. But still, four classes remain mostly unused.
 
-In summary, the results of W-Net were very disappointing. Before any of the results could be used to solve the real segmentation challenge, the output would have to be post-processed. This includes merging over-segmented classes and mapping the identified classes to the predefined ones. Due to the poor segmentation results this step was omitted. Also, W-Net in general will not be considered any further throughout this thesis.
+In summary, the results of W-Net were very disappointing. Before any of the results could be used to solve the real segmentation challenge, the output would have to be post-processed. This includes merging over-segmented classes and mapping the identified classes to the predefined ones. Due to the poor segmentation results this step was omitted.
 
 \subsection{Discussion}
 \label{sec:segmentation_discussion}
 \WIP{
-\begin{itemize}
-    \item have a look at the segments that were found by the NN
-    \item show segmentation results of large areas
-    \item compare segments to the real landscape in the dataset
-    \item discuss practical use of those results for identifying emergency landing fields
-    \item evaluate results and assess which data to use for the vegetation analysis
-\end{itemize}
-}
+this section discusses segmentation results in general.
 
+W-Net performed very poorly. almost no differentiation between classes was learned. because of that, post-processing was not implemented. in total, W-Net approach was not very effective. for that reason, it is not persued any further.
 
+U-Net and DenseNet results were generally way better. metrics not perfect, but images show that in general they are able to make useful predictions. up until now, only very small-sized areas have been explored. since real-world use case would be huge areas, we now look at larger scale images.
+
+figure \ref{fig:segmentation_discussion} show images with edge length of around $300$ meters. show original image, label and predictions of FCDN-67D and U-Net-23D. Those configurations were chosen, because they performed best in analysis before (section \ref{sec:unet_experiments} and \ref{sec:densenet_experiments}). 
+
+for Unet, relation to label is clearly visible. general outlines of classes look very similar. escpecially for classes buildings, forest, agriculture. this is expected, because those are the dominant classes in the data set. for those, there is lots of good training examples available. 
+
+also water class is very accurate. in contrast to labels, even small islands in river were detected. however, some false positives in areas with dense and saturated grass. 
+
+classes that did not perform well are urban green and traffic. traffic class was also labelled poorly in the data set. most roads were not even labelled as traffic area, so models can not learn that effectively. 
+
+urban greens are also very hard to detect. since they are mostly parks and sport facilities, they are easy to confuse with agriculture or buildings. this is exactly what happened in the model's predictions. 
+
+with regards to classes, densenet predictions can be explained similarly. however, there is one big difference in predictions: densenet has much finer resolution. this is escpecially true for building class. where U-Net predicted one big buildings segment, densenet distinguished between single houses. in that case, prediction is even better than the labels. 
+
+However, densenet predictions in general seem very fragmented. transition between agriculture and forest not very sharp, more like fissured patchwork. To some extent, this represents true nature, but for making conclusions about landing fields it is not very helpful. 
+
+conclusion: results of both U-Net and DenseNet are very useful. U-Net predictions are more consistent and not as fractured. for finding emergency landing fields, it might be easier because more contiguous areas that are suitable. however, it might lack precise information of rather small objects, like DenseNet shows. In total, both approaches yield good results and can be investigated more closely. 
+
+% TODO: change positions of densenet and unet
 \begin{figure}
     \newcommand{\DiscussionImageWidth}{0.23\textwidth}
     \centering
