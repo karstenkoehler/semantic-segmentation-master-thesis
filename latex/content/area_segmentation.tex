@@ -355,34 +355,33 @@ However, densenet predictions in general seem very fragmented. transition betwee
 conclusion: results of both U-Net and DenseNet are very useful. U-Net predictions are more consistent and not as fractured. for finding emergency landing fields, it might be easier because more contiguous areas that are suitable. however, it might lack precise information of rather small objects, like DenseNet shows. In total, both approaches yield good results and can be investigated more closely. 
 }
 
-% TODO: change positions of densenet and unet
 \begin{figure}
     \newcommand{\DiscussionImageWidth}{0.23\textwidth}
     \centering
 
     \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/1.png} \hfill
     \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/1.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/1.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/1.png}
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/1.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/1.png}
 
     \vspace{2mm}
     \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/2.png} \hfill
     \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/2.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/2.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/2.png}
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/2.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/2.png}
 
     \vspace{2mm}
     \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/3.png} \hfill
     \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/3.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/3.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/3.png}
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/3.png} \hfill
+    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/3.png}
 
     \begin{tikzpicture}
         \node[align=center] at (0, 0) {};
         \node[align=center] at (0.5, 0) {\tiny Input};
         \node[align=center] at (4.4, 0) {\tiny Label};
-        \node[align=center] at (8.3, 0) {\tiny FC-DenseNet-67D};
-        \node[align=center] at (12, 0) {\tiny U-Net-23D};
+        \node[align=center] at (8.3, 0) {\tiny U-Net-23D};
+        \node[align=center] at (12, 0) {\tiny FCDN-67D};
     \end{tikzpicture}
     \caption{Large scale predictions of FC-DenseNet-67D and U-Net-23D}
     \label{fig:segmentation_discussion}
