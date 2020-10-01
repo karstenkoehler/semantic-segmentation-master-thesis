@@ -330,16 +330,17 @@ In summary, the results of W-Net were very disappointing. Before any of the resu
 
 \subsection{Discussion}
 \label{sec:segmentation_discussion}
+The W-Net reference architecture turned out to perform very poorly. With the unsupervised training, the goal was to come up with segmentation classes that were not bound to any human preconceptions. This should also help to gather more insight into the data set in order to uncover potential improvements. However, the W-Net models did not learn any clear differentiation between classes and did not even consume the whole feature space that they were assigned. For those reasons, the W-Net approach was not very effective and is not pursued any further throughout the thesis.
+
+The results of both U-Net and FC-DenseNet were much better in general. The experiments showed that both reference architectures are capable to provide decent predictions. Looking at the plain metrics, there is still some space for improvement in both of them. However, this could also be affected by the inaccuracies in the labels (see section~\ref{sec:dataset_considerations}). The visual results show that the predictions in some cases are even more accurate than the labels.
+
+So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, figure~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
+
+% U-Net: ~9s for each image
+% DenseNet: ~11s for each image
+
 \WIP{
-this section discusses segmentation results in general.
-
-W-Net performed very poorly. almost no differentiation between classes was learned. because of that, post-processing was not implemented. in total, W-Net approach was not very effective. for that reason, it is not persued any further.
-
-U-Net and DenseNet results were generally way better. metrics not perfect, but images show that in general they are able to make useful predictions. up until now, only very small-sized areas have been explored. since real-world use case would be huge areas, we now look at larger scale images.
-
-figure \ref{fig:segmentation_discussion} show images with edge length of around $300$ meters. show original image, label and predictions of FCDN-67D and U-Net-23D. Those configurations were chosen, because they performed best in analysis before (section \ref{sec:unet_experiments} and \ref{sec:densenet_experiments}). 
-
-for Unet, relation to label is clearly visible. general outlines of classes look very similar. escpecially for classes buildings, forest, agriculture. this is expected, because those are the dominant classes in the data set. for those, there is lots of good training examples available. 
+for Unet, relation to label is clearly visible. general outlines of classes look very similar. especially for classes buildings, forest, agriculture. this is expected, because those are the dominant classes in the data set. for those, there is lots of good training examples available.
 
 also water class is very accurate. in contrast to labels, even small islands in river were detected. however, some false positives in areas with dense and saturated grass. 
 
