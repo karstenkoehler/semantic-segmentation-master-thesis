@@ -334,27 +334,6 @@ The W-Net reference architecture turned out to perform very poorly. With the uns
 
 The results of both U-Net and FC-DenseNet were much better in general. The experiments showed that both reference architectures are capable to provide decent predictions. Looking at the plain metrics, there is still some space for improvement in both of them. However, this could also be affected by the inaccuracies in the labels (see section~\ref{sec:dataset_considerations}). The visual results show that the predictions in some cases are even more accurate than the labels.
 
-So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, figure~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
-
-The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three most dominant classes throughout the data set, lots of good training examples are available.
-
-Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it come to highly saturated green grass, such as on sports fields.
-
-The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For the both classes this matches the expectations, since they both were labelled rather poorly in the data set. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar: Since this class mostly includes parks and sports facilities, it is easily confused with either the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
-
-With regards to the classes, the predictions of \texttt{FCDN-67D} can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments.
-
-\WIP{
-with regards to classes, densenet predictions can be explained similarly. however, there is one big difference in predictions: densenet has much finer resolution. this is escpecially true for building class. where U-Net predicted one big buildings segment, densenet distinguished between single houses. in that case, prediction is even better than the labels.
-
-However, densenet predictions in general seem very fragmented. transition between agriculture and forest not very sharp, more like fissured patchwork. To some extent, this represents true nature, but for making conclusions about landing fields it is not very helpful. 
-
-% U-Net: ~9s for each image
-% DenseNet: ~11s for each image
-
-conclusion: results of both U-Net and DenseNet are very useful. U-Net predictions are more consistent and not as fractured. for finding emergency landing fields, it might be easier because more contiguous areas that are suitable. however, it might lack precise information of rather small objects, like DenseNet shows. In total, both approaches yield good results and can be investigated more closely. 
-}
-
 \begin{figure}
     \newcommand{\DiscussionImageWidth}{0.23\textwidth}
     \centering
@@ -387,9 +366,26 @@ conclusion: results of both U-Net and DenseNet are very useful. U-Net prediction
     \label{fig:segmentation_discussion}
 \end{figure}
 
+So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, figure~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
+
+The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three most dominant classes throughout the data set, lots of good training examples are available.
+
+Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it come to highly saturated green grass, such as on sports fields.
+
+The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For the both classes this matches the expectations, since they both were labelled rather poorly in the data set. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar: Since this class mostly includes parks and sports facilities, it is easily confused with either the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
+
+With regards to the classes, the predictions of \texttt{FCDN-67D} can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the data set.
+
+On the other hand, the predictions of \texttt{FCDN-67D} seem very fragmented in some cases, for example between the \texttt{agriculture} and \texttt{forest} classes. The transitions between those two are not really sharp but rather jagged and fissured. To some extent this represents the real situation, because oftentimes there are no clear borders between forest and grassland.
+
+In terms of inference speed \texttt{U-Net-23D} is slightly faster than \texttt{FCDN-67D}. Each image in figure~\ref{fig:segmentation_discussion} took around $9~\text{s}$ to process with \texttt{U-Net-23D}. In contrast, \texttt{FCDN-67D} took around $11~\text{s}$ per image. All measurements were executed on a NVIDIA GeForce GTX 1080 Ti graphics card\footnote{More details on the hardware can be found in appendix~\ref{app:tools_hardware}}.
+
+This is surprising, because \texttt{U-Net-23D} has more than four times the number of parameters compared to \texttt{FCDN-67D} ($16.6~\text{M}$ vs.\ $4.0~\text{M}$). With \texttt{U-Net-23D} however, the parameters are spread across only $23$ convolutional layers, whereas in \texttt{FCDN-67D} there are $67$ layers. Therefore, the calculations in \texttt{U-Net-23D} can better be executed in parallel.
+
+In total, both configuration yield remarkable results for the segmentation challenge. Since the predictions of \texttt{U-Net-23D} are less factured, it might be easier to find suitable emergency landing fields in the huge contiguous areas. However, the predictions might lack precise information of rather small objects. In that regard, the predictions from \texttt{FCDN-67D} be more beneficial.
+
 \subsection{Deployment}
 \WIP{
-
 two selected models are provided as docker images. docker image includes all dependencies like Python interpreter and packages. also model definition and trained weights. this allows easy usage for inference.
 
 docker images are publicly available in docker hub in \texttt{imageseg/terrain-segmentation} repository. two tags in the repository, one for U-Net the other for DenseNet.
