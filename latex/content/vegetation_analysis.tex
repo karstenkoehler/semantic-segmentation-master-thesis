@@ -185,22 +185,15 @@ Both SAVI and MSAVI do not tell a big difference about forest areas. Regardless 
 For agriculture however, both indices are very opinionated. Even in spots where the original images hardly show any differences, SAVI and MSAVI project a considerable contrast in vegetation density. Again, the second and fifth image show this very clearly.
 
 \subsection{Discussion}
-The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels not known to the authors and can only be estimated based on the image data. Additionally, various cameras and sensors were used to record the data (see \WIP{section~\ref{sec:dataset_analysis}}).
+The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels can only be estimated based on the image data. The data set itself does not contain any direction information about the vegetation situation. For this reason it is hard to judge whether the projections of the SVIs are valid.
 
-\WIP{
-assumption: forest does not necessarily have more vegetation. depends on type of trees and heavilty on foliage. also type of crops make big difference. 
+Additionally, various cameras and sensors were used to record the data (see \WIP{section~\ref{sec:dataset_analysis}}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the data set used for this thesis might not be well-suited for the use with SVIs.
 
-chosen images include living and dead vegetation to see if indices can tell the difference. best case is very distinct values for living/dead vegetation.
+A straight comparison of the individual SVI projections leads to contradictory results in some cases. This means that, depending on the SVI, the predicted locations of areas with high vegetation density differ. Without clear evidence about the actual vegetation situation in the data set, no conclusions can be drawn about the accuracy of the SVIs. With the given information, it is not possible to determine which projection is the correct one.
 
-actual vegetation can only be estimated based on visual aspects of dataset. Dataset doesn't tell anything about real situation of vegetation for the areas. So it is hard to tell if results from SVIs are accurate.
+Regarding the identification of emergency landing fields, the application of SVIs is generally possible, although some restrictions are imposed. First and foremost, it is not recommended to fully rely on the automated assessment only. The SVIs can be used to scan over large regions and filter out some recommended spots with sparse vegetation. In any case, these spots should be checked again manually for their suitability.
 
-data set consists of RGB and NIR light values. most SVIs are created for specific set of hardware. mostly deployed on satellites, so SVIs take into account atmospheric effects on data. however, images in our data set are taken from airplanes with different cameras. so data set might not be applicable for the SVIs. \footnote{\url{https://www.opengeodata.nrw.de/produkte/geobasis/lbi/dop/dop_jp2_f10/}}
-% TODO: which hardware used for data? how collected?
-
-predicions of different SVIs are not consistent. spots with dense vegetation vary depending on the SVI used. which one is right? hard to tell without seeing the actual vegetation situation.
-
-conclusion: use SVIs with care, because results vary a lot. with more information about image data, better assessment for projections can be made. maybe also play with factors in SVIs to adjust for implications of very specific hardware.
-}
+However, vegetation density on its own is not a good indicator for the identification of suitable emergency landing fields. For example, most SVIs project grasslands as highly vegetated areas. The same applies to many agricultural crops such as corn or hops. With regards to an emergency landing, grasslands are presumably well suited, whereas corn and hops should rather be avoided. While the projections of the SVIs tell about the density, they do not give any information about the height or the robustness of the vegetation.
 
 \subsection{Deployment}
 \WIP{
