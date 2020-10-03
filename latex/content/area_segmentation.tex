@@ -336,21 +336,21 @@ The results of both U-Net and FC-DenseNet were much better in general. The exper
 
 So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, figure~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
 
-% U-Net: ~9s for each image
-% DenseNet: ~11s for each image
+The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three most dominant classes throughout the data set, lots of good training examples are available.
+
+Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it come to highly saturated green grass, such as on sports fields.
+
+The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For the both classes this matches the expectations, since they both were labelled rather poorly in the data set. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar: Since this class mostly includes parks and sports facilities, it is easily confused with either the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
+
+With regards to the classes, the predictions of \texttt{FCDN-67D} can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments.
 
 \WIP{
-for Unet, relation to label is clearly visible. general outlines of classes look very similar. especially for classes buildings, forest, agriculture. this is expected, because those are the dominant classes in the data set. for those, there is lots of good training examples available.
-
-also water class is very accurate. in contrast to labels, even small islands in river were detected. however, some false positives in areas with dense and saturated grass. 
-
-classes that did not perform well are urban green and traffic. traffic class was also labelled poorly in the data set. most roads were not even labelled as traffic area, so models can not learn that effectively. 
-
-urban greens are also very hard to detect. since they are mostly parks and sport facilities, they are easy to confuse with agriculture or buildings. this is exactly what happened in the model's predictions. 
-
-with regards to classes, densenet predictions can be explained similarly. however, there is one big difference in predictions: densenet has much finer resolution. this is escpecially true for building class. where U-Net predicted one big buildings segment, densenet distinguished between single houses. in that case, prediction is even better than the labels. 
+with regards to classes, densenet predictions can be explained similarly. however, there is one big difference in predictions: densenet has much finer resolution. this is escpecially true for building class. where U-Net predicted one big buildings segment, densenet distinguished between single houses. in that case, prediction is even better than the labels.
 
 However, densenet predictions in general seem very fragmented. transition between agriculture and forest not very sharp, more like fissured patchwork. To some extent, this represents true nature, but for making conclusions about landing fields it is not very helpful. 
+
+% U-Net: ~9s for each image
+% DenseNet: ~11s for each image
 
 conclusion: results of both U-Net and DenseNet are very useful. U-Net predictions are more consistent and not as fractured. for finding emergency landing fields, it might be easier because more contiguous areas that are suitable. however, it might lack precise information of rather small objects, like DenseNet shows. In total, both approaches yield good results and can be investigated more closely. 
 }
