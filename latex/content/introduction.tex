@@ -8,19 +8,11 @@ It is no surprise that nowadays there are companies and researchers working on t
 Sometimes there is just no suitable runway that happens to be in reach for the emergency landing. As a last option to get down without crashing, the pilot has to find a spot in the landscape where he can safely touch down the airplane. Because this is such a high risk maneuver, it is only considered if there is really no other option. To reduce the risk of a crash it is essential to find an flat area with few obstacles. For that case, the ELA contains a module called Emergency Landing Field Identification (ELFI), which assists in finding zones suitable for an emergency landing in the wild~\cite{feu_elfi}. This thesis will work on improving said module using deep learning techniques with a publicly available dataset.
 
 \subsection{Background}
-An early version of ELFI used only LIDAR elevation data to detect emergency landing fields. As stated in \cite{feu_elfi} they used high resolution height maps with an edge length of under 1m in the grid. A big drawback with elevation data is that you cannot rely on the data in every case. For example, water surfaces like lakes and large rivers are found to be perfect areas for an emergency landing. But in reality water has a much higher risk to land on compared to solid ground. Furthermore, even high resolution height maps usually miss obstructions like power lines or small creeks. In the end this approach can give suggestions for considerable emergency landing areas, but the pilot still has to filter those results very closely.
+An early version of ELFI used only LIDAR elevation data to detect emergency landing fields. As stated in~\cite{feu_elfi} they used high resolution height maps with an edge length of under 1m in the grid. A big drawback with elevation data is that you cannot rely on the data in every case. For example, water surfaces like lakes and large rivers are found to be perfect areas for an emergency landing. But in reality water has a much higher risk to land on compared to solid ground.
 
-\WIP{
-%\cite{feu_elfi}
-%emergency landing fields are always the last option, because of high risks. Therefore looking for fields with low probability of a crash landing. Depends on many factors like inclination, vegetation and land use.
+Furthermore, even height maps with very high resolution usually miss obstructions like power lines or small creeks. In the end this approach can give suggestions for considerable emergency landing areas, but the pilot still has to filter those results very closely. Additional data like remotely sensed images can be used in order to narrow down the number of potential emergency landing fields. With image data it is possible to recognize even very small objects as well as the surface conditions in the potential areas.
 
-%With Emergency Landing Field Identification (ELFI) it is possible to automatically determine landing fields using LIDAR elevation data. very high resolution, grid size under 1m, but still not enough to spot fences, creeks, power lines. additional use of image data allows analyzing surface conditions. Idea is, to use CNN with image segmentation.
-
-\begin{itemize}
-    \item more information required to better reflect the current situation
-\end{itemize}
-}
-
+The latest version of the ELFI module already make use of this. However, the existing solutions are based on methods of traditional image processing only. With the recent success of machine learning and artificial neural networks, this topic offers encouraging opportunities to optimize the ELFI module. For that reason, also the FernUniversität Hagen conducts research on these approaches.
 
 \subsection{Objectives}
 The main objective of this thesis is to examine new ways of identifying and analyzing emergency landing fields with convolutional neural networks. The former methods are based exclusively on binary classification. With that, ELFI can only suggest potential areas and provide information such as inclination. To further support the pilot's decision making, this thesis investigates how to make more information available to the pilot by making use of high resolution orthographic photos. The District Government of Cologne provides a large dataset with digital orthographic imagery of Cologne and surroundings\footnote{For details see \url{https://www.geoportal.nrw/}.}.
