@@ -22,6 +22,14 @@ It is possible to download both DOP and NIR data together in a single bundle. Th
 % TODO: demonstrate the limits of practical feasibility, maybe later?
 
 \subsection{Preparing the dataset}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.9\textwidth]{images/data_preprocessing}
+    \caption{Summary of the data preprocessing steps}
+    \label{fig:data_preprocessing}
+\end{figure}
+
 As a first step, the whole dataset is imported into a spatial database system. By doing that, it is very easy to export the data in various data formats and tile sizes required by the reference architectures (see section~\ref{sec:ref_archs}). PostgreSQL\footnote{see \url{https://www.postgresql.org/}} is a powerful open-source database system. Together with PostGIS\footnote{see \url{https://postgis.net/}}, a free and open-source extension for PostgreSQL, it is capable of performing spatial operations on image rasters and vector objects. For example, it adds database functions to merge raster tiles, calculate intersection regions or determine bounding boxes.
 % TODO: created a database with postgis as single source of truth
 
