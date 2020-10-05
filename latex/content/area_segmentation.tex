@@ -386,15 +386,15 @@ In total, both configuration yield remarkable results for the segmentation chall
 
 \subsection{Deployment}
 \WIP{
-two selected models are provided as docker images. docker image includes all dependencies like Python interpreter and packages. also model definition and trained weights. this allows easy usage for inference.
+two selected models are provided as docker images in \cite{thesis-code20}. Latest versions of images can also be found in Docker Hub in repository \texttt{imageseg/terrain-segmentation} for easy access. docker image includes all dependencies like Python interpreter and packages. also model definition and trained weights. this allows easy usage for inference.
 
-docker images are publicly available in docker hub in \texttt{imageseg/terrain-segmentation} repository. two tags in the repository, one for U-Net the other for DenseNet.
+interaction with the models is kept simple for demonstration purpose. input is PNG file with RGB colors. output is also RGB color indicating the segmentation, where colors represent classes as described in \ref{sec:prepare_labels}.
 
-\begin{itemize}
-    \item Thoughts how to provide the trained models for practical use.
-    \item designing an API
-    \item packaging into a docker image
-\end{itemize}
+When running docker container from an image, two directories have to be mounted in the container. the \texttt{/images} directory should contain the input images. all PNG files in this directory will be fed into model. after processing, the result are written to \texttt{/predictions} directory. Container is stopped after all input images are processed.
+
+This workflow is only for demonstration purpose and not optimized for production use. Starting and stopping containers is to much overhead. Thus, other options have to be evaluated for that, for example TensorFlow Serving. With that, models are served behind a ready-to-use REST API.
+
+However, API cannot be called with images directly but only with tensor objects. Same for the output, which is also just a tensor that has to be further processed. So it is required to build a client for the API which takes care of data pre- and postprocessing. The client can also be connected to various other systems, like e.~g. a PostgreSQL database. This would allow to process huge loads of data much more efficiently.
 }
 
 \newpage

@@ -62,6 +62,7 @@ Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its 
 \end{figure}
 
 \subsection{Preparing the labels}
+\label{sec:prepare_labels}
 As explained in section~\ref{sec:dl_paradigms}, for supervised training you need to provide the model with a pair of input and expected output. The DOPs explained in the previous section function as input for the model. To train the model for segmentation, another prerequisite is to have some segmentation examples prepared. Usually this task is done manually by lining out the segments of a tile and then assigning a category to each segment.
 
 To reduce the amount of work, we use another dataset from the GEOportal called Digital Basic Landscape Model~\cite{base-dlm20}. It describes topological features of the landscape in a vector data format. Besides other things like \WIP{points of interest}, it includes regions categorized by their respective land use. The dataset is available for free download and also permits any use within the dl-de/zero-2-0 license. With some transformation the data fits perfectly for the use as labels during the training of a model.
