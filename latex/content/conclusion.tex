@@ -1,17 +1,15 @@
 \section{Conclusion}
+The main objective of this thesis was to advance the identification of emergency landing fields with the given data set. This goal was achieved by a variety of approaches.
+
+For the semantic segmentation of terrain, three renowned reference architectures have been studied thoroughly. Each architecture was analyzed and presented in detail. The architectures were tested extensively with regards to the segmentation challenge. 
+
+The experiments proved that the W-Net architecture is not effective on the given data set. The unsupervised training approach did not generate new insights on the data and did not lead to a adequate differentiation of class segments. For that reason, it is recommended to not conduct further research on this architecture in the given context.
+
+By contrast, both U-Net and FC-DenseNet architectures have shown great success for the class segmentation. The predictions of U-Net were more contiguous and therefore closer to the labels used for training. On the other hand, the predictions of FC-DenseNet are closer to reality, because they represent very detailed segments. 
+
+Both architectures expose some shortcomings with respect to the underrepresented classes in the data set. It is recommended to address these issues before installing the models in a production environment. This is likely to be related to the concerns expressed about the inaccurate labels used for training. Therefore, it is recommended to employ a different set of labels for future research. Since manual labelling of the entire data set comes with very high efforts, another predefined set of labels has to be found. It is also possible to combine information from different sources for  this purpose.  
+
 \WIP{
-main objective was to support identification of emergency landing fields with given data set. this was explored thoroughly with several approaches.
-
-beginning with preparation of the data set. was imported into database to make it more accessible for future use. includes image data, nir values and also labels, so everything is in a single place of truth. this allows to export arbitrary chunks of data with ease. 
-
-for segmentation, three renowned reference architectures have been picked and explored. each architecture was analyzed and presented in detail. with in-depth experiments, the pros and cons of the architectures were shown with regards to the segmentation challenge. 
-
-W-Net architecture was proven to be not effective on the data set. results were not useful, which is why this architecture is not recommended for future use in this research. 
-
-Both U-Net and FC-DenseNet have shown great success for segmentation. U-Net produces more continguous segments, whereas FC-DenseNet predictions are more fine-grained. While the overall results are very promising, both reference architecture show issues with underrepresented classes in data set. Those have to be solved before models used in production.
-
-One issue with data set were poorly labels, especially for underrepresented classes. Therefore, it is recommended to use a different set of labels in further research. Since labelling manually comes with high effort, other label sets have to be found and evaluated. it is also possible to combine information from different label sets to get really precise data. 
-
 Another objective of the thesis was to evaluate the use of spectral vegetation indices to rate vegetation density. The goal is to use projections of SVIs for estimating suitability of areas for emergency landing. for that purpose, several SVIs have been explored. experiments show very inconsistent results. the areas where dense vegetation is predicted differ based on the index that is used. Also the real situation of vegetation is not represented in data set, so authors can only estimate it. Therefore it is hard to assess practical usability of those indices. 
 
 Also most indices are designed and calibrated for use with very specific hardware in very specific conditions. data set in this thesis does not match those conditions. this might explain inconsistency seen across the indices. Based on those results, no clear conclusion can be drawn about the indices. Further research is required to give recommendations. 
