@@ -1,16 +1,24 @@
 \section{Conclusion}
 \WIP{
-\begin{itemize}
-    \item U-Net showed best results for segmentation. but results are still not sufficient to automate identification of landing fields.
-    \item use data set with more accurate labels. for example Google Maps Static API. Combine it with some other data set to have distinction between forest/agriculture.
-    \item SVIs are not consistent. data set was not good for this purpose. in general, only tells about green/living vegetation. but also dead vegetation is critical for landing fields.
-\end{itemize}
+main objective was to support identification of emergency landing fields with given data set. this was explored thoroughly with several approaches.
 
-\begin{itemize}
-    \item reflect on the results achieved with the thesis in relation to the objectives
-    \item investigate practical usability and limits of the developed models
-    \item express ideas how the results/models can be further improved
-\end{itemize}
+beginning with preparation of the data set. was imported into database to make it more accessible for future use. includes image data, nir values and also labels, so everything is in a single place of truth. this allows to export arbitrary chunks of data with ease. 
+
+for segmentation, three renowned reference architectures have been picked and explored. each architecture was analyzed and presented in detail. with in-depth experiments, the pros and cons of the architectures were shown with regards to the segmentation challenge. 
+
+W-Net architecture was proven to be not effective on the data set. results were not useful, which is why this architecture is not recommended for future use in this research. 
+
+Both U-Net and FC-DenseNet have shown great success for segmentation. U-Net produces more continguous segments, whereas FC-DenseNet predictions are more fine-grained. While the overall results are very promising, both reference architecture show issues with underrepresented classes in data set. Those have to be solved before models used in production.
+
+One issue with data set were poorly labels, especially for underrepresented classes. Therefore, it is recommended to use a different set of labels in further research. Since labelling manually comes with high effort, other label sets have to be found and evaluated. it is also possible to combine information from different label sets to get really precise data. 
+
+Another objective of the thesis was to evaluate the use of spectral vegetation indices to rate vegetation density. The goal is to use projections of SVIs for estimating suitability of areas for emergency landing. for that purpose, several SVIs have been explored. experiments show very inconsistent results. the areas where dense vegetation is predicted differ based on the index that is used. Also the real situation of vegetation is not represented in data set, so authors can only estimate it. Therefore it is hard to assess practical usability of those indices. 
+
+Also most indices are designed and calibrated for use with very specific hardware in very specific conditions. data set in this thesis does not match those conditions. this might explain inconsistency seen across the indices. Based on those results, no clear conclusion can be drawn about the indices. Further research is required to give recommendations. 
+
+This requires more information about actual vegetation situation. that way it can be evaluated which indices are close to real situation. also the indices which yield inaccurate projections can be dropped. For that purpose a different data set is needed. 
+
+In summary, this thesis made significant progress to optimize identification of emergency landing fields. 
 }
 
 \newpage
