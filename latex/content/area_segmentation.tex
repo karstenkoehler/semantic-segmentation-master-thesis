@@ -223,6 +223,7 @@ From a purely visual point of view \texttt{FCDN-103CD} and \texttt{FCDN-67D} del
 The differentiation between the \texttt{agriculture} and \texttt{forest} classes is noticeable. In reality, the transition between those two classes is seamless and hardly perceivable. So it is expected that the predictions are subject to minor fluctuations.
 
 \subsection{Experiments with W-Net}
+\label{sec:wnet_experiments}
 Lastly, the W-Net architecture presented in section~\ref{sec:wnet} is implemented. For that, big parts of the U-Net implementation could be reused, because W-Net essentially consists of two subsequent U-Nets. In contrast to the original U-Net architecture however, the W-Net employs zero padding for the convolutional layers, so that input and output dimensions are equal.
 
 The W-Net architecture was designed for unsupervised training. This means, the labels of the data set are not consulted during training. Instead, the original images are used as both input and label. This way, the model has to learn an appropriate distribution of classes all by itself. Since this setup allows for arbitrary numbers of classes, the number is appended to the model name as a suffix. Otherwise, the naming convention is the same as for U-Net in section~\ref{sec:unet_experiments}.
