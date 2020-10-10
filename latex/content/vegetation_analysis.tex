@@ -1,6 +1,6 @@
 \section{Analysis of vegetation density}
 \label{sec:vegetation_analysis}
-After the segmentation of the surface into different classes, the second objective of this thesis is to draw conclusions on vegetation density. Vegetation is one of the main factors to consider when looking for suitable emergency landing fields. Lower vegetation density increases the chances of a successful emergency landing.
+After the segmentation of the terrain type into different classes, the second objective of this thesis is to draw conclusions on vegetation density. Vegetation is one of the main factors to consider when looking for suitable emergency landing fields. Lower vegetation density increases the chances of a successful emergency landing.
 
 One method for analyzing vegetation density with remotely sensed data are \emph{spectral vegetation indices} (SVIs). This chapter focuses on investigating several spectral vegetation indices and their usefulness with the data set presented in chapter~\ref{sec:dataset_analysis}.
 
@@ -40,7 +40,7 @@ The NDVI was able to solve some of the shortcomings of the RVI. For example, bec
 Values close to $1$ indicate a high probability for dense, green vegetation~\cite{gisg_ndvi20}. For lower values the density of the vegetation decreases. Values near $0$ do not allow for any precise conclusions about the surface conditions, except that living vegetation is very unlikely at that location. The negative range of values mostly consists of water.
 
 \subsubsection{Enhanced Vegetation Index}
-As time passes, improved measuring instruments were launched, like the Terra mission\footnote{see \url{https://terra.nasa.gov/}} of the National Aeronautics and Space Administration (NASA). The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
+As time passes, improved measuring instruments were launched, like the Terra mission\footnote{For details see \url{https://terra.nasa.gov/}.} of the National Aeronautics and Space Administration (NASA). The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
 
 The EVI is calculated similarly to the NDVI, but has some additional factors to correct the influence of atmospheric conditions and background noise (see equation~\ref{eq:evi}). This means that EVI is more sensitive and offers more reliable information about the vegetation.
 
@@ -116,7 +116,7 @@ Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection
 
 In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is not so straightforward but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields. 
 
-In figure~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualization also expresses that range. As can be seen, the projection for the two indices are quite different. 
+In figure~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualizations also express that range. As can be seen, the projection for the two indices are quite different.
 
 \begin{figure}
     \centering
@@ -151,7 +151,7 @@ Although the results contradict each other, when viewed for each index separatel
 
 With regards to forests, NDVI performs rather bad. The middle image shows that there is almost no difference in the projection, regardless of the foliage. In contrast, EVI is able to make a clear distinction. For trees with foliage there are large bright spots in the projections.
 
-Lastly, figure~\ref{fig:vegetation_savi_examples} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yielded much higher values than SAVI. That is why the visualizations of MSAVI are much brighter. 
+Lastly, figure~\ref{fig:vegetation_savi_examples} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yield much higher values than SAVI. That is why the visualizations of MSAVI are much brighter.
 
 \begin{figure}
     \centering
@@ -185,7 +185,7 @@ Both SAVI and MSAVI do not tell a big difference about forest areas. Regardless 
 For agriculture however, both indices are very opinionated. Even in spots where the original images hardly show any differences, SAVI and MSAVI project a considerable contrast in vegetation density. Again, the second and fifth image show this very clearly.
 
 \subsection{Discussion}
-The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels can only be estimated based on the image data. The data set itself does not contain any direction information about the vegetation situation. For this reason it is hard to judge whether the projections of the SVIs are valid.
+The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels can only be estimated based on the image data. The data set itself does not contain any direct information about the vegetation situation. For this reason it is hard to judge whether the projections of the SVIs are valid.
 
 Additionally, various cameras and sensors were used to record the data (see \WIP{section~\ref{sec:dataset_analysis}}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the data set used for this thesis might not be well-suited for the use with SVIs.
 
