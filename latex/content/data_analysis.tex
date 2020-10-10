@@ -62,7 +62,7 @@ Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its 
 
 \subsection{Preparing the labels}
 \label{sec:prepare_labels}
-As explained in section~\ref{sec:dl_paradigms}, for supervised training you need to provide the model with a pair of input and expected output. The DOPs explained in the previous section function as input for the model. To train the model for segmentation, another prerequisite is to have some segmentation examples prepared. Usually this task is done manually by lining out the segments of a tile and then assigning a category to each segment.
+As explained in section~\ref{sec:dl_paradigms}, for supervised training you need to provide the model with a pair of input and expected output. The DOPs explained in the previous section function as input for the model. To train the model for segmentation, another prerequisite is to have some segmentation examples prepared. Usually this task is done manually by lining out the segments of a tile and then assigning a class to each segment.
 
 To reduce the amount of work, we use another dataset from the GEOportal called Digital Basic Landscape Model~\cite{base-dlm20}. It describes topological features of the landscape in a vector data format. Besides other things like \WIP{points of interest}, it includes regions categorized by their respective terrain type. The dataset is available for free download and also permits any use within the dl-de/zero-2-0 license. With some transformations, the data is well suited for the use as labels during the training of a model.
 
@@ -72,7 +72,7 @@ PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a da
 
 The original Shapesfiles enclose all regions of the State of North Rhine-Westphalia. Since the DOP und NIR datasets only consist of a smaller subregion, all geometry objects are cropped to that subregion in the next step. Geometry objects that are located outside of the boundaries are dropped entirely. During this process, the database tables of the different Shapefiles are merged into one single table. This resulting table has columns for an internal id, the object type, a textual object description and for the geometry object itself. As all the other meta information contained in the Shapefiles is not needed, it is dropped in this step.
 
-The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined supercategories:
+The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes:
 % TODO: add colors to class names
 \begin{itemize}
   \setlength\itemsep{1mm}
@@ -83,16 +83,16 @@ The Shapefiles contain a few more categories than the segmentation in this thesi
   \item urban greens
   \item traffic
 \end{itemize}
-The mapping between the categories of the Shapefiles and the chosen supercategories is to be found in table~\ref{tab:category_mapping}.
+The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
 
 \begin{table}[]
 \centering
 \small
-\caption{Mapping from Shapefile objects to segmentation categories}
+\caption{Mapping from Shapefile categories to segmentation classes}
 \label{tab:category_mapping}
 \begin{tabular}{|l|l|l|l|}
 \hline
-\textbf{Shapefile} & \textbf{Object Code} & \textbf{Object Description}    & \textbf{Segmentation Category} \\ \hline
+\textbf{Shapefile} & \textbf{Object Code} & \textbf{Object Description}    & \textbf{Segmentation Class} \\ \hline
 gew01\_f           & 44001                & running water                  & water                          \\ \hline
 gew01\_f           & 44005                & harbor dock                    & water                          \\ \hline
 gew01\_f           & 44006                & stagnant water                 & water                          \\ \hline
@@ -113,9 +113,9 @@ ver03\_f           & 42010                & rail traffic                   & tra
 \end{tabular}
 \end{table}
 
-The last step is to merge all geometry objects of the same category. The final table only contains six geometry objects, one for each category. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same category.
+The last step is to merge all geometry objects of the same class. The final table only contains six geometry objects, one for each class. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same class.
 
-Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant categories are clearly forest and buildings. Water and traffic zones only take up a very small area and both are barely visible because of the scale of the illustration. The imbalance of the categories is an issue which is further addressed in section~\ref{sec:dataset_considerations}
+Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant classes are clearly forest and buildings. Water and traffic zones only take up a very small area and both are barely visible because of the scale of the illustration. The imbalance of the classes is an issue which is further addressed in section~\ref{sec:dataset_considerations}
 
 % TODO: show mapping from categories to colors
 \begin{figure}[h]
@@ -136,19 +136,19 @@ For this thesis, the data is exported from the database and saved as image files
 
 The PNG image format is used for both the DOP footage and the segmentation labels. For the DOPs this works great, because they contain three color bands that can be stored in the RGB channels of a PNG file. It was found to be better for training if the input values are normalized to range $[0, 1]$ before feeding them to a network. Since the PNG files use 8 bit per color, this normalization can be achieved by dividing the color values by $255$.
 
-In the image files the labels use color-encoding to differentiate between the categories. However, this is a bad representation for training, since the distance of the colors in the color space does not correlate with the similarity of the terrain types. This means the colors chosen for the categories would influence the segmentation predictions made by the network. Thus, after reading a label from a PNG file it is transformed to one-hot encoding.
+In the image files the labels use color-encoding to differentiate between the classes. However, this is a bad representation for training, since the distance of the colors in the color space does not correlate with the similarity of the terrain types. This means the colors chosen for the classes would influence the segmentation predictions made by the network. Thus, after reading a label from a PNG file it is transformed to one-hot encoding.
 
-In one-hot encoding, each pixel is assigned a vector with one value per category. The value for the category is set to $1$ if the pixel belongs to that specific category, and $0$ otherwise. That way, the distance between the categories is equal for each pair of categories, i.~e. there is no correlation between categories. The translation from color-encoding to one-hot encoding is done by simply mapping the color vectors to their respective one-hot encoded representation.
+In one-hot encoding, each pixel is assigned a vector with one value per class. The value for the class is set to $1$ if the pixel belongs to that specific class, and $0$ otherwise. That way, the distance between the classes is equal for each pair of classes, i.~e. there is no correlation between classes. The translation from color-encoding to one-hot encoding is done by simply mapping the color vectors to their respective one-hot encoded representation.
 
 While the exact tile and label size depends on the network architecture, there is a general process how the image tiles are extracted from the database. This process is automated with multiple Python scripts (see \texttt{scripts} folder in~\cite{thesis-code20}) . The first step is to define the bounding boxes of all tiles for a specific network architecture in a separate table within the database. Each bounding box is represented by a rectangular PostGIS geometry object. It is important to line up the tiles precisely with the DOP raster, so that the raster pixels are not distorted or cut off during the export. This does not matter for the labels, because they are stored in a vector format which is not based on pixels.
 
 To extract the image files for those tile definitions, one straightforward way would be to join the raster table \texttt{dop\_rgb} with tile table containing the tile geometries using the PostGIS \texttt{ST\_Union} and \texttt{ST\_Intersection} functions. However, this was found to take a very long time to compute. Instead, a geospatial visualization software called \emph{QGIS} was used to do those computations. It offers a Python API which allows to run batch exports of a PostGIS raster table according to the bounding boxes defining the tiles.
 
-The Python script to export all image files with QGIS can be found in the \texttt{scripts} folder in~\cite{thesis-code20}. Before running the script, QGIS has to be configured with all the layers necessary to render the tiles. QGIS offers to connect directly to a PostgreSQL database with the PostGIS extension. The raster columns from the database tables \texttt{dop\_rgb} and \texttt{dop\_nir} can simply be loaded as raster layers. For the segmentation labels multiple layers are required, each representing one category with a specified color. Thus, the geometry column from the \texttt{geom\_segments} table is loaded multiple times, each time filtered by a different segmentation category.
+The Python script to export all image files with QGIS can be found in the \texttt{scripts} folder in~\cite{thesis-code20}. Before running the script, QGIS has to be configured with all the layers necessary to render the tiles. QGIS offers to connect directly to a PostgreSQL database with the PostGIS extension. The raster columns from the database tables \texttt{dop\_rgb} and \texttt{dop\_nir} can simply be loaded as raster layers. For the segmentation labels multiple layers are required, each representing one class with a specified color. Thus, the geometry column from the \texttt{geom\_segments} table is loaded multiple times, each time filtered by a different segmentation class.
 
 After all the layers have been configured, the script for the export can be executed. It reads all the tiling information from the database and distributes the rendering tasks to a few QGIS worker threads. Each worker thread is responsible for rendering the specific part of the map layers and saving it as PNG image file.
 
-Since the tiles have been precisely aligned with the raster data, the RGB and NIR image files are pixel-perfect copies of the original dataset. However, as the labels are converted from vector space to pixel space during the export, QGIS performs color interpolation on the boundaries between adjacent segments. This is disadvantageous, because the interpolated pixels are no longer clearly assigned to a single category. To overcome this issue, another Python script iterates over all the label files and assigns proper colors to the interpolated pixels according to adjacent pixels.
+Since the tiles have been precisely aligned with the raster data, the RGB and NIR image files are pixel-perfect copies of the original dataset. However, as the labels are converted from vector space to pixel space during the export, QGIS performs color interpolation on the boundaries between adjacent segments. This is disadvantageous, because the interpolated pixels are no longer clearly assigned to a single class. To overcome this issue, another Python script iterates over all the label files and assigns proper colors to the interpolated pixels according to adjacent pixels.
 
 Because of that process, it can happen that the segmentation maps in the exported label files slightly deviate from the labels provided in the initial dataset. However, in any case the difference is less than a few decimetres, which is acceptable in the context of this thesis.
 
@@ -202,19 +202,19 @@ After the export process is done, the images are ready to use for training. Figu
 \subsection{Considerations about the dataset}
 \label{sec:dataset_considerations}
 
-Even though the chosen dataset generally offers many advantages, it still has some downsides. The two main points of concern are on one side the imbalanced distribution of categories and on the other side the label precision at segment edges.
+Even though the chosen dataset generally offers many advantages, it still has some downsides. The two main points of concern are on one side the imbalanced distribution of classes and on the other side the label precision at segment edges.
 
-Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area coverages of the categories in the dataset. Around $65\%$ of the dataset consists of area covered by forest. Furthermore, both traffic zones and water are below $1\%$ respectively. Forest, buildings and agriculture are the three dominant classes in this dataset. In total, those three classes make up almost $97\%$ of the dataset. This can also be seen in figure~\ref{fig:dop_label_all} on page~\pageref{fig:dop_label_all}.
+Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area coverages of the classes in the dataset. Around $65\%$ of the dataset consists of area covered by forest. Furthermore, both traffic zones and water are below $1\%$ respectively. Forest, buildings and agriculture are the three dominant classes in this dataset. In total, those three classes make up almost $97\%$ of the dataset. This can also be seen in figure~\ref{fig:dop_label_all} on page~\pageref{fig:dop_label_all}.
 
 In general, such a striking imbalance between classes can have a significant impact on the model if not properly addressed. For example, it could happen that the model predicts the dominant class for all pixels all the time. In fact, a model can achieve $65\%$ categorical accuracy for the chosen dataset if it only predicts the \texttt{forest} class for every input. Obviously, this prediction would be useless for production use. There are many ways to tackle this issue, some common ways are shown in~\cite{imbalanced_data09}. Section~\ref{sec:prepare_train_test} will further elaborate on this topic.
 
 \begin{table}
 \centering
-\caption{Class Proportions measured over the entire data set}
+\caption{Class Proportions measured over the entire dataset}
 \label{tab:seg-breakdown}
 \begin{tabular}{|l|r|r|r|r|r|}
 \hline
-\multicolumn{1}{|c|}{\textbf{category}} &
+\multicolumn{1}{|c|}{\textbf{class}} &
   \multicolumn{1}{c|}{\textbf{total area}} &
   \multicolumn{1}{c|}{\textbf{relative area}} \\ \hline
 forest       & 162,554,698 $m^2$ & 65.40\%  \\ \hline
