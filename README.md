@@ -1,4 +1,6 @@
 # Semantic Segmentation
+### Abstract
+The automated identification of emergency landing fields is a complex challenge which requires to process huge quantities of information. This thesis explores the use of convolutional neural networks to perform a semantic segmentation of terrain types to support the identification process. For that, three popular reference architectures of [U-Net](https://arxiv.org/abs/1505.04597), [FC-DenseNet](https://arxiv.org/abs/1611.09326) and [W-Net](https://arxiv.org/abs/1711.08506) are implemented and applied to the challenge. The experiments show that U-Net and FC-DenseNet achieve adequate segmentation results, while the unsupervised learning process of W-Net fails to learn a proper class differentiation. In a second step, several spectral vegetation indices are investigated whether they are applicable to further narrow down the number of suitable emergency landing fields. It is demonstrated that with the given data set, the indices do not provide any meaningful information. Overall, this thesis offers a valuable contribution to the improvement of the automatic identification of emergency landing fields.
 
 ### References
 1. M. Abadi, A. Agarwal, P. Barham, E. Brevdo, et al. _TensorFlow: Large-Scale Machine Learning on Heterogeneous Systems_. 2015. [[Online]](https://tensorflow.org).
