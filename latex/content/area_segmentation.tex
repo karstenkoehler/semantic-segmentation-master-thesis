@@ -3,14 +3,14 @@
 
 Now that all fundamentals are covered, this chapter focuses on the implementation of the neural networks. Each reference architecture from section~\ref{sec:ref_archs} will be trained and evaluated with the original hyperparameters first. Afterwards, slight modifications are applied to the architectures, to look for optimization opportunities for the task at hand.
 
-All implementation are done in Python with the popular Keras framework backed by TensorFlow~\cite{tf_whitepaper15}. It is a well established framework with extensive tooling, lots of documentation and a great open-source community. Also it is proven to be production-ready by a broad variety of companies for all kinds of tasks\footnote{Case studies can be found at \url{https://www.tensorflow.org/about/case-studies}}. More information about tools and hardware used throughout this thesis is listed in appendix~\ref{app:tools_hardware}
+All implementations are done in Python with the popular Keras framework backed by TensorFlow~\cite{tf_whitepaper15}. It is a well established framework with extensive tooling, lots of documentation and a great open-source community. Also it is proven to be production-ready by a broad variety of companies for all kinds of tasks\footnote{Case studies can be found at \url{https://www.tensorflow.org/about/case-studies}.}. More information about tools and hardware used throughout this thesis is listed in appendix~\ref{app:tools_hardware}
 
 \subsection{Preparing the training and test dataset}
 \label{sec:prepare_train_test}
 
 Since the goal is to have a model that is able to generalize, it is recommended to measure its performance on data that it has not seen during training. Therefore, the dataset is split in two disjoint sets of data called \emph{training set} and \emph{test set}~\cite[p.~101f]{DLbook16}. During training, only samples from the training set are presented to the model. Afterwards, the performance is measured with samples from the test set. That way, models which just memorize the training examples perform rather bad compared to models which learn features on a generalized level.
 
-The test set should only be used to evaluate the performance, but not decide on hyperparameters or architecture of the model. Otherwise, the model may become too closely aligned with the test set, i.~e. it is no longer possible to evaluate the generalization ability of the model with it. For such decisions another split of the training set is made, which is then called \emph{validation set}~\cite[p.~119]{DLbook16}. This set is used to estimate the generalization error during training and optimization without consulting the test set. Only after all optimizations have been done and no further changes to the model are planned, the test set is used to evaluate the final performance of the model.
+The test set should only be used to evaluate the performance, but not to decide on hyperparameters or architecture of the model. Otherwise, the model may become too closely aligned with the test set, i.~e. it is no longer possible to evaluate the generalization ability of the model with it. For such decisions another split of the training set is made, which is then called \emph{validation set}~\cite[p.~119]{DLbook16}. This set is used to estimate the generalization error during training and optimization without consulting the test set. Only after all optimizations have been done and no further changes to the model are planned, the test set is used to evaluate the final performance of the model.
 
 There are many ways to pick the samples for the test and validation sets. \cite{val_split18} provides an insight into commonly used techniques. For this thesis, the test set respects the class imbalance that is found within the full dataset (see section~\ref{sec:dataset_considerations}). This is to achieve fair evaluation results which are not biased by any particular class. For each class, $10\%$ of the samples containing this class were chosen and added to the test set. The remaining samples are randomly distributed among training and validation set at a ratio of $9:1$.
 
@@ -25,15 +25,13 @@ One major challenge is to find appropriate class weights, so that the imbalances
 
 At a closer look on the dataset, most segments are huge contiguous patches of the same class. The export of the image tiles as described in section~\ref{sec:image_export} results in a high number of images which only cover one single class. This might have a major impact on the learning outcome. Since most of the samples presented to the model only consist of a single class, it is very likely that the model aligns to this characteristics. So instead of learning to differentiate between segments with precise boundaries, the model might rather be directed to roughly classify larger areas.
 
-For this reason, a different approach was chosen to address the class imbalance issues. Since the overall goal for the model is to differentiate between classes, images containing only a single class do not provide much value for training. Thus, all image tiles where all pixels belong to the same class are dropped entirely. One the one hand, this creates incentives for the model to better recognize the differences between classes and the characteristics of class boundaries. On the other hand, this also affects class imbalance, since large partitions of forests and agricultural areas are dropped, but mostly small streets and rivers are preserved. The first few attempts with the reduced training set looked    very promising. Hence, this strategy will be used further on for the training of all the models.
+For this reason, a different approach was chosen to address the class imbalance issues. Since the overall goal for the model is to differentiate between classes, images containing only a single class do not provide much value for training. Thus, all image tiles where all pixels belong to the same class are dropped entirely. On the one hand, this creates incentives for the model to better recognize the differences between classes and the characteristics of class boundaries. On the other hand, this also affects class imbalance, since large partitions of forests and agricultural areas are dropped, but mostly small streets and rivers are preserved. The first few attempts with the reduced training set looked    very promising. Hence, this strategy will be used further on for the training of all the models.
 
 % TODO: add table with category distribution of multisegment and discuss it
 
 \subsection{Experiments with U-Net}
 \label{sec:unet_experiments}
-The reference architecture that was explored first is the U-Net as introduced in section~\ref{sec:unet}. The architecture was implemented with the Keras framework. The code with all implementation details is listed in appendix~\ref{app:code}.
-
-The default input size for images was set to $572\times 572$ pixels. Those are the same dimensions as the authors of U-Net used in their initial approach~\cite{unet15}. Because of the unpadded convolutional layers, the dimensions of the predictions are smaller than the original input image. For the standard configuration in U-Net the output size is $388\times 388$ pixels. Depending on the number of convolutional layers, these dimensions may vary.
+The reference architecture that was explored first is the U-Net as introduced in section~\ref{sec:unet}. The default input size for images was set to $572\times 572$ pixels. Those are the same dimensions as the authors of U-Net used in their initial approach~\cite{unet15}. Because of the unpadded convolutional layers, the dimensions of the predictions are smaller than the original input image. For the standard configuration in U-Net the output size is $388\times 388$ pixels. Depending on the number of convolutional layers, these dimensions may vary.
 
 All U-Net models were trained with a stochastic gradient descent optimizer. The initial learning rate was set to $0.1$ and reduced after every epoch, to allow finetuning of the weights towards the end of the training. A batch size of $4$ was used in combination with Nesterov momentum~\cite{nesterov83} of $0.99$ to speed up the training process and avoid oscillations. The loss was computed using a categorical crossentropy function.
 
@@ -51,15 +49,7 @@ During training, some metrics were collected to measure the predictive performan
     \label{fig:unet_train_metrics}
 \end{figure}
 
-It is clearly visible that \texttt{U-Net-28D} does not perform well. For all three metrics it yields the worst results. Also, it does show any significant improvement over time, which is why the training was stopped after five epochs. On a closer investigation of the bad performance, it was found that the model always predicts the \texttt{agriculture} class for every pixel.
-\WIP{Confidence for predictions? What is the root cause for this behavior? Too deep, so features are lost throughout the network?}
-% TODO: calculate confidence, give reasons for this behavior
-% buildings   0.21715826
-% water   0.02491541
-% forest   0.34937066
-% traffic   0.01290903
-% urban greens   0.03881836
-% agriculture   0.35714394
+It is clearly visible that \texttt{U-Net-28D} does not perform well. For all three metrics it yields the worst results. Also, it does not show any significant improvement over time, which is why the training was stopped after five epochs. On a closer investigation of the bad performance, it was found that the model always predicts the \texttt{agriculture} class for every pixel. It might be the case that because of the additional convolution layers the architecture became to deep, so that the correlation between input and output values got lost on their way.
 
 The configuration \texttt{U-Net-18D} shows some improvements regarding the metrics in the first few epochs of training. After the fifth epoch the graphs flatten out and show only minor improvements. The training was stopped after ten epochs in total, where it hits around $60.8\%$ categorical accuracy and $21.6\%$ mean IoU. The \texttt{U-Net-18D} configuration was the one with the least number of parameters. Fewer parameters directly affect the ability to learn and generalize a broad range of features. The assumption is that the capacity of the model is not sufficient to comprehend the full space of features involved in this challenge.
 
@@ -136,7 +126,6 @@ For this architecture the dimensions of input and output are equally set to $224
 The loss is again calculated by a categorical crossentropy function. During training, the weight updates are applied using a RMSprop~\cite{rmsprop14} optimizer. The learning rate is initialized with $0.001$ (according to~\cite{denseseg17}) and decreased after each epoch.
 
 Another naming convention is applied to distinguish the variations of the FC-DenseNet models. The reference model is called \texttt{FCDN-103D}, again indicating the number of convolutional layers and the use of dropout. The letter \texttt{C} denotes the application of compression layers before transition-down layers to condense the outputs of dense blocks (see~\cite{denseseg17} for details). The compression rate of those layers is set to $0.5$, i.~e. the number of feature maps is halved.
-% TODO: list configurations, give reasons for them
 
 \subsubsection{Metrics}
 The training metrics for all FC-DenseNet configurations are presented in figure~\ref{fig:densenet_train_metrics}. Although there are some strong oscillations, most of the configurations show ongoing improvements over the course of 20 epochs. Towards the end of the training the oscillations faint and the graphs converge.
@@ -224,11 +213,11 @@ The differentiation between the \texttt{agriculture} and \texttt{forest} classes
 
 \subsection{Experiments with W-Net}
 \label{sec:wnet_experiments}
-Lastly, the W-Net architecture presented in section~\ref{sec:wnet} is implemented. For that, big parts of the U-Net implementation could be reused, because W-Net essentially consists of two subsequent U-Nets. In contrast to the original U-Net architecture however, the W-Net employs zero padding for the convolutional layers, so that input and output dimensions are equal.
+Lastly, the W-Net architecture presented in section~\ref{sec:w-net} is implemented. For that, big parts of the U-Net implementation could be reused, because W-Net essentially consists of two subsequent U-Nets. In contrast to the original U-Net architecture however, the W-Net employs zero padding for the convolutional layers, so that input and output dimensions are equal.
 
-The W-Net architecture was designed for unsupervised training. This means, the labels of the data set are not consulted during training. Instead, the original images are used as both input and label. This way, the model has to learn an appropriate distribution of classes all by itself. Since this setup allows for arbitrary numbers of classes, the number is appended to the model name as a suffix. Otherwise, the naming convention is the same as for U-Net in section~\ref{sec:unet_experiments}.
+The W-Net architecture was designed for unsupervised training. This means, the labels of the data set are not consulted during training. Instead, the original images are used as both input and desired output. This way, the model has to learn an appropriate distribution of classes all by itself. Since this setup allows for arbitrary numbers of classes, the number is appended to the model name as a suffix. Otherwise, the naming convention is the same as for U-Net in section~\ref{sec:unet_experiments}.
 
-Unlike the original architecture proposed in~\cite{wnet17} the training function was not split in two parts. Instead, the output of the encoder was altered to represent a clean one-hot encoding of the class with the highest prediction. This was done for two reasons:
+Unlike the original architecture proposed in~\cite{wnet17} the training function was not split in two parts. Instead, the output of the encoder was altered to represent a clean one-hot encoding of the class with the highest prediction. This was done for two reasons.
 
 First, that way the decoder only has $n$ distinct values from which it has to reconstruct the image (where $n$ is the number of classes). Thus, it is not possible to use intermediate vectors to encode additional states. This makes image reconstruction for the decoder a lot harder.
 
@@ -248,7 +237,7 @@ The metrics for W-Net are different from the ones presented for U-Net and FC-Den
 
 The only metric shown in figure~\ref{fig:wnet_train_metrics} is the categorical crossentropy loss during training. Since no configuration has major improvements (note the small range on the y-axis), training is stopped after a single epoch. Thus, the graph plots the loss per batch in the training set.
 
-All configurations show similar behavior during the training. Over the first few batches of data, there is an adequate improvement on the loss. Only after a few more batches, the predictions become worse again. Interestingly, the graphs for all configurations look like they all follow the same pattern. At the time of writing, no safisfying explanation can be given for those incidents.
+All configurations show similar behavior during the training. Over the first few batches of data, there is an adequate improvement on the loss. Only after a few more batches, the predictions become worse again. Interestingly, the graphs for all configurations look like they all follow the same pattern. At the time of writing, no satisfying explanation can be given for those incidents.
 
 \subsubsection{Images}
 Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net configurations extracted from the test set. For each configuration two images are displayed. The first one is the predicted class segmentation. The class colors in the predictions are not related to any of the classes mentioned earlier. They rather represent what the respective encoder learned to differentiate in the images. The second image is the reconstruction of the original image predicted by the decoder from the class segmentation.
@@ -312,12 +301,11 @@ Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net c
     \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/224817-restored}
 
     \begin{tikzpicture}
-        \node[align=center] at (0, 0) {};
-        \node[align=center] at (0.8, 0) {\tiny Input};
-        \node[align=center] at (3.35, 0) {\tiny W-Net-36D-6};
-        \node[align=center] at (5.95, 0) {\tiny W-Net-46D-6};
-        \node[align=center] at (8.45, 0) {\tiny W-Net-36D-20};
-        \node[align=center] at (10.9, 0) {\tiny W-Net-46D-20};
+        \node[align=center] at (-4, 0) {\tiny Input};
+        \node[align=center] at (-1.5, 0) {\tiny W-Net-36D-6};
+        \node[align=center] at (1.9, 0) {\tiny W-Net-46D-6};
+        \node[align=center] at (5.3, 0) {\tiny W-Net-36D-20};
+        \node[align=center] at (8.8, 0) {\tiny W-Net-46D-20};
     \end{tikzpicture}
     \caption{Selected predictions of different configurations of W-Net}
     \label{fig:wnet_prediction_images}
@@ -327,7 +315,7 @@ It is clearly visible that most configurations did not learn a broad variety of 
 
 For the configurations with 6 available classes, the reconstructions look much better. Especially \texttt{W-Net-46D-6} reassembles the rough structure of the original image. This is also the only configuration that makes notable use of at least two of the available classes. But still, four classes remain mostly unused.
 
-In summary, the results of W-Net were very disappointing. Before any of the results could be used to solve the real segmentation challenge, the output would have to be post-processed. This includes merging over-segmented classes and mapping the identified classes to the predefined ones. Due to the poor segmentation results this step was omitted.
+In summary, the results of W-Net were very disappointing. Before any of the results could be used to solve the real segmentation challenge, the output would have to be post-processed. This includes e.~g. mapping the identified classes to the predefined ones. Due to the poor segmentation results this step was omitted.
 
 \subsection{Discussion}
 \label{sec:segmentation_discussion}
@@ -371,29 +359,29 @@ So far, only very small areas have been looked at. In a more practical use case,
 
 The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three most dominant classes throughout the data set, lots of good training examples are available.
 
-Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it come to highly saturated green grass, such as on sports fields.
+Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it comes to highly saturated green grass, such as on sports fields.
 
-The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For the both classes this matches the expectations, since they both were labelled rather poorly in the data set. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar: Since this class mostly includes parks and sports facilities, it is easily confused with either the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
+The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For both classes this matches the expectations, since they both were labelled rather poorly in the data set. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar: Since this class mostly includes parks and sports facilities, it is easily confused with either the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
 
 With regards to the classes, the predictions of \texttt{FCDN-67D} can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the data set.
 
 On the other hand, the predictions of \texttt{FCDN-67D} seem very fragmented in some cases, for example between the \texttt{agriculture} and \texttt{forest} classes. The transitions between those two are not really sharp but rather jagged and fissured. To some extent this represents the real situation, because oftentimes there are no clear borders between forest and grassland.
 
-In terms of inference speed \texttt{U-Net-23D} is slightly faster than \texttt{FCDN-67D}. Each image in figure~\ref{fig:segmentation_discussion} took around $9~\text{s}$ to process with \texttt{U-Net-23D}. In contrast, \texttt{FCDN-67D} took around $11~\text{s}$ per image. All measurements were executed on a NVIDIA GeForce GTX 1080 Ti graphics card\footnote{More details on the hardware can be found in appendix~\ref{app:tools_hardware}}.
+In terms of inference speed \texttt{U-Net-23D} is slightly faster than \texttt{FCDN-67D}. Each image in figure~\ref{fig:segmentation_discussion} took around $9$~seconds to process with \texttt{U-Net-23D}. In contrast, \texttt{FCDN-67D} took around $11$~seconds per image. All measurements were executed on a NVIDIA GeForce GTX 1080 Ti graphics card\footnote{More details on the hardware can be found in appendix~\ref{app:tools_hardware}.}.
 
 This is surprising, because \texttt{U-Net-23D} has more than four times the number of parameters compared to \texttt{FCDN-67D} ($16.6~\text{M}$ vs.\ $4.0~\text{M}$). With \texttt{U-Net-23D} however, the parameters are spread across only $23$ convolutional layers, whereas in \texttt{FCDN-67D} there are $67$ layers. Therefore, the calculations in \texttt{U-Net-23D} can better be executed in parallel.
 
-In total, both configuration yield remarkable results for the segmentation challenge. Since the predictions of \texttt{U-Net-23D} are less factured, it might be easier to find suitable emergency landing fields in the huge contiguous areas. However, the predictions might lack precise information of rather small objects. In that regard, the predictions from \texttt{FCDN-67D} are more beneficial.
+In total, both configurations yield remarkable results for the segmentation challenge. Since the predictions of \texttt{U-Net-23D} are less fractured, it might be easier to find suitable emergency landing fields in the huge contiguous areas. However, the predictions might lack precise information of rather small objects. In that regard, the predictions from \texttt{FCDN-67D} are more beneficial.
 
 \subsection{Deployment}
-The two models \texttt{U-Net-23D} and \texttt{FCDN-67D} are also provided as Docker Images in~\cite{thesis-code20}. The latest versions of the images can also be found in the public Docker Hub repository \texttt{imageseg/terrain-segmentation}\footnote{\url{https://hub.docker.com/r/imageseg/terrain-segmentation}} The images bundle together all dependencies like the Python interpreter, required Python packages and also the models with the trained weights. This makes it easy to use the models for inference.
+The two models \texttt{U-Net-23D} and \texttt{FCDN-67D} are also provided as Docker Images in~\cite{thesis-code20}. The latest versions of the images can also be found in the public Docker Hub repository \texttt{imageseg/terrain-segmentation}\footnote{Available at \url{https://hub.docker.com/r/imageseg/terrain-segmentation}.}. The images bundle together all dependencies like the Python interpreter, required Python packages and also the models with the trained weights. This makes it easy to use the models for inference.
 
 The functionality of the images was deliberately kept simple, as they are for demonstration purposes only. The input consists of PNG files with RGB color scheme. The output is also rendered in PNG files, where the class segments are color-encoded as explained in section~\ref{sec:prepare_labels}. All pre- and postprocessing steps are performed automatically inside the Docker container.
 
 For this process, two directories have to be mounted when running a container from the Docker image. The \texttt{/images} directory should contain all input images. All PNG files in this directory will be fed into the model once the container is ready. The predicted results are then written to the \texttt{/predictions} directory. For each input file, a corresponding output file with the same name is created. The container is shut down as soon as all given images are processed.
 
-This workflow is for demonstration purposes only and is not optimized for production use. Starting and stopping Docker containers is a big overhead, because TensorFlow needs some time to ramp up and load the models. For that reason, other options have to be evaluated for production use of the models, like e.~g. TensorFlow Serving\footnote{\url{https://www.tensorflow.org/tfx/guide/serving}} This is a production-ready system for serving TensorFlow models with a standardized interface.
+This workflow is for demonstration purposes only and is not optimized for production use. Starting and stopping Docker containers is a big overhead, because TensorFlow needs some time to ramp up and load the models. For that reason, other options have to be evaluated for production use of the models, like e.~g. TensorFlow Serving\footnote{Available at \url{https://www.tensorflow.org/tfx/guide/serving}.}. This is a production-ready system for serving TensorFlow models with a standardized interface.
 
-However, the interfaces of TensorFlow Serving only work with tensor objects. Although the interface can be used directly, it makes sense to embed it in a pipeline. That allows to perform pre- and postprocessing steps independently from the model inference. The pipeline can then be connected to other system, e.~g. a PostgreSQL database. This enables the efficient processing of even large volumes of data.
+However, the interface of TensorFlow Serving only works with tensor objects. Although the interface can be used directly, it makes sense to embed it in a pipeline. That allows to perform pre- and postprocessing steps independently from the model inference. The pipeline can then be connected to other system, e.~g. a PostgreSQL database. This enables the efficient processing of even large volumes of data.
 
 \newpage
