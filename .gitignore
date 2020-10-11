@@ -15,7 +15,7 @@ models/**/images
 *.blg
 *.log
 *.out
-*.pdf
+thesis.pdf
 *.toc
 *.lof
 *.synctex.gz
