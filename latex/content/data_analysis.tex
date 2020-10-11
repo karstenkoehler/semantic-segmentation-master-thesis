@@ -40,7 +40,14 @@ To convert the files from JPEG 2000 to GeoTiff, we use the \emph{Geospatial Data
 
 With the files in GeoTiff format it is now possible to use the \texttt{raster2pgsql} tool to import them into a PostGIS raster table. The whole import process is automated with a Python script (see file \texttt{scripts/tif\_to\_raster.py} in~\cite{thesis-code20}). It assumes that there is a database called \texttt{dop10rgbi\_nrw} with the PostGIS extension enabled.
 
-In the first step, the script creates two database tables named \texttt{dop\_rgb} and \texttt{dop\_nir}. The \texttt{dop\_rgb} table has a PostGIS raster column with three raster bands to hold the color information for the DOPs. Simultaneously, the \texttt{dop\_nir} table also has a PostGIS raster column with only one raster band for the NIR values. It is reasonable to separate the color and NIR values as they will be used for different tasks later on.
+In the first step, the script creates two database tables named \texttt{dop\_rgb} and \texttt{dop\_nir}. The \texttt{dop\_rgb} table has a PostGIS raster column with three raster bands to hold the color information for the DOPs. Simultaneously, the \texttt{dop\_nir} table also has a PostGIS raster column with only one raster band for the NIR values. Figure~\ref{fig:dop_entities} illustrates the structure of both tables in detal. It is reasonable to separate the color and NIR values as they will be used for different tasks later on.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.6\textwidth]{images/dop_entities}
+    \caption{Database Table Structure for \texttt{dop\_rgb} and \texttt{dop\_nir}}
+    \label{fig:dop_entities}
+\end{figure}
 
 After the tables are created, the script loops through all the GeoTiff files and calls the \texttt{raster2pgsql} tool for every single one. That call returns a SQL insert statements enriched with the raster information in a binary representation. To execute those statements, it is possible to simply pipe the output of \texttt{raster2pgsql} into a \texttt{psql} command which is connected to the database.
 
@@ -113,7 +120,14 @@ ver03\_f           & 42010                & rail traffic                   & tra
 \end{tabular}
 \end{table}
 
-The last step is to merge all geometry objects of the same class. The final table only contains six geometry objects, one for each class. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same class.
+The last step is to merge all geometry objects of the same class. The final table only contains six geometry objects, one for each class. The exact table layout is shown in figure~\ref{fig:geom_segments_entities}. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same class.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=0.5\textwidth]{images/geom_segments_entities}
+    \caption{Database Table Structure for \texttt{geom\_segments}}
+    \label{fig:geom_segments_entities}
+\end{figure}
 
 Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant classes are clearly forest and buildings. Water and traffic zones only take up a very small area and both are barely visible because of the scale of the illustration. The imbalance of the classes is an issue which is further addressed in section~\ref{sec:dataset_considerations}
 
@@ -138,7 +152,18 @@ In the image files the labels use color-encoding to differentiate between the cl
 
 In one-hot encoding, each pixel is assigned a vector with one value per class. The value for the class is set to $1$ if the pixel belongs to that specific class, and $0$ otherwise. That way, the distance between the classes is equal for each pair of classes, i.~e. there is no correlation between classes. The translation from color-encoding to one-hot encoding is done by simply mapping the color vectors to their respective one-hot encoded representation.
 
-While the exact tile and label size depends on the network architecture, there is a general process how the image tiles are extracted from the database. This process is automated with multiple Python scripts (see \texttt{scripts} folder in~\cite{thesis-code20}) . The first step is to define the bounding boxes of all tiles for a specific network architecture in a separate table within the database. Each bounding box is represented by a rectangular PostGIS geometry object. It is important to line up the tiles precisely with the DOP raster, so that the raster pixels are not distorted or cut off during the export. This does not matter for the labels, because they are stored in a vector format which is not based on pixels.
+While the exact tile and label size depends on the network architecture, there is a general process how the image tiles are extracted from the database. This process is automated with multiple Python scripts (see \texttt{scripts} folder in~\cite{thesis-code20}).
+
+The first step is to define the bounding boxes of the tiles for each network architecture in separate tables within the database. Each bounding box is represented by a  PostGIS geometry object. Figure~\ref{fig:geom_tiles_entities} shows the full structure of the tables. The images and labels are defined by two separate geometry objects, because for some architectures the dimensions of the predictions do not match the dimensions of the input.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/geom_tiles_entities}
+    \caption{Database Table Structure for \texttt{geom\_tiles\_*}}
+    \label{fig:geom_tiles_entities}
+\end{figure}
+
+It is important to line up the tiles precisely with the DOP raster, so that the raster pixels are not distorted or cut off during the export. This does not matter for the labels, because they are stored in a vector format which is not based on pixels.
 
 To extract the image files for those tile definitions, one straightforward way would be to join the raster table \texttt{dop\_rgb} with tile table containing the tile geometries using the PostGIS \texttt{ST\_Union} and \texttt{ST\_Intersection} functions. However, this was found to take a very long time to compute. Instead, a geospatial visualization software called \emph{QGIS} was used to do those computations. It offers a Python API which allows to run batch exports of a PostGIS raster table according to the bounding boxes defining the tiles.
 
