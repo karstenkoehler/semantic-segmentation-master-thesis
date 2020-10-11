@@ -35,6 +35,7 @@ The automated identification of emergency landing fields is a complex challenge 
 1. J. Long, E. Shelhamer, T. Darrell. _Fully Convolutional Networks for Semantic Segmentation_. 2015. [arXiv:1411.4038](https://arxiv.org/abs/1411.4038).
 1. S. Minaee, Y. Boykov, F. Porikli, A. Plaza, N. Kehtarnavaz, D. Terzopoulos. _Image Segmentation Using Deep Learning: A Survey_. 2020. [arXiv:2001.05566](https://arxiv.org/abs/2001.05566).
 1. Y. Nesterov. _A method of solving a convex programming problem with convergence rate O(1/sqrt(k))_. Soviet Mathematics Doklady: vol. 27, pp. 372 - 376, 1983.
+1. Bezirksregierung Köln (Abteilung Geobasis NRW). _Topographische Bildinformationen - Luftbildmaterial von Nordrhein-Westfalen_. [Brochure with Product Information](https://docplayer.org/20323511-Topographische-bildinformationen-luftbildmaterial-von-nordrhein-westfalen.html). 2016.
 1. C. Nwankpa, W. Ijomah, A. Gachagan, S. Marshall. _Activation Functions: Comparison of trends in Practice and Research for Deep Learning_. 2018. [arXiv:1811.03378](https://arxiv.org/abs/1811.03378).
 1. G. Papandreou, L. Chen, K. Murphy, A. L. Yuille. _Weakly- and Semi-Supervised Learning of a DCNN for Semantic Image Segmentation_. 2015. [arXiv:1502.02734](https://arxiv.org/abs/1502.02734).
 1. J. Qi, A. Chehbouni, A. Huete, Y. Kerr, S. Sorooshian. _A Modified Soil Adjusted Vegetation Index_. Remote Sensing of Environment: vol. 48, no. 2, pp. 119 - 126, 1994. [DOI: 10.1016/0034-4257(94)90134-1](https://doi.org/10.1016/0034-4257(94)90134-1)
