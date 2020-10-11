@@ -178,5 +178,11 @@ green!60!black,every mark/.append style={fill=green!80!black},mark=diamond*\\%
 \usetikzlibrary{arrows.meta}
 \usetikzlibrary{decorations.pathreplacing}
 
-\setlength{\cftbeforesecskip}{20pt}
+\setlength{\cftbeforesecskip}{16pt}
 \setlength{\cftbeforesubsecskip}{3pt}
+
+\def\table{\def\figurename{Table}\figure}
+\let\endtable\endfigure
+\addto\captionsenglish{
+  \renewcommand{\listfigurename}{List of Figures and Tables}
+}

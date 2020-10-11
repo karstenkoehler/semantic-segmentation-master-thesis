@@ -17,6 +17,7 @@ models/**/images
 *.out
 *.pdf
 *.toc
+*.lof
 *.synctex.gz
 *.synctex(busy)
 

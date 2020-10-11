@@ -19,8 +19,15 @@
     \mytitle
 
     \frontmatter
-    \tableofcontents
     \input{content/abstract}
+    \clearpage
+
+    \tableofcontents
+    \clearpage
+
+    \phantomsection
+    \addcontentsline{toc}{section}{\listfigurename}
+    \listoffigures
     \clearpage
 
     \mainmatter
