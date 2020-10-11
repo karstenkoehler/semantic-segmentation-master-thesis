@@ -42,7 +42,7 @@ During training, some metrics were collected to measure the predictive performan
     \newcommand{\UnetMetricsImageWidth}{0.32\textwidth}
     \centering
             \input{content/tikz/unet_metrics}
-    \caption{Training metrics of different variations of U-Net}
+    \caption{Validation Set Metrics of U-Net Configurations}
     \label{fig:unet_train_metrics}
 \end{figure}
 
@@ -102,7 +102,7 @@ While the metrics provide a quick overview over larger parts of the dataset, loo
         \node[align=center] at (8.1, 0) {\tiny U-Net-23};
         \node[align=center] at (11, 0) {\tiny U-Net-23D};
     \end{tikzpicture}
-    \caption{Selected predictions of different configurations of U-Net}
+    \caption{Selected Test Set Predictions of U-Net Configurations}
     \label{fig:unet_prediction_images}
 \end{figure}
 
@@ -131,7 +131,7 @@ The training metrics for all FC-DenseNet configurations are presented in figure~
     \newcommand{\DensenetMetricsImageWidth}{0.32\textwidth}
     \centering
             \input{content/tikz/densenet_metrics}
-    \caption{Training metrics of different variations of FC-DenseNet}
+    \caption{Validation Set Metrics of FC-DenseNet Configurations}
     \label{fig:densenet_train_metrics}
 \end{figure}
 
@@ -196,7 +196,7 @@ Figure~\ref{fig:densenet_prediction_images} shows some sample predictions made b
         \node[align=center] at (10.9, 0) {\tiny FCDN-67D};
         \node[align=center] at (13.5, 0) {\tiny FCDN-56D};
     \end{tikzpicture}
-    \caption{Selected predictions of different configurations of FC-DenseNet}
+    \caption{Selected Test Set Predictions of FC-DenseNet Configurations}
     \label{fig:densenet_prediction_images}
 \end{figure}
 
@@ -228,7 +228,7 @@ The metrics for W-Net are different from the ones presented for U-Net and FC-Den
 \begin{figure}
     \centering
             \input{content/tikz/wnet_metrics}
-    \caption{Training metrics of different variations of W-Net}
+    \caption{Training Set Metrics of W-Net Configurations}
     \label{fig:wnet_train_metrics}
 \end{figure}
 
@@ -304,7 +304,7 @@ Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net c
         \node[align=center] at (5.3, 0) {\tiny W-Net-36D-20};
         \node[align=center] at (8.8, 0) {\tiny W-Net-46D-20};
     \end{tikzpicture}
-    \caption{Selected predictions of different configurations of W-Net}
+    \caption{Selected Test Set Predictions of W-Net Configurations}
     \label{fig:wnet_prediction_images}
 \end{figure}
 
@@ -348,7 +348,7 @@ The results of both U-Net and FC-DenseNet were much better in general. The exper
         \node[align=center] at (8.3, 0) {\tiny U-Net-23D};
         \node[align=center] at (12, 0) {\tiny FCDN-67D};
     \end{tikzpicture}
-    \caption{Large scale predictions of FC-DenseNet-67D and U-Net-23D}
+    \caption{Large Scale Predictions of \texttt{FC-DenseNet-67D} and \texttt{U-Net-23D}}
     \label{fig:segmentation_discussion}
 \end{figure}
 

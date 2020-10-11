@@ -9,7 +9,7 @@ Usually, the neurons are grouped into layers~\cite[p.~125]{nn_intro96} (see figu
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/generic_layered_architecture}
-    \caption{A generic layered DNN architecture~\cite[p.~126]{nn_intro96}}
+    \caption[A Generic Layered DNN Architecture]{A Generic Layered DNN Architecture~\cite[p.~126]{nn_intro96}}
     \label{fig:layered_architecture}
 \end{figure}
 
@@ -20,7 +20,7 @@ The net input is then passed through the activation function whose main purpose 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/perceptron}
-    \caption{Perceptron}
+    \caption[Schematic View of a Perceptron]{Schematic View of a Perceptron~\cite[p.~257, modified]{praxiseinstieg_ml17}}
     \label{fig:perceptron}
 \end{figure}
 
@@ -94,7 +94,7 @@ The last task to mention here is called \emph{instance segmentation}~\cite{mask-
     \end{subfigure}
     \hfill
 
-    \caption{Computer Vision Tasks~\cite{coco15}}
+    \caption[Computer Vision Tasks]{Computer Vision Tasks~\cite{coco15}}
     \label{fig:cv_tasks}
 \end{figure}
 
@@ -114,7 +114,7 @@ Instead of dense connections, CNNs use operations called \emph{convolution} and 
 \begin{figure}[h]
     \centering
     \include{content/tikz/convolution}
-    \caption{Receptive field of a convolution operation~\cite[modified]{github-latex20}}
+    \caption[Receptive Field of a Convolution Operation]{Receptive Field of a Convolution Operation~\cite[modified]{github-latex20}}
     \label{fig:convolution}
 \end{figure}
 
@@ -135,7 +135,7 @@ Figure~\ref{fig:pooling} shows an example of a $2\times 2$ max pooling operation
 \begin{figure}[h]
     \centering
     \include{content/tikz/pooling}
-    \caption{Max pooling~\cite[modified]{github-latex20}}
+    \caption[$2\times 2$ Max Pooling Operation]{$2\times 2$ Max Pooling Operation~\cite[modified]{github-latex20}}
     \label{fig:pooling}
 \end{figure}
 
@@ -175,7 +175,7 @@ Although this metric is generally useful for a first impression of performance, 
         \label{fig:ca_prediction}
     \end{subfigure}
     \hfill
-    \caption{Drawbacks for categorical accuracy regarding dominant classes~\cite{tds_segmentation18}}
+    \caption[Drawbacks for Categorical Accuracy regarding Dominant Classes]{Drawbacks for Categorical Accuracy regarding Dominant Classes~\cite{tds_segmentation18}}
     \label{fig:categorical_accuracy_drawbacks}
 \end{figure}
 
@@ -215,7 +215,7 @@ For the expansive path, an upsampling layer followed by a $2\times 2$ convolutio
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{images/u-net-architecture}
-    \caption{U-Net Architecture \cite{unet15}}
+    \caption[U-Net Reference Architecture]{U-Net Reference Architecture~\cite{unet15}}
     \label{fig:unet_architecture}
 \end{figure}
 
@@ -230,7 +230,7 @@ Huang et al.\ consider the values passed between layers to be the network's stat
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/dense-net-architecture}
-    \caption{A 5-layer dense block~\cite{densenet18}}
+    \caption[Connections in a 5-layer Dense Block]{Connections in a 5-layer Dense Block~\cite{densenet18}}
     \label{fig:dense_block}
 \end{figure}
 
@@ -243,7 +243,7 @@ However, it is possible to extend the architecture with an upsampling path at th
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.5\textwidth]{images/dense_segmentation_architecture}
-    \caption{DenseNet architecture for semantic segmentation~\cite{denseseg17}}
+    \caption[FC-DenseNet Reference Architecture]{FC-DenseNet Reference Architecture~\cite{denseseg17}}
     \label{fig:densenet_segmentation}
 \end{figure}
 
@@ -262,7 +262,7 @@ Figure~\ref{fig:wnet_architecture} illustrates the W-Net architecture. The netwo
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{images/w-net-architecture}
-    \caption{W-Net architecture~\cite{wnet17}}
+    \caption[W-Net Reference Architecture]{W-Net Reference Architecture~\cite{wnet17}}
     \label{fig:wnet_architecture}
 \end{figure}
 
@@ -309,7 +309,7 @@ Overall, it is difficult to judge which architecture has delivered the best resu
         \label{fig:exseg_wnet}
     \end{subfigure}
     \hfill
-    \caption{Segmentation results from the presented architectures}
+    \caption{Segmentation Results from the Reference Architectures}
     \label{fig:segmentation_examples}
 \end{figure}
 
