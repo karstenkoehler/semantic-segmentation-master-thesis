@@ -18,7 +18,16 @@ The data for the maps is collected by airplanes with special cameras pointing ve
 \subsection{Getting the dataset}
 Both the DOP and NIR datasets are provided by the Ministry of the Interior in a few different ways. To get a quick overview, there is an online viewer\footnote{Available at \url{https://www.tim-online.nrw.de/tim-online2/}.} for most of the map types. For some specific maps like the DOPs they host a Web Map Tile Service, which allows to access the data with geographic information systems (GIS) like QGIS\footnote{QGIS is a free and open-source GIS application. For more information see \url{https://qgis.org/.}}. Since these options require a continuous network connection, it is preferred to get a local copy of the dataset and work with that.
 
-For that purpose, the GEOportal has a separate download section. There you can choose the regions and map types you need and download them in a compressed bundle. The bundle contains map tiles in the JPEG 2000 file format. This is an image format that has a dense compression rate and directly contains the georeferencing information for each tile. To have a wide range of terrain types with broad variety included, we use the data for the Municipality of Arnsberg and its surroundings. This concludes to a download size of $11.5~\text{Gigabytes}$ with around $248.49~\text{km}^2$ of terrain, where each pixel represents a $10\times 10~\text{cm}$ square in scale.
+For that purpose, the GEOportal has a separate download section. There you can choose the regions and map types you need and download them in a compressed bundle. The bundle contains map tiles in the JPEG 2000 file format. This is an image format that has a dense compression rate and directly contains the georeferencing information for each tile. To have a wide range of terrain types with broad variety included, we use the data for the Municipality of Arnsberg and its surroundings. This concludes to a download size of $11.5~\text{Gigabytes}$ with around $248.49~\text{km}^2$ of terrain, where each pixel represents a $10\times 10~\text{cm}$ square in scale. Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its location in Germany.
+
+To show the granularity of the data, one region is enlarged and shown in higher resolution. One pixel in the dataset represents $10\times 10$ decimeters in real-world scale. As can be seen in figure~\ref{fig:dop_rgb_all}, it is easily possible to detect objects like trees, cars or buildings with such a high resolution. Therefore, the data provides sufficient information for the segmentation of land usage.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\textwidth]{images/dop_rgb_all}
+    \caption{DOP Dataset Location and Resolution}
+    \label{fig:dop_rgb_all}
+\end{figure}
 
 It is possible to download both DOP and NIR data together in a single bundle. The JPEG files then contain four channels of pixel information. The first three channels make up the red, green and blue colors for the DOPs. And the last channel provides the scalar output of the NIR spectroscopy scan.
 
@@ -58,15 +67,6 @@ Another major configuration is the \emph{spatial reference id} (SRID). It also h
 After all GeoTiff files are imported, the Python script creates a Generalized Search Tree (GiST) index for both tables. This takes into account the spatial character of the data and thus speeds up spatial queries like merging and intersecting on the tables significantly. For the same reason, the Python script also enforces some constraints on the raster columns of the tables. This makes sure that all the raster tiles share common properties like tile size, SRID and the number of raster bands.
 
 As a last step of the Python script, it creates one last table named \texttt{geom\_bounds}. This table holds a single PostGIS geometry object defining the exact boundaries of the raster tiles. That allows for a quick way to calculate if a given region is included in the spatial extents of the raster without having to process the whole raster table all the time.
-
-Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its location in Germany. To show the granularity of the data, one region is enlarged and shown in full resolution. One pixel in the dataset represents $10\times 10$ decimeters in real-world scale. As can be seen in figure~\ref{fig:dop_rgb_all}, it is easily possible to detect objects like trees, cars or buildings with such a high resolution. Therefore, the data provides sufficient information for the segmentation of land usage.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{images/dop_rgb_all}
-    \caption{The DOPs in the dataset}
-    \label{fig:dop_rgb_all}
-\end{figure}
 
 \subsection{Preparing the labels}
 \label{sec:prepare_labels}
