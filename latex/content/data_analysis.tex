@@ -80,17 +80,7 @@ PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a da
 
 The original Shapesfiles enclose all regions of the State of North Rhine-Westphalia. Since the DOP und NIR datasets only consist of a smaller subregion, all geometry objects are cropped to that subregion in the next step. Geometry objects that are located outside of the boundaries are dropped entirely. During this process, the database tables of the different Shapefiles are merged into one single table. This resulting table has columns for an internal id, the object type, a textual object description and for the geometry object itself. As all the other meta information contained in the Shapefiles is not needed, it is dropped in this step.
 
-The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes:
-\begin{itemize}
-  \setlength\itemsep{1mm}
-  \item water
-  \item buildings
-  \item agriculture
-  \item forest
-  \item urban greens
-  \item traffic
-\end{itemize}
-The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
+The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes (see also figure~\ref{fig:dop_label_all}). The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
 
 \begin{table}[]
 \centering
@@ -134,7 +124,7 @@ Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset wi
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/dop_label_all}
-    \caption{The labels in the dataset}
+    \caption{The Labels in the Dataset}
     \label{fig:dop_label_all}
 \end{figure}
 
