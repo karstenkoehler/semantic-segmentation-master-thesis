@@ -1,4 +1,4 @@
-\section{Segmentation of land zones}
+\section{Segmentation of Terrain Types}
 \label{sec:segmentation}
 
 Now that all fundamentals are covered, this chapter focuses on the implementation of the neural networks. Each reference architecture from section~\ref{sec:ref_archs} will be trained and evaluated with the original hyperparameters first. Afterwards, slight modifications are applied to the architectures, to look for optimization opportunities for the task at hand.
@@ -31,7 +31,7 @@ For this reason, a different approach was chosen to address the class imbalance 
 \label{sec:unet_experiments}
 The reference architecture that was explored first is the U-Net as introduced in section~\ref{sec:unet}. The default input size for images was set to $572\times 572$ pixels. Those are the same dimensions as the authors of U-Net used in their initial approach~\cite{unet15}. Because of the unpadded convolution layers, the dimensions of the predictions are smaller than the original input image. For the standard configuration in U-Net the output size is $388\times 388$ pixels. Depending on the number of convolution layers, these dimensions may vary.
 
-All U-Net models were trained with a stochastic gradient descent optimizer. The initial learning rate was set to $0.1$ and reduced after every epoch, to allow finetuning of the weights towards the end of the training. A batch size of $4$ was used in combination with Nesterov momentum~\cite{nesterov83} of $0.99$ to speed up the training process and avoid oscillations. The loss was computed using a categorical crossentropy function.
+All U-Net models were trained with a stochastic gradient descent optimizer. The initial learning rate was set to $0.1$ and reduced after every epoch, to finetune the weights towards the end of the training. A batch size of $4$ was used in combination with Nesterov momentum~\cite{nesterov83} of $0.99$ to speed up the training process and avoid oscillations. The loss was computed using a categorical crossentropy function.
 
 Starting from the model with its original hyperparameter configuration, a few other configurations have been explored. To distinguish between the configurations, a naming convention is established. The original configuration is called \texttt{U-Net-23D}, where the number represents the exact number of convolution layers in the model. The suffix \texttt{D} indicates that a dropout layer was added before the expansive path to provide regularization during the training.
 
@@ -41,7 +41,7 @@ During training, some metrics were collected to measure the predictive performan
 \begin{figure}
     \newcommand{\UnetMetricsImageWidth}{0.32\textwidth}
     \centering
-            \input{content/tikz/unet_metrics}
+    \input{content/tikz/unet_metrics}
     \caption{Validation Set Metrics of U-Net Configurations}
     \label{fig:unet_train_metrics}
 \end{figure}
@@ -57,7 +57,7 @@ The metrics already allow to draw some conclusions about the configurations. How
 \subsubsection{Images}
 While the metrics provide a quick overview over larger parts of the dataset, looking at concrete samples offers a deeper insight into the model's behavior in certain situations. Figure~\ref{fig:unet_prediction_images} depicts predictions in the test set from some configurations, together with the original image and the ground truth. The red square in the original image indicates the area that is covered in the prediction. As already raised in section~\ref{sec:dataset_considerations}, the ground truth labels are not super accurate with regards to the original image.
 
-\begin{figure}
+\begin{figure}[h]
     \newcommand{\UnetPredictionsImageWidth}{0.18\textwidth}
     \centering
 
@@ -67,28 +67,28 @@ While the metrics provide a quick overview over larger parts of the dataset, loo
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/82607-prediction} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/82607-prediction}
 
-    \vspace{3mm}
+    \vspace{4mm}
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/104483-image} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/104483-label} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/104483-prediction} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/104483-prediction} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/104483-prediction}
 
-    \vspace{3mm}
+    \vspace{4mm}
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/114975-image} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/114975-label} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/114975-prediction} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/114975-prediction} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/114975-prediction}
 
-    \vspace{3mm}
+    \vspace{4mm}
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/138625-image} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/138625-label} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/138625-prediction} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/138625-prediction} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/138625-prediction}
 
-    \vspace{3mm}
+    \vspace{4mm}
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/147352-image} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/147352-label} \hfill
     \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/147352-prediction} \hfill
@@ -127,7 +127,7 @@ Another naming convention is applied to distinguish the variations of the FC-Den
 \subsubsection{Metrics}
 The training metrics for all FC-DenseNet configurations are presented in figure~\ref{fig:densenet_train_metrics}. Although there are some strong oscillations, most of the configurations show ongoing improvements over the course of 20 epochs. Towards the end of the training the oscillations faint and the graphs converge.
 
-\begin{figure}
+\begin{figure}[h]
     \newcommand{\DensenetMetricsImageWidth}{0.32\textwidth}
     \centering
             \input{content/tikz/densenet_metrics}
@@ -144,7 +144,7 @@ The other three configurations report fairly uniform results in terms of metrics
 \subsubsection{Images}
 Figure~\ref{fig:densenet_prediction_images} shows some sample predictions made by the FC-DenseNet configuration. The original images and ground truth labels are included for reference. All images were taken from the test set.
 
-\begin{figure}
+\begin{figure}[h]
     \newcommand{\DensenetPredictionsImageWidth}{0.15\textwidth}
     \centering
 
@@ -225,7 +225,7 @@ As a part of the thesis, many different options were explored for the optimizer 
 \subsubsection{Metrics}
 The metrics for W-Net are different from the ones presented for U-Net and FC-DenseNet. Since no labels were used during training, it is not possible to calculate the categorical accuracy and mean IoU. This is because the class predictions learned by the encoder do not necessarily match with the predefined classes in the labels.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
             \input{content/tikz/wnet_metrics}
     \caption{Training Set Metrics of W-Net Configurations}
@@ -239,7 +239,7 @@ All configurations show similar behavior during the training. Over the first few
 \subsubsection{Images}
 Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net configurations extracted from the test set. For each configuration two images are displayed. The first one is the predicted class segmentation. The class colors in the predictions are not related to any of the classes mentioned earlier. They rather represent what the respective encoder learned to differentiate in the images. The second image is the reconstruction of the original image predicted by the decoder from the class segmentation.
 
-\begin{figure}
+\begin{figure}[h]
     \newcommand{\WnetPredictionsImageWidth}{0.10\textwidth}
     \centering
 
@@ -320,7 +320,7 @@ The W-Net reference architecture turned out to perform very poorly. With the uns
 
 The results of both U-Net and FC-DenseNet were much better in general. The experiments showed that both reference architectures are capable to provide decent predictions. Looking at the plain metrics, there is still some space for improvement in both of them. However, this could also be affected by the inaccuracies in the labels (see section~\ref{sec:dataset_considerations}). The visual results show that the predictions in some cases are even more accurate than the labels.
 
-\begin{figure}
+\begin{figure}[h]
     \newcommand{\DiscussionImageWidth}{0.23\textwidth}
     \centering
 
@@ -354,11 +354,11 @@ The results of both U-Net and FC-DenseNet were much better in general. The exper
 
 So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, figure~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
 
-The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three most dominant classes throughout the dataset, lots of good training examples are available.
+The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three dominant classes throughout the dataset, lots of good training examples are available.
 
 Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it comes to highly saturated green grass, such as on sports fields.
 
-The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For both classes this matches the expectations, since they both were labelled rather poorly in the dataset. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar: Since this class mostly includes parks and sports facilities, it is easily confused with either the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
+The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For both classes this matches the expectations, since they were labelled rather poorly in the dataset. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar. Since this class mostly includes parks and sports facilities, it is easily confused with the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
 
 With regards to the classes, the predictions of \texttt{FCDN-67D} can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the dataset.
 
