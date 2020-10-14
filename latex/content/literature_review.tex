@@ -40,7 +40,7 @@ In general, a hyperparameter is an option of the learning algorithm. It is not l
 
 A major challenge in building deep learning models is to optimize the hyperparameters for the specific task. Since often the training of a single model is already very time consuming, it is not feasible to explore all permutations of hyperparameters. There are some strategies to deal with this issue. Two popular approaches are \emph{grid search} and \emph{random search}~\cite[pp.~73ff]{praxiseinstieg_ml17}.
 
-For the grid search some options for the hyperparameters have to be  picked manually. The search then computes the results of all permutations of the given parameters. This means, for each permutation a model is built, trained and evaluated. This strategy yields a good overview over the optimization potential. However, it can be very time consuming and expensive depending on the number of combinations.
+For the grid search some options for the hyperparameters have to be  picked manually. The search then computes the results of all permutations of the given parameters. This means, for each permutation a model is built, trained and evaluated. This strategy yields a good overview over the optimization potential. However, it can be very time consuming and expensive depending on the number of combinations. Thus, it is not applicable for every case.
 
 If there are too many combinations, a random search can be consulted instead. Basically it works in the same way. However, not all permutations are evaluated but only a few random samples. This speeds up the search process significantly, but the results are less informative. Usually, a random search still reveals some optimization patterns in the hyperparameters that can be further explored.
 
@@ -59,44 +59,42 @@ One of the easier tasks is called \emph{image classification}~\cite[p.~98]{DLboo
 
 The next level is to not only assign a label to an image, but also detect where the object in the image is located (see figure~\ref{fig:cv_task_objloc}). Thus, this task is referred to as \emph{object localization}~\cite{rcnn14}. In addition to the class label, the output is extended by a rectangular bounding box that encloses the spatial extent of the object. This change allows to detect multiple objects in the same image, each with a class label and a (possibly overlapping) bounding box. There are different ways to solve this task, like for example bounding box regression~\cite{obj_detection13} or region proposal networks~\cite{ff-rcnn14}. The \emph{ImageNet} dataset presented in~\cite{imgnet09} provides millions of images with prepared object classes and bounding boxes. The performance measurement for this dataset is calculated by matching the predicted objects for an image and evaluating the overlapping area in the bounding boxes.
 
-Rectangular boxes are not very accurate for expressing the spatial extents of an object. Therefore, another task called \emph{semantic segmentation}~\cite{weakseg15} deals with pixel-level classification of an image (see figure~\ref{fig:cv_task_semseg}). This determines a precise mask telling for each pixel of the image the object it belongs to. Since this is one of the main tasks of this thesis, an in-depth discussion of modern solutions to this task follows in section~\ref{sec:ref_archs}. One dataset to measure the performance of the various approaches is the Pascal Visual Object Classes as laid out in~\cite{pascal_voc15}. The scoring is done by calculating the \emph{intersection over union} (IoU), which is explained in detail in section~\ref{sec:metrics}.
-
-The last task to mention here is called \emph{instance segmentation}~\cite{mask-rcnn14}. Whereas previously only one class had to be assigned to each pixel, a distinction is now also made between pixels that belong to the same object class but different instances of an object (see figure~\ref{fig:cv_task_inseg}). This task is quite challenging, as for example parts of an instance can be hidden by another instance of the same class, which leads to gaps in the mask. \emph{Mask R-CNN}~\cite{mask-rcnn14} is a widely used meta-algorithm for solving this task. It combines region proposals used for object localization with semantic segmentation processes. A great dataset for this challenge is the \emph{Microsoft Common Objects in Context} set, which can be found in~\cite{coco15}.
-
 \begin{figure}
     \newcommand{\VisionTasksImageWidth}{0.4\textwidth}
     \centering
-    \hfill
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_1}
         \caption{Image Classification}
         \label{fig:cv_task_imgclass}
     \end{subfigure}
-    \hfill
+    \hspace{5mm}
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_2}
         \caption{Object Localization}
         \label{fig:cv_task_objloc}
     \end{subfigure}
-    \hfill
 
-    \hfill
+    \vspace{5mm}
+    
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_3}
         \caption{Semantic Segmentation}
         \label{fig:cv_task_semseg}
     \end{subfigure}
-    \hfill
+    \hspace{5mm}
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_4}
         \caption{Instance Segmentation}
         \label{fig:cv_task_inseg}
     \end{subfigure}
-    \hfill
 
     \caption[Computer Vision Tasks]{Computer Vision Tasks~\cite{coco15}}
     \label{fig:cv_tasks}
 \end{figure}
+
+Rectangular boxes are not very accurate for expressing the spatial extents of an object. Therefore, another task called \emph{semantic segmentation}~\cite{weakseg15} deals with pixel-level classification of an image (see figure~\ref{fig:cv_task_semseg}). This determines a precise mask telling for each pixel of the image the object it belongs to. Since this is one of the main tasks of this thesis, an in-depth discussion of modern solutions to this task follows in section~\ref{sec:ref_archs}. One dataset to measure the performance of the various approaches is the Pascal Visual Object Classes as laid out in~\cite{pascal_voc15}. The scoring is done by calculating the \emph{intersection over union} (IoU) metric, which is explained in detail in section~\ref{sec:metrics}.
+
+The last task to mention here is called \emph{instance segmentation}~\cite{mask-rcnn14}. Whereas previously only one class had to be assigned to each pixel, a distinction is now also made between pixels that belong to the same object class but different instances of an object (see figure~\ref{fig:cv_task_inseg}). This task is quite challenging, as for example parts of an instance can be hidden by another instance of the same class, which leads to gaps in the mask. \emph{Mask R-CNN}~\cite{mask-rcnn14} is a widely used meta-algorithm for solving this task. It combines region proposals used for object localization with semantic segmentation processes. A great dataset for this challenge is the \emph{Microsoft Common Objects in Context} set, which can be found in~\cite{coco15}.
 
 \subsection{Convolutional Neural Networks}
 \label{sec:cnn}
@@ -109,7 +107,7 @@ Instead of dense connections, CNNs use operations called \emph{convolution} and 
 
 \subsubsection{Convolution}
 \label{sec:convolution}
-\emph{Convolution} is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value~\cite[p.~361 f]{praxiseinstieg_ml17}. The concept is shown in figure~\ref{fig:convolution}. It involves a multiplication kernel which is moved pixel by pixel across the image. In each step the kernel computes an output value for a small part of the image (called \emph{receptive field}). Depending on the values in the kernel, this technique highlights certain features in the image like edge orientation, colors and gradients. The outcome of a convolution operation is a convoluted image, which represents a heatmap for one specific feature with respect to the input image.
+\emph{Convolution} is a mathematical operation that uses weighted point-by-point multiplication of two matrices resulting in a scalar value~\cite[p.~361 f]{praxiseinstieg_ml17}. It involves a multiplication kernel which is moved pixel by pixel across the image. In each step the kernel computes an output value for a small part of the image (called \emph{receptive field}). Depending on the values in the kernel, this technique highlights certain features in the image like edge orientation, colors and gradients. The outcome of a convolution operation is a convoluted image, which represents a heatmap for one specific feature with respect to the input image. The concept is shown in figure~\ref{fig:convolution}.
 
 \begin{figure}[h]
     \centering
@@ -130,14 +128,14 @@ Unlike convolution, which is used to extract features from the input, \emph{pool
 
 Because the function to use is predefined, pooling layers do not contain any trainable parameters. But still they are configurable with the same hyperparameters as convolution layers, namely kernel size, stride and padding. In addition, you can not only do pooling along the two axis of the input, but also along the third axis, which contains the feature maps.~\cite[p.~370]{praxiseinstieg_ml17}
 
-Figure~\ref{fig:pooling} shows an example of a $2\times 2$ max pooling operation. The amount of available information is halved on each spatial axis. In total, this results in a loss of $75\%$ of the data points, only keeping the highest activations. Usually this is not too bad, since low activation levels generally contribute less to the overall output than high ones.
-
 \begin{figure}[h]
     \centering
     \include{content/tikz/pooling}
     \caption[$2\times 2$ Max Pooling Operation]{$2\times 2$ Max Pooling Operation~\cite[modified]{github-latex20}}
     \label{fig:pooling}
 \end{figure}
+
+Figure~\ref{fig:pooling} shows an example of a $2\times 2$ max pooling operation. The amount of available information is halved on each spatial axis. In total, this results in a loss of $75\%$ of the data points, only keeping the highest activations. Usually this is not too bad, since low activation levels generally contribute less to the overall output than high ones.
 
 \subsubsection{Performance Metrics}
 \label{sec:metrics}
@@ -150,9 +148,7 @@ The \emph{categorical accuracy} measures the ratio between correct label predict
     \text{Accuracy} = \frac{\text{num. correct predictions}}{\text{num. total predictions}}
 \end{equation}
 
-Although this metric is generally useful for a first impression of performance, it has a major drawback when it comes to class imbalances~\cite{tds_segmentation18}. If there is a dominant class, which takes up a majority of the pixels (like e.~g. a background class), the performance estimation of categorical accuracy can be very misleading. Figure~\ref{fig:categorical_accuracy_drawbacks} demonstrates such a case. The categorical accuracy is computed to be around $95\%$ and seems very promising. But a look at the actual predictions reveals that the model clearly missed the developer's intent. The consequence is, that a high categorical accuracy does not necessarily imply strong segmentation results.
-
-\begin{figure}
+\begin{figure}[h]
     \newcommand{\CategoricalAccuracyImageWidth}{0.3\textwidth}
 
     \centering
@@ -179,7 +175,9 @@ Although this metric is generally useful for a first impression of performance, 
     \label{fig:categorical_accuracy_drawbacks}
 \end{figure}
 
-There are some ways to overcome this issue, for example to calculate and check the categorical accuracy for each class separately. However, in general it is recommended to also integrate other metrics into the evaluation process in order to obtain a wider perspective.
+Although this metric is generally useful for a first impression of performance, it has a major drawback when it comes to class imbalances~\cite{tds_segmentation18}. If there is a dominant class, which takes up a majority of the pixels (like e.~g. a background class), the performance estimation of categorical accuracy can be very misleading. Figure~\ref{fig:categorical_accuracy_drawbacks} demonstrates such a case. The categorical accuracy is computed to be around $95\%$ and seems very promising. But a look at the actual predictions reveals that the model clearly missed the developer's intent. The consequence is, that a high categorical accuracy does not necessarily imply strong segmentation results.
+
+There are some ways to overcome this issue, for example to calculate and check the categorical accuracy for each class separately. This helps to understand which classes the model can predict reliably and which classes causes trouble. In general it is recommended to also integrate other metrics into the evaluation process in order to obtain a wider perspective.
 
 The \emph{intersection over union} (IoU) is another metric which is commonly used to evaluate segmentation results~\cite{pascal_voc15}. It is computed using two values:
 \begin{enumerate}
@@ -214,7 +212,7 @@ For the expansive path, an upsampling layer followed by a $2\times 2$ convolutio
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/u-net-architecture}
+    \includegraphics[width=0.8\textwidth]{images/u-net-architecture}
     \caption[U-Net Reference Architecture]{U-Net Reference Architecture~\cite{unet15}}
     \label{fig:unet_architecture}
 \end{figure}
@@ -242,50 +240,40 @@ However, it is possible to extend the architecture with an upsampling path at th
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.5\textwidth]{images/dense_segmentation_architecture}
+    \includegraphics[width=0.65\textwidth]{images/dense_segmentation_architecture}
     \caption[FC-DenseNet Reference Architecture]{FC-DenseNet Reference Architecture~\cite{denseseg17}}
     \label{fig:densenet_segmentation}
 \end{figure}
 
 For this architecture, there are two types of transition layers. The \emph{transition down} layer is used for the downsampling path and has the same setup as the transition layer in the original DenseNet. On the other hand, there is a \emph{transition up} layer, which is used in the upsampling path. It consists of a $3\times 3$ transposed convolution with a stride of $2\times 2$. Thus, a transition up layer doubles the spatial extents of the feature maps.
 
-In \cite{denseseg17}, Jégou et al.\ proposed a configuration for the DenseNet consisting of five dense blocks each followed by transition down as downsampling path, one intermediate dense block to act as a bottleneck layer, and again five dense blocks each followed by transition up as upsampling path. The final layer is a $1\times 1$ convolution layer with softmax activation and $k$ (the number of classes) feature maps. In total, this network contains 103 convolution layers. Because this architecture now only consists of convolution layers, the authors named it \emph{fully convolutional DenseNet} (FC-DenseNet).
+In~\cite{denseseg17}, Jégou et al.\ proposed a configuration for the DenseNet consisting of five dense blocks each followed by transition down as downsampling path, one intermediate dense block to act as a bottleneck layer, and again five dense blocks each followed by transition up as upsampling path. The final layer is a $1\times 1$ convolution layer with softmax activation and $k$ (the number of classes) feature maps. In total, this network contains 103 convolution layers. Because this architecture now only consists of convolution layers, the authors named it \emph{fully convolutional DenseNet} (FC-DenseNet).
 
 \subsubsection{W-Net}
 \label{sec:w-net}
 Both U-Net and DenseNet architectures are based on the idea of supervised learning. There are also some architectures that approach the image segmentation task with unsupervised learning. The \emph{W-Net} architecture presented in~\cite{wnet17} is one example.
 
-In general, the W-Net architecture consists of two major parts. The first part generates a $k$-class segmentation of the input image. Subsequently, the second part tries to reconstruct the original image only from the segmentation. The loss function then calculates the deviation between the reconstructed and the original image, i.~e. there is no ground truth required. Because of that, the network detects all segmentation classes on its own by clustering the pixels into similar groups. The downside is, that the chosen classes may be completely unrelated to the challenge which is to be solved.
+In general, the W-Net architecture consists of two major parts. The first part generates a $k$-class segmentation of the input image. Subsequently, the second part reconstructs the original image only from the segmentation. The loss function then calculates the deviation between the reconstructed and the original image, i.~e. no labels are required. Because of that, the network detects all segmentation classes on its own by clustering the pixels into similar groups. The downside is, that the chosen classes may be completely unrelated to the challenge which is to be solved.
 
 Figure~\ref{fig:wnet_architecture} illustrates the W-Net architecture. The network is split into an encoder part $U_{Enc}$ and a decoder part $U_{Dec}$. The parts themselves are very much based on the U-Net architecture introduced in section~\ref{sec:unet}. Each part has its own contracting path followed by an expansive path with skip connections between layers with matching spatial extents.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.8\textwidth]{images/w-net-architecture}
+    \includegraphics[width=0.95\textwidth]{images/w-net-architecture}
     \caption[W-Net Reference Architecture]{W-Net Reference Architecture~\cite{wnet17}}
     \label{fig:wnet_architecture}
 \end{figure}
 
-The last layer of the encoder part is a $1\times 1$ convolution layer. The number of feature maps in this layer (denoted with $K$ in figure~\ref{fig:wnet_architecture}) represents the number of classes to use for the segmentation maps. The output of the encoder is a one hot encoded vector with the likelihood for each pixel to belong to a certain class. During training, this vector serves as input for the decoder part of the network. The last layer of the decoder (and thus the last layer of the whole network) is also a $1\times 1$ convolution layer. This layer always consists of three feature maps to restore the color bands of the original image.
+The last layer of the encoder part is a $1\times 1$ convolution layer. The number of feature maps in this layer (denoted with $K$ in figure~\ref{fig:wnet_architecture}) represents the number of classes to use for the segmentation. The output of the encoder is a one hot encoded vector with the likelihood for each pixel to belong to a certain class. During training, this vector serves as input for the decoder part of the network. The last layer of the decoder is also a $1\times 1$ convolution layer. This layer always consists of three feature maps to restore the color bands of the original image.
 
 As one important difference to the initial U-Net architecture, W-Net uses depthwise separable convolution layers~\cite{depthwise_conv17} in some places instead of regular convolution layers. Regular convolution applies the convolution filters to both the spatial dimensions and the depth dimension (i.~e. the channels of the image) at the same time. In depthwise separable convolution, those two steps are performed separately. The first set of convolution filters is applied to each feature channel separately. Thus, these filters do not change the depth of the image. After that, $n$ filters of size $1\times 1\times c$ are used to condense all $c$ feature channels into a single channel each, resulting in $n$ feature maps in total. By doing that, the network differentiates between spatial correlations and cross-channel correlations independently. This increases the computational efficiency of the model without any significant impact on the effectiveness.
 
-In their paper~\cite{wnet17}, Xia and Kulis propose to follow up the initial segmentation of W-Net with two postprocessing steps. First, they foster sharp edges for object boundaries by using conditional random fields~\cite{crf17}. In the second step, they reduce over-segmentation of the image by merging segments according to weighted boundary maps~\cite{hierarchy_imgseg11}.
+Xia and Kulis propose to follow up the initial segmentation of W-Net with two postprocessing steps~\cite{wnet17}. First, they foster sharp edges for object boundaries by using conditional random fields~\cite{crf17}. In the second step, they reduce over-segmentation of the image by merging segments according to weighted boundary maps~\cite{hierarchy_imgseg11}.
 
 \subsection{Architecture Comparison}
 Overall, all of the discussed reference architectures follow the \emph{encoder-decoder} architectural pattern. In the encoder, the number of feature maps is increased while the spatial dimensions are reduced. In a symmetrical fashion, the decoder decreases the number of feature maps while increasing the spatial dimensions. This is a very common pattern that is used by many image segmentation architectures~\cite{imseg_survey20}. It enables to capture enough context for each pixel and still provides precise localization.
 
 It is difficult to compare the actual performance of the three architectures, since they were all trained and evaluated on different datasets with differing metrics. However, some metrics are reviewed considering the context and complexity of their particular challenge. Additionally, figure~\ref{fig:segmentation_examples} provides visual examples of the segmentation results of the three different approaches.
-
-U-Net was trained and evaluated for the ISBI cell tracking challenge~\cite{isbi_challenge12}. The challenge consists of two datasets, both showing biological cells scanned with different microscopy techniques. For both datasets the main objective was to provide a binary classification for the cell images, where a distinction between cell and non-cell pixels must be made. Also the precise detection of boundaries between adjacent cells was a key point of interest for this challenge. The U-Net model with around $31$ million parameters achieved an average IoU of $92.03\%$ for the PhC-U373 and $77.56\%$ for the DIC-HeLa datasets~\cite{unet15}. One example segmentation for the DIC-HeLa dataset is shown in Figure~\ref{fig:exseg_unet}.
-
-To train and evaluate the FC-DenseNet the CamVid dataset~\cite{camvid_challenge} was used. CamVid is a database of urban scene videos, fully labelled with 32 different classes. The classes include moving objects like pedestrians and cars, ceilings like sky and tunnel as well as fixed objects like buildings, roads and fences. The authors of FC-DenseNet report a mean IoU of $66.9\%$ and a global accuracy of $91.5\%$~\cite{denseseg17}. Only looking at the plain numbers, FC-DenseNet seems worse than U-Net because of the lower mean IoU. However, with only around $9.4$ million parameters it requires significantly less computational power. Also, the CamVid dataset is much more sophisticated compared to the ISBI cell tracking challenge. As can be seen in figure~\ref{fig:exseg_densenet}, the segmentation predictions of FC-DenseNet are of high quality.
-
-W-Net was trained on the PASCAL VOC 2012 dataset~\cite{pascal_voc12} and evaluated with the Berkeley Segmentation Database (BSDS500)~\cite{hierarchy_imgseg11}. Both datasets contain hundreds of images with precisely labelled segmentation maps. But since the W-Net architecture is trained in an unsupervised approach, the labels of the datasets are only used for evaluation. Also, the performance metrics are different, because there are multiple ground-truth labels for each image in the dataset. For example, they use a metric called \emph{segmentation covering}~(SC)~\cite{hierarchy_imgseg11}, which is an extension to the well-known IoU metric.
-
-Without postprocessing, W-Net scores $62\%$ SC on the BSDS500 dataset. Again, according to the plain numbers this seems worse than the results of U-Net and DenseNet. But taking into account, that W-Net was trained with unsupervised learning, i.~e. it did not receive any labelling information during training, the results are quite remarkable. Figure~\ref{fig:exseg_wnet} presents a segmentation map predicted by W-Net.
-
-Overall, it is difficult to judge which architecture has delivered the best results in general. Likewise, it is not possible to draw conclusions about which architecture works best on the given problem of terrain type segmentation. Therefore in section~\ref{sec:segmentation} all three architectures are implemented and evaluated for this specific task.
 
 \begin{figure}
     \newcommand{\SegmentationExampleImageWidth}{0.3\textwidth}
@@ -312,5 +300,15 @@ Overall, it is difficult to judge which architecture has delivered the best resu
     \caption{Segmentation Results from the Reference Architectures}
     \label{fig:segmentation_examples}
 \end{figure}
+
+U-Net was trained and evaluated for the ISBI cell tracking challenge~\cite{isbi_challenge12}. The challenge consists of two datasets, both showing biological cells scanned with different microscopy techniques. For both datasets the main objective was to provide a binary classification for the cell images, where a distinction between cell and non-cell pixels must be made. Also the precise detection of boundaries between adjacent cells was a key point of interest for this challenge. The U-Net model with around $31$ million parameters achieved an average IoU of $92.03\%$ for the PhC-U373 and $77.56\%$ for the DIC-HeLa datasets~\cite{unet15}. One example segmentation for the DIC-HeLa dataset is shown in Figure~\ref{fig:exseg_unet}.
+
+To train and evaluate the FC-DenseNet the CamVid dataset~\cite{camvid_challenge} was used. CamVid is a database of urban scene videos, fully labelled with 32 different classes. The classes include moving objects like pedestrians and cars, ceilings like sky and tunnel as well as fixed objects like buildings, roads and fences. The authors of FC-DenseNet report a mean IoU of $66.9\%$ and a global accuracy of $91.5\%$~\cite{denseseg17}. Only looking at the plain numbers, FC-DenseNet seems worse than U-Net because of the lower mean IoU. However, with only around $9.4$ million parameters it requires significantly less computational power. Also, the CamVid dataset is much more sophisticated compared to the ISBI cell tracking challenge. As can be seen in figure~\ref{fig:exseg_densenet}, the segmentation predictions of FC-DenseNet are of high quality.
+
+W-Net was trained on the PASCAL VOC 2012 dataset~\cite{pascal_voc12} and evaluated with the Berkeley Segmentation Database (BSDS500)~\cite{hierarchy_imgseg11}. Both datasets contain hundreds of images with precisely labelled segmentation maps. But since the W-Net architecture is trained in an unsupervised approach, the labels of the datasets are only used for evaluation. Also, the performance metrics are different, because there are multiple ground-truth labels for each image in the dataset. For example, they use a metric called \emph{segmentation covering}~(SC)~\cite{hierarchy_imgseg11}, which is an extension to the well-known IoU metric.
+
+Without postprocessing, W-Net scores $62\%$ SC on the BSDS500 dataset. Again, according to the plain numbers this seems worse than the results of U-Net and DenseNet. But taking into account, that W-Net was trained with unsupervised learning, i.~e. it did not receive any labelling information during training, the results are quite remarkable. Figure~\ref{fig:exseg_wnet} presents a segmentation map predicted by W-Net.
+
+Overall, it is difficult to judge which architecture has delivered the best results in general. Likewise, it is not possible to draw conclusions about which architecture works best on the given problem of terrain type segmentation. Therefore in section~\ref{sec:segmentation} all three architectures are implemented and evaluated for this specific task.
 
 \clearpage
