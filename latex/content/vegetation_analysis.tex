@@ -11,9 +11,7 @@ Actually, the reflections of green light on plants is significantly higher than 
 
 Most SVIs compare the difference between visible red light and NIR light~\cite{glv03}. The lower the amount of red light, the higher the density of green vegetation in the scene.
 
-There are various indices that each combine the spectral bands in unique ways and perform slightly different color corrections. Most of the indices use simple algebraic formulas. In the end, they all produce a single scalar value indicating the density of the vegetation.
-
-The next sections introduce some of the widely used vegetation indices.
+There are various indices that each combine the spectral bands in unique ways and perform slightly different color corrections. Most of the indices use simple algebraic formulas. In the end, they all produce a single scalar value indicating the density of the vegetation. The next sections introduce some of the widely used vegetation indices.
 
 \subsubsection{Ratio Vegetation Index}
 The simplest SVI is the \emph{Ratio Vegetation Index} (RVI). It is represented by the ratio between NIR and red light~\cite{glv03} (see equation~\ref{eq:rvi}). Higher values indicate denser vegetation.
@@ -40,7 +38,8 @@ The NDVI was able to solve some of the shortcomings of the RVI. For example, bec
 Values close to $1$ indicate a high probability for dense, green vegetation~\cite{gisg_ndvi20}. For lower values the density of the vegetation decreases. Values near $0$ do not allow for any precise conclusions about the surface conditions, except that living vegetation is very unlikely at that location. The negative range of values mostly consists of water.
 
 \subsubsection{Enhanced Vegetation Index}
-As time passes, improved measuring instruments were launched, like the Terra mission\footnote{For details see \url{https://terra.nasa.gov/}.} of the National Aeronautics and Space Administration (NASA). The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
+As time passes, improved measuring instruments were launched, like the Terra mission of the National Aeronautics and Space Administration (NASA). The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
+\clearpage
 
 The EVI is calculated similarly to the NDVI, but has some additional factors to correct the influence of atmospheric conditions and background noise (see equation~\ref{eq:evi}). This means that EVI is more sensitive and offers more reliable information about the vegetation.
 
@@ -91,20 +90,20 @@ To evaluate the usability of the SVIs this section focuses on applying them to s
 
 For the purpose of visualization, the output values of the indices are mapped to represent an 8-bit grayscale image. The brightness of the image indicates the density of the vegetation, with brighter patches implying denser vegetation. For the indices that do not have fixed limits, the ranges were selected in a way that resulted in a meaningful visualization. 
 
-\begin{figure}
+Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection calculated with the RVI. Over the entire dataset, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization.
+
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/vegetation/evi}
     \caption{Vegetation Analysis using RVI}
     \label{fig:vegetation_rvi_examples}
 \end{figure}
 
-Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection calculated with the RVI. Over the entire dataset, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization.
-
 In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is not so straightforward but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields. 
 
 In figure~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualizations also express that range. As can be seen, the projection for the two indices are quite different.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/vegetation/ndvi_evi}
     \caption{Vegetation Analysis using NDVI and EVI}
@@ -119,7 +118,7 @@ With regards to forests, NDVI performs rather bad. The middle image shows that t
 
 Lastly, figure~\ref{fig:vegetation_savi_examples} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yield much higher values than SAVI. That is why the visualizations of MSAVI are much brighter.
 
-\begin{figure}
+\begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/vegetation/savi_msavi}
     \caption{Vegetation Analysis using SAVI and MSAVI}
