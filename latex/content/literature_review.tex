@@ -33,7 +33,7 @@ The concept of backpropagation is to do a standard forward pass through the mode
 
 Sometimes it can happen that the total error rate increases after the weights are adjusted. This is because the backpropagation algorithm only indicates the direction (positive or negative) in which each weight should be moved. But it can not predict the order of magnitude for the adjustment. For that, a parameter called \emph{step width} (often referred to as \emph{learning rate}) is introduced \cite[p.~169]{nn_intro96}. If the learning rate is too big, it can happen that the adjusted weights overshoot the minimum of the error function, resulting in an increased error rate. On the other hand, if the learning rate is too small, the training requires even more iterations. Therefore, it is very important to pick an appropriate learning rate for the model.
 
-\subsubsection{Optimizing the training algorithm}
+\subsubsection{Optimizing the Training Algorithm}
 DNNs are very flexible and allow to solve a broad variety of tasks. However, this flexibility also comes with some challenges. For example, DNNs include countless configuration options, all of which affect the final outcome. Those options are commonly referred to as \emph{hyperparameters}~\cite[pp.~270ff]{praxiseinstieg_ml17}. 
 
 In general, a hyperparameter is an option of the learning algorithm. It is not learned during training, but rather set beforehand. Hyperparameters cover all kinds of options, such as loss and activation functions. Also the overall architecture of the model can be seen as a hyperparameter. This includes for example the number of layers, number of neurons per layer and much more.
