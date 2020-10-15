@@ -18,8 +18,8 @@ The automated identification of emergency landing fields is a complex challenge 
 1.  GISGeography. _What is NDVI (Normalized Difference Vegetation Index)_. 2020. [[Online]](https://gisgeography.com/ndvi-normalized-difference-vegetation-index/).
 1. I. Goodfellow, Y. Bengio, A. Courville. _Deep Learning_. MIT Press. 2016. [[Online]](http://www.deeplearningbook.org). 
 1. A. Géron. _Praxiseinstieg: Machine Learning mit Scikit-Learn und TensorFlow_. O'Reilly dpunkt.verlag, Heidelberg. 2017. Translated by K. Rother. ISBN 978-3-96009-061-8.
-1. FernUniversität Hagen. _Emergency Landing Field Identification (ELFI)_. 2020. [[Online]](https://www.fernuni-hagen.de/rechnerarchitektur/forschung/fas-elfi.shtml). 
-1. FernUniversität Hagen. _Flugassistenzsysteme - Forschungsbereich Notlandeassistenzsysteme_. 2020. [[Online]](https://www.fernuni-hagen.de/rechnerarchitektur/forschung/fas.shtml). 
+1. FernUniversität in Hagen. _Emergency Landing Field Identification (ELFI)_. 2020. [[Online]](https://www.fernuni-hagen.de/rechnerarchitektur/forschung/fas-elfi.shtml). 
+1. FernUniversität in Hagen. _Flugassistenzsysteme - Forschungsbereich Notlandeassistenzsysteme_. 2020. [[Online]](https://www.fernuni-hagen.de/rechnerarchitektur/forschung/fas.shtml). 
 1. H. He, E. A. Garcia. _Learning from Imbalanced Data_. IEEE TKDE: vol. 21, no. 9, pp. 1263 - 1284, 2009. [DOI: 10.1109/TKDE.2008.239](https://doi.org/10.1109/TKDE.2008.239)
 1. K. He, G. Gkioxari, P. Dollár, R. Girshick. _Mask R-CNN_. 2018. [arXiv:1703.06870](https://arxiv.org/abs/1703.06870).
 1. G. Hinton, N. Srivastava, K. Swersky. _rmsprop: Divide the gradient by a running average of its recent magnitude_. Lecture Notes. 2014. [[Online]](https://www.cs.toronto.edu/~tijmen/csc321/).

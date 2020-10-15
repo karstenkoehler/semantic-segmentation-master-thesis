@@ -44,10 +44,10 @@ As time passes, improved measuring instruments were launched, like the Terra mis
 The EVI is calculated similarly to the NDVI, but has some additional factors to correct the influence of atmospheric conditions and background noise (see equation~\ref{eq:evi}). This means that EVI is more sensitive and offers more reliable information about the vegetation.
 
 \begin{equation}
-    \text{EVI} = G * \frac{
+    \text{EVI} = G \cdot \frac{
     \text{NIR}-\text{Red}
     }{
-    \text{NIR} + C_1 * \text{Red} - C_2 * \text{Blue} + L
+    \text{NIR} + C_1 \cdot \text{Red} - C_2 \cdot \text{Blue} + L
     }
     \label{eq:evi}
 \end{equation}
@@ -63,7 +63,7 @@ Another approach to improve the NDVI was made $1988$ by Alfredo Huete. He found 
     \bigg(
     \frac{\text{NIR} - \text{Red}}
     {\text{NIR} + \text{Red} + L}
-    \bigg) * \big(1 + L \big)
+    \bigg) \cdot \big(1 + L \big)
     \label{eq:savi}
 \end{equation}
 
