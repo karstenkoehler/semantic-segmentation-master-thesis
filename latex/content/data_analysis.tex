@@ -2,7 +2,7 @@
 \label{sec:dataset_analysis}
 The dataset which is used throughout this thesis is provided by the Ministry of the Interior of the State of North Rhine-Westphalia in Germany. With the platform GEOportal\footnote{Available at \url{https://www.geoportal.nrw/}.} they offer various types of maps, like topographical maps, elevation data and orthographical footage. Most of the data is available for free download in batches. The batches used in this thesis are released under the dl-de/zero-2-0 licence. This means that the data can be used for any purpose without any restrictions or conditions\footnote{See the full license text at \url{https://www.govdata.de/dl-de/zero-2-0}.}.
 
-For the purpose of this thesis there are two types of maps which prove useful. First, there is a map assembled of digital orthophotos (DOPs). A DOP is an aerial photograph of the surface of the earth (see figure~\ref{fig:dop_rgb_nir_example}, left). It is processed to hide effects like perspective distortions or topographic features of the landscape. Also it follows a specific map projection to denote the exact spatial extents of the photograph on the earth's surface. Because of that, DOPs are great to analyze terrain types and conditions. In section~\ref{sec:segmentation} DOPs are used to perform a semantic segmentation based on the terrain surface.
+For the purpose of this thesis there are two types of maps which prove useful. First, there is a map assembled of digital orthophotos (DOPs). A DOP is an aerial photograph of the surface of the earth (see Fig.~\ref{fig:dop_rgb_nir_example}, left). It is processed to hide effects like perspective distortions or topographic features of the landscape. Also it follows a specific map projection to denote the exact spatial extents of the photograph on the earth's surface. Because of that, DOPs are great to analyze terrain types and conditions. In section~\ref{sec:segmentation} DOPs are used to perform a semantic segmentation based on the terrain surface.
 
 \begin{figure}[h]
     \centering
@@ -11,7 +11,7 @@ For the purpose of this thesis there are two types of maps which prove useful. F
     \label{fig:dop_rgb_nir_example}
 \end{figure}
 
-The second map explored in this thesis contains imagery obtained by near-infrared (NIR) spectroscopy (see figure~\ref{fig:dop_rgb_nir_example}, right). They are processed in the same way as the DOPs, so they are also projected onto the earth's surface with a specific map projection. NIR data is widely applied in agriculture to monitor the cultivation of herbal products like forages and vegetables. In this thesis the NIR imagery is used to approximate vegetation density for specific regions (see section~\ref{sec:vegetation_analysis}).
+The second map explored in this thesis contains imagery obtained by near-infrared (NIR) spectroscopy (see Fig.~\ref{fig:dop_rgb_nir_example}, right). They are processed in the same way as the DOPs, so they are also projected onto the earth's surface with a specific map projection. NIR data is widely applied in agriculture to monitor the cultivation of herbal products like forages and vegetables. In this thesis the NIR imagery is used to approximate vegetation density for specific regions (see section~\ref{sec:vegetation_analysis}).
 
 The data for the maps is collected by airplanes with special cameras pointing vertically downwards. With straight east-west flight paths and significant overlap in the photographic coverage, the airplanes scan the areas. In this way, a seamless image of the earth's surface is created. The ground sample distance of the dataset is $10~\text{cm}$, i.~e. each pixel represents a $10\times 10~\text{cm}$ square in real-world scale. The recent data is captured with different cameras like for example the Leica DMC III or the Vexcel UltraCam UCXp~\cite{topo-image16}. Therefore, small color differences in the dataset can be expected.
 
@@ -27,12 +27,12 @@ Both the DOP and NIR datasets are provided by the Ministry of the Interior in a 
 
 For that purpose, the GEOportal has a separate download section. From there the relevant regions and map types can be selected and downloaded in a compressed bundle. The bundle contains map tiles in the JPEG 2000 file format. This is an image format that has a dense compression rate and directly contains the georeferencing information for each tile. To have a wide range of terrain types with broad variety included, we use the data for the Municipality of Arnsberg and its surroundings. This concludes to a download size of $11.5~\text{Gigabytes}$ with around $248.49~\text{km}^2$ of terrain, where each pixel represents a $10\times 10~\text{cm}$ square in scale.
 
-Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its location in Germany. To show the granularity of the data, one region is enlarged and shown in higher resolution. One pixel in the dataset represents $10\times 10$ centimeters in real-world scale. As can be seen in figure~\ref{fig:dop_rgb_all}, it is easily possible to detect objects like trees, cars or buildings with such a high resolution. Therefore, the data provides sufficient information for the segmentation of land usage.
+Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its location in Germany. To show the granularity of the data, one region is enlarged and shown in higher resolution. One pixel in the dataset represents $10\times 10$ centimeters in real-world scale. As can be seen in Fig.~\ref{fig:dop_rgb_all}, it is easily possible to detect objects like trees, cars or buildings with such a high resolution. Therefore, the data provides sufficient information for the segmentation of land usage.
 
 It is possible to download both DOP and NIR data together in a single bundle. The JPEG files then contain four channels of pixel information. The first three channels make up the red, green and blue colors for the DOPs. And the last channel provides the scalar output of the NIR spectroscopy scan.
 
 \subsection{Preparing the Dataset}
-Before the data is ready to be used for training the models, some preprocessing steps have to be performed. In figure~\ref{fig:data_preprocessing} the whole preparation process is summarized briefly. The present and following sections focus on importing the whole dataset into a standardized database using various tools. Afterwards, section~\ref{sec:image_export} explains the steps to prepare the data for the use of training. This includes rendering image tiles from the raster in the database. All preparation scripts can be found in~\cite{thesis-code20}.
+Before the data is ready to be used for training the models, some preprocessing steps have to be performed. In Fig.~\ref{fig:data_preprocessing} the whole preparation process is summarized briefly. The present and following sections focus on importing the whole dataset into a standardized database using various tools. Afterwards, section~\ref{sec:image_export} explains the steps to prepare the data for the use of training. This includes rendering image tiles from the raster in the database. All preparation scripts can be found in~\cite{thesis-code20}.
 
 \begin{figure}[h]
     \centering
@@ -81,7 +81,7 @@ PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a da
 The original Shapesfiles enclose all regions of the State of North Rhine-Westphalia. Since the DOP und NIR datasets only consist of a smaller subregion, all geometry objects are cropped to that subregion in the next step. Geometry objects that are located outside of the boundaries are dropped entirely. During this process, the database tables of the different Shapefiles are merged into one single table. This resulting table has columns for an internal id, the object type, a textual object description and for the geometry object itself. As all the other meta information contained in the Shapefiles is not needed, it is dropped in this step.
 \clearpage
 
-The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes (see also figure~\ref{fig:dop_label_all}). The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
+The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes (see also Fig.~\ref{fig:dop_label_all}). The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
 
 \begin{table}[]
 \centering
@@ -209,7 +209,7 @@ Because of that process, it can happen that the segmentation maps in the exporte
 
 Even though the chosen dataset generally offers many advantages, it still has some downsides. The two main points of concern are on one side the imbalanced distribution of classes and on the other side the label precision at segment edges.
 
-Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area coverages of the classes in the dataset. Around $65\%$ of the dataset consists of area covered by forest. Furthermore, both traffic zones and water are below $1\%$ respectively. Forest, buildings and agriculture are the three dominant classes in this dataset. In total, those three classes make up almost $97\%$ of the dataset. This can also be seen in figure~\ref{fig:dop_label_all} on page~\pageref{fig:dop_label_all}.
+Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area coverages of the classes in the dataset. Around $65\%$ of the dataset consists of area covered by forest. Furthermore, both traffic zones and water are below $1\%$ respectively. Forest, buildings and agriculture are the three dominant classes in this dataset. In total, those three classes make up almost $97\%$ of the dataset. This can also be seen in Fig.~\ref{fig:dop_label_all} on page~\pageref{fig:dop_label_all}.
 
 \begin{table}[h]
 \centering
@@ -261,7 +261,7 @@ The second concern to raise about the dataset is about the label precision at th
 
 In the first two examples you can see that the \texttt{buildings} class not only includes houses, but the entire land parcel that belongs to the houses. In some cases, also the roads leading to the buildings are considered as buildings. For towns and villages, oftentimes the whole area is labelled with the \texttt{buildings} class, including gardens and streets.
 
-The third example in figure~\ref{fig:label_considerations} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. In the last examples you can see that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
+The third example in Fig.~\ref{fig:label_considerations} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. In the last examples you can see that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
 
 To get really good predictions, training should ideally be performed with pixel-perfect labels. For this thesis, pixel-perfect predictions are not aspired. To identify emergency landing fields, we are looking for large contiguous areas, so minor inaccuracies at the edges might not be an issue. However, it is very likely that the inaccurate training data affects the quality of the predictions. This is something to keep in mind when evaluating the performance of the trained models, because it will also affect the metrics.
 

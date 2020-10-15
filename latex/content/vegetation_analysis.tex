@@ -26,7 +26,7 @@ Non-vegetated areas typically are below or near $1$. In that case the reflectanc
 The lower bound for the index is $0$, because negative values for the reflectances are not possible. On the other hand, there is no upper limit for the index. This makes it difficult to define from when exactly a vegetation is considered to be dense.
 
 \subsubsection{Normalized Difference Vegetation Index}
-One of the first approaches to monitor changes in global vegetation was driven by the National Oceanic and Atmospheric Administration (NOAA), a US agency focusing on the conditions of the environment. With the help of satellites and high-resolution radiometers they measured the earth's reflectance in five spectral bands, including red and NIR wavelengths. To support their analysis, they introduced a new vegetation index called the \emph{Normalized Difference Vegetation Index} (NDVI)~\cite{measuring_vegetation00}.
+One of the first approaches to monitor changes in global vegetation was driven by the National Oceanic and Atmospheric Administration, a US agency focusing on the conditions of the environment. With the help of satellites and high-resolution radiometers they measured the earth's reflectance in five spectral bands, including red and NIR wavelengths. To support their analysis, they introduced a new vegetation index called the \emph{Normalized Difference Vegetation Index} (NDVI)~\cite{measuring_vegetation00}.
 
 The NDVI was able to solve some of the shortcomings of the RVI. For example, because of the way it is calculated (see equation~\ref{eq:ndvi}), it is limited to the range of $-1$ to $1$. This makes it easier to categorize density levels for vegetation.
 
@@ -38,7 +38,7 @@ The NDVI was able to solve some of the shortcomings of the RVI. For example, bec
 Values close to $1$ indicate a high probability for dense, green vegetation~\cite{gisg_ndvi20}. For lower values the density of the vegetation decreases. Values near $0$ do not allow for any precise conclusions about the surface conditions, except that living vegetation is very unlikely at that location. The negative range of values mostly consists of water.
 
 \subsubsection{Enhanced Vegetation Index}
-As time passes, improved measuring instruments were launched, like the Terra mission of the National Aeronautics and Space Administration (NASA). The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
+As time passes, improved measuring instruments were launched, like the Terra mission of the National Aeronautics and Space Administration. The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
 \clearpage
 
 The EVI is calculated similarly to the NDVI, but has some additional factors to correct the influence of atmospheric conditions and background noise (see equation~\ref{eq:evi}). This means that EVI is more sensitive and offers more reliable information about the vegetation.
@@ -101,7 +101,7 @@ Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection
 
 In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is not so straightforward but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields. 
 
-In figure~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualizations also express that range. As can be seen, the projection for the two indices are quite different.
+In Fig.~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualizations also express that range. As can be seen, the projection for the two indices are quite different.
 
 \begin{figure}[h]
     \centering
@@ -116,7 +116,7 @@ Although the results contradict each other, when viewed for each index separatel
 
 With regards to forests, NDVI performs rather bad. The middle image shows that there is almost no difference in the projection, regardless of the foliage. In contrast, EVI is able to make a clear distinction. For trees with foliage there are large bright spots in the projections.
 
-Lastly, figure~\ref{fig:vegetation_savi_examples} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yield much higher values than SAVI. That is why the visualizations of MSAVI are much brighter.
+Lastly, Fig.~\ref{fig:vegetation_savi_examples} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yield much higher values than SAVI. That is why the visualizations of MSAVI are much brighter.
 
 \begin{figure}[h]
     \centering

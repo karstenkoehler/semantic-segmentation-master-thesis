@@ -36,7 +36,7 @@ All U-Net models were trained with a stochastic gradient descent optimizer. The 
 Starting from the model with its original hyperparameter configuration, a few other configurations have been explored. To distinguish between the configurations, a naming convention is established. The original configuration is called \texttt{U-Net-23D}, where the number represents the exact number of convolution layers in the model. The suffix \texttt{D} indicates that a dropout layer was added before the expansive path to provide regularization during the training.
 
 \subsubsection{Metrics}
-During training, some metrics were collected to measure the predictive performance of the models (see section~\ref{sec:metrics} for details on the metrics). The plots in figure~\ref{fig:unet_train_metrics} present the epoch-wise loss, categorical accuracy and mean IoU for each U-Net configuration. The computation of the metrics was performed using the validation set. This set only contains samples that were not fed into the model for updating its weights. Thus, the metrics provide good evidence for the model's ability to generalize.
+During training, some metrics were collected to measure the predictive performance of the models (see section~\ref{sec:metrics} for details on the metrics). The plots in Fig.~\ref{fig:unet_train_metrics} present the epoch-wise loss, categorical accuracy and mean IoU for each U-Net configuration. The computation of the metrics was performed using the validation set. This set only contains samples that were not fed into the model for updating its weights. Thus, the metrics provide good evidence for the model's ability to generalize.
 
 \begin{figure}
     \newcommand{\UnetMetricsImageWidth}{0.32\textwidth}
@@ -112,7 +112,7 @@ Both \texttt{U-Net-23} and \texttt{U-Net-23D} show better results for the \textt
 
 All configurations struggle with the \texttt{traffic} class. In most situations, roads are incorrectly projected to \texttt{buildings}. Only \texttt{U-Net-23} has some correct predictions for the \texttt{traffic} class.
 
-Based on the images shown in figure~\ref{fig:unet_prediction_images}, it is not possible to analyze the predictions with regards to the distinction between \texttt{forest} and \texttt{agriculture}. This will be considered later on in section~\ref{sec:segmentation_discussion}.
+Based on the images shown in Fig.~\ref{fig:unet_prediction_images}, it is not possible to analyze the predictions with regards to the distinction between \texttt{forest} and \texttt{agriculture}. This will be considered later on in section~\ref{sec:segmentation_discussion}.
 
 \subsection{Experiments with FC-DenseNet}
 \label{sec:densenet_experiments}
@@ -125,7 +125,7 @@ The loss is again calculated by a categorical crossentropy function. During trai
 Another naming convention is applied to distinguish the variations of the FC-DenseNet models. The reference model is called \texttt{FCDN-103D}, again indicating the number of convolution layers and the use of dropout. The letter \texttt{C} denotes the application of compression layers before transition-down layers to condense the outputs of dense blocks (see~\cite{denseseg17} for details). The compression rate of those layers is set to $0.5$, i.~e. the number of feature maps is halved.
 
 \subsubsection{Metrics}
-The training metrics for all FC-DenseNet configurations are presented in figure~\ref{fig:densenet_train_metrics}. Although there are some strong oscillations, most of the configurations show ongoing improvements over the course of 20 epochs. Towards the end of the training the oscillations faint and the graphs converge.
+The training metrics for all FC-DenseNet configurations are presented in Fig.~\ref{fig:densenet_train_metrics}. Although there are some strong oscillations, most of the configurations show ongoing improvements over the course of 20 epochs. Towards the end of the training the oscillations faint and the graphs converge.
 
 \begin{figure}[h]
     \newcommand{\DensenetMetricsImageWidth}{0.32\textwidth}
@@ -137,7 +137,7 @@ The training metrics for all FC-DenseNet configurations are presented in figure~
 
 This behavior is a sign that the initial learning rate was set too high. The weights in the model are then adjusted too drastically, so that minima of the loss function are skipped. The learning rate shrinks towards the end of the training, which explains the reduced oscillations.
 
-According to figure~\ref{fig:densenet_train_metrics}, \texttt{FCDN-103D} yields the best results. At the end of the training the metrics are at a loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Those numbers are substantially better than the other configurations, which probably relies on the fact that this configuration also has the highest number of parameters.
+According to Fig.~\ref{fig:densenet_train_metrics}, \texttt{FCDN-103D} yields the best results. At the end of the training the metrics are at a loss of $1.17$, categorical accuracy of $62.6\%$ and mean IoU of $28.4\%$. Those numbers are substantially better than the other configurations, which probably relies on the fact that this configuration also has the highest number of parameters.
 
 The other three configurations report fairly uniform results in terms of metrics. This is very interesting with regards to performance and computational efficiency. \texttt{FCDN-103DC} has more than twice the number of parameters than \texttt{FCDN-56D} ($5.9~\text{M}$ compared to $2.7~\text{M}$) and still many more than \texttt{FCDN-67D} ($4.0~\text{M}$). This means that the configurations with fewer parameters store their information much more efficiently.
 
@@ -232,7 +232,7 @@ The metrics for W-Net are different from the ones presented for U-Net and FC-Den
     \label{fig:wnet_train_metrics}
 \end{figure}
 
-The only metric shown in figure~\ref{fig:wnet_train_metrics} is the categorical crossentropy loss during training. Since no configuration has major improvements (note the small range on the y-axis), training is stopped after a single epoch. Thus, the graph plots the loss per batch in the training set.
+The only metric shown in Fig.~\ref{fig:wnet_train_metrics} is the categorical crossentropy loss during training. Since no configuration has major improvements (note the small range on the y-axis), training is stopped after a single epoch. Thus, the graph plots the loss per batch in the training set.
 
 All configurations show similar behavior during the training. Over the first few batches of data, there is an adequate improvement on the loss. Only after a few more batches, the predictions become worse again. Interestingly, the graphs for all configurations look like they all follow the same pattern. At the time of writing, no satisfying explanation can be given for those incidents.
 
@@ -352,7 +352,7 @@ The results of both U-Net and FC-DenseNet were much better in general. The exper
     \label{fig:segmentation_discussion}
 \end{figure}
 
-So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, figure~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
+So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, Fig.~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
 
 The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three dominant classes throughout the dataset, lots of good training examples are available.
 
@@ -364,7 +364,7 @@ With regards to the classes, the predictions of \texttt{FCDN-67D} can be explain
 
 On the other hand, the predictions of \texttt{FCDN-67D} seem very fragmented in some cases, for example between the \texttt{agriculture} and \texttt{forest} classes. The transitions between those two are not really sharp but rather jagged and fissured. To some extent this represents the real situation, because oftentimes there are no clear borders between forest and grassland.
 
-In terms of inference speed \texttt{U-Net-23D} is slightly faster than \texttt{FCDN-67D}. Each image in figure~\ref{fig:segmentation_discussion} took around $9$~seconds to process with \texttt{U-Net-23D}. In contrast, \texttt{FCDN-67D} took around $11$~seconds per image. All measurements were executed on a NVIDIA GeForce GTX 1080 Ti graphics card\footnote{More details on the hardware can be found in appendix~\ref{app:tools_hardware}.}.
+In terms of inference speed \texttt{U-Net-23D} is slightly faster than \texttt{FCDN-67D}. Each image in Fig.~\ref{fig:segmentation_discussion} took around $9$~seconds to process with \texttt{U-Net-23D}. In contrast, \texttt{FCDN-67D} took around $11$~seconds per image. All measurements were executed on a NVIDIA GeForce GTX 1080 Ti graphics card\footnote{More details on the hardware can be found in appendix~\ref{app:tools_hardware}.}.
 
 This is surprising, because \texttt{U-Net-23D} has more than four times the number of parameters compared to \texttt{FCDN-67D} ($16.6~\text{M}$ vs.\ $4.0~\text{M}$). With \texttt{U-Net-23D} however, the parameters are spread across only $23$ convolution layers, whereas in \texttt{FCDN-67D} there are $67$ layers. Therefore, the calculations in \texttt{U-Net-23D} can better be executed in parallel.
 
