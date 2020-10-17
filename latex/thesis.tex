@@ -7,10 +7,11 @@
 \usepackage{tabularx}
 \usepackage{thesis}
 \usepackage[T1]{fontenc}
-\usepackage{cite}
 \usepackage{comment}
 \usepackage{caption}
 \usepackage{subcaption}
+\usepackage[style=numeric,sorting=nyt]{biblatex}
+\addbibresource{references.bib}
 
 \myauthor{Karsten Köhler}
 \mytopic{Semantic Segmentation of Terrain Data using High-Resolution Orthophotos}
@@ -45,8 +46,7 @@
     \clearpage
     \phantomsection
     \addcontentsline{toc}{section}{References}
-    \bibliography{references}
-    \bibliographystyle{plain}
+    \printbibliography
 
     \declarationofauthorship{09.11.2020}
 \end{document}
