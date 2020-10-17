@@ -126,7 +126,7 @@ As stated by Goodfellow et al.\ in~\cite{DLbook16} the convolution operation has
 \label{sec:pooling}
 Unlike convolution, which is used to extract features from the input, \emph{pooling} removes information from the data to reduce the number of parameters and also to prevent overfitting. The procedure of pooling is similar to convolution. However, it does not use matrix multiplication but instead performs a predefined mathematical function on the input matrix. While any function can be used for the pooling operation, most of the times it is the $\max$ function. Thus, it reduces the available information but still keeps the most important activations~\cite[p.~369 f]{praxiseinstieg_ml17}.
 
-Because the function to use is predefined, pooling layers do not contain any trainable parameters. But still they are configurable with the same hyperparameters as convolution layers, namely kernel size, stride and padding. In addition, you can not only do pooling along the two axis of the input, but also along the third axis, which contains the feature maps~\cite[p.~370]{praxiseinstieg_ml17}.
+Because the function to use is predefined, pooling layers do not contain any trainable parameters. But still they are configurable with the same hyperparameters as convolution layers, namely kernel size, stride and padding. In addition, pooling can also be performed along the third axis of the input, which contains the feature maps~\cite[p.~370]{praxiseinstieg_ml17}.
 
 \begin{figure}[h]
     \centering

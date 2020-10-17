@@ -259,10 +259,10 @@ The second concern to raise about the dataset is about the label precision at th
     \label{fig:label_considerations}
 \end{figure}
 
-In the first two examples you can see that the \texttt{buildings} class not only includes houses, but the entire land parcel that belongs to the houses. In some cases, also the roads leading to the buildings are considered as buildings. For towns and villages, oftentimes the whole area is labelled with the \texttt{buildings} class, including gardens and streets.
+The first two examples demonstrate that the \texttt{buildings} class not only includes houses, but the entire land parcel that belongs to the houses. In some cases, also the roads leading to the buildings are considered as buildings. For towns and villages, oftentimes the whole area is labelled with the \texttt{buildings} class, including gardens and streets.
 
-The third example in Fig.~\ref{fig:label_considerations} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. In the last examples you can see that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
+The third example in Fig.~\ref{fig:label_considerations} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. The last example depicts that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
 
-To get really good predictions, training should ideally be performed with pixel-perfect labels. For this thesis, pixel-perfect predictions are not aspired. To identify emergency landing fields, we are looking for large contiguous areas, so minor inaccuracies at the edges might not be an issue. However, it is very likely that the inaccurate training data affects the quality of the predictions. This is something to keep in mind when evaluating the performance of the trained models, because it will also affect the metrics.
+To get excellent predictions, training should ideally be performed with pixel-perfect labels. For this thesis, pixel-perfect predictions are not aspired. To identify emergency landing fields, we are looking for large contiguous areas, so minor inaccuracies at the edges might not be an issue. However, it is very likely that the inaccurate training data affects the quality of the predictions. This is something to keep in mind when evaluating the performance of the trained models, because it will also affect the metrics.
 
 \clearpage
