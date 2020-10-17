@@ -3,7 +3,7 @@ The main objective of this thesis was to advance the identification of emergency
 
 For the semantic segmentation of terrain types, three renowned reference architectures have been studied thoroughly. Each architecture was analyzed and presented in detail. The architectures were tested extensively with regards to the segmentation challenge.
 
-The experiments proved that the W-Net architecture is not effective on the given dataset. The unsupervised training approach did not generate new insights on the data and did not lead to a adequate differentiation of class segments. For that reason, it is recommended to not conduct further research on this architecture in the given context.
+The experiments proved that the W-Net architecture is ineffective on the given dataset. The unsupervised training approach generated no new insights on the data and did not lead to a adequate differentiation of class segments. For that reason, it is recommended to not conduct further research on this architecture in the given context.
 
 By contrast, both U-Net and FC-DenseNet architectures have shown great success for the class segmentation. The predictions of U-Net were more contiguous and therefore closer to the labels used for training. On the other hand, the predictions of FC-DenseNet are closer to reality, because they represent very detailed segments. 
 
@@ -11,10 +11,9 @@ Both architectures expose some shortcomings with respect to the underrepresented
 
 The second objective of the thesis was to evaluate the use of spectral vegetation indices to estimate the density of vegetation. It was discussed in detail to which extent the projections of the SVIs can be use to assess the suitability of areas for emergency landings. In this regard, several indices were reviewed.
 
-Experiments with the indices have shown very inconsistent results. The areas where dense vegetation is predicted differ based on the index that is used. This is not to be expected, because even if the indices use different characteristics of the dataset, they should still deliver similar results. One issue with this is, that the dataset itself does not contain any precise information about the vegetation itself. Thus the real vegetation density can only be estimated based on the DOPs.
+Experiments with the indices have shown very inconsistent results. The areas where dense vegetation is predicted differ based on the index that is used. This is unexpected, because even if the indices use different characteristics of the dataset, they should still deliver similar results. One issue with this is, that the dataset itself is lacking precise information about the vegetation itself. Thus the real vegetation density can only be estimated based on the DOPs.
 
-Most of the vegetation indices are designed and calibrated for the use with very specific hardware under very specific conditions. The dataset used in this thesis does not match these conditions.
-This might explain the inconsistent projections seen across the indices.
+Most of the vegetation indices are designed and calibrated for the use with very specific hardware under very specific conditions. The dataset used in this thesis does not match these conditions. This might explain the inconsistent projections seen across the indices.
 
 Considering all the facts, no clear conclusion can be drawn about the use of vegetation indices. Further research is required to obtain meaningful recommendations on that topic. For that, more information about the real vegetation situation has to be considered together with the indices. By doing that, it is possible to assess which vegetation index best reflects the real vegetation conditions.
 

@@ -12,12 +12,12 @@ Since the goal is to have a model that is able to generalize, it is recommended 
 
 The test set should only be used to evaluate the performance, but not to decide on hyperparameters or architecture of the model. Otherwise, the model may become too closely aligned with the test set, i.~e. it is no longer possible to evaluate the generalization ability of the model with it. For such decisions another split of the training set is made, which is then called \emph{validation set}~\cite[p.~119]{DLbook16}. This set is used to estimate the generalization error during training and optimization without consulting the test set. Only after all optimizations have been done and no further changes to the model are planned, the test set is used to evaluate the final performance of the model.
 
-There are many ways to pick the samples for the test and validation sets~\cite{val_split18}. provides an insight into commonly used techniques. For this thesis, the test set respects the class imbalance that is found within the full dataset (see section~\ref{sec:dataset_considerations}). This is to achieve fair evaluation results which are not biased by any particular class. For each class, $10\%$ of the samples containing this class were chosen and added to the test set. The remaining samples are randomly distributed among training and validation set at a ratio of $9:1$.
+There are many ways to pick the samples for the test and validation sets~\cite{val_split18}. provides an insight into commonly used techniques. For this thesis, the test set respects the class imbalance that is found within the full dataset (see section~\ref{sec:dataset_considerations}). This is to achieve fair evaluation results which are unbiased towards all classes. For each class, $10\%$ of the samples containing this class were chosen and added to the test set. The remaining samples are randomly distributed among training and validation set at a ratio of $9:1$.
 
 \subsection{Tackling class imbalance}
 \label{sec:class_imbalance}
 
-As already expressed in section~\ref{sec:dataset_considerations}, there is a large imbalance between the segmentation classes in the dataset. This can lead to undesirable biases when training a model with such a dataset. For example, if the model predicts the \texttt{forest} class for every pixel all the time, the categorical accuracy would be at $65\%$ measured over the entire dataset. While this number does not sound too bad, the actual segmentation results would be useless.
+As already expressed in section~\ref{sec:dataset_considerations}, there is a large imbalance between the segmentation classes in the dataset. This can lead to undesirable biases when training a model with such a dataset. For example, if the model predicts the \texttt{forest} class for every pixel all the time, the categorical accuracy would be at $65\%$ measured over the entire dataset. While this number sounds quite promising, the actual segmentation results would be useless.
 
 There are some techniques to tackle the issues that come with an imbalanced dataset. One approach is to add class specific weights for the loss function during training~\cite{class_imbalance19}. The weights will affect the outcome of the loss function and therefore also the gradients during backpropagation. They are assigned antiproportionally to the distribution of the classes, i.~e. overrepresented classes are given small weights and underrepresented classes are given big weights. This has the same effect as duplicating the underrepresented samples in the training set, but it is computationally more efficient.
 
@@ -25,7 +25,7 @@ One major challenge is to find appropriate class weights, so that the imbalances
 
 At a closer look on the dataset, most segments are huge contiguous patches of the same class. The export of the image tiles as described in section~\ref{sec:image_export} results in a high number of images which only cover one single class. This might have a major impact on the learning outcome. Since most of the samples presented to the model only consist of a single class, it is very likely that the model aligns to this characteristics. So instead of learning to differentiate between segments with precise boundaries, the model might rather be directed to roughly classify larger areas.
 
-For this reason, a different approach was chosen to address the class imbalance issues. Since the overall goal for the model is to differentiate between classes, images containing only a single class do not provide much value for training. Thus, all image tiles where all pixels belong to the same class are dropped entirely. On the one hand, this creates incentives for the model to better recognize the differences between classes and the characteristics of class boundaries. On the other hand, this also affects class imbalance, since large partitions of forests and agricultural areas are dropped, but mostly small streets and rivers are preserved. The first few attempts with the reduced training set looked    very promising. Hence, this strategy will be used further on for the training of all the models.
+For this reason, a different approach was chosen to address the class imbalance issues. Since the overall goal for the model is to differentiate between classes, images containing only a single class are inconvenient for training. Thus, all image tiles where all pixels belong to the same class are dropped entirely. On the one hand, this creates incentives for the model to better recognize the differences between classes and the characteristics of class boundaries. On the other hand, this also affects class imbalance, since large partitions of forests and agricultural areas are dropped, but mostly small streets and rivers are preserved. The first few attempts with the reduced training set looked very promising. Hence, this strategy will be used further on for the training of all the models.
 
 \subsection{Experiments with U-Net}
 \label{sec:unet_experiments}
@@ -46,16 +46,16 @@ During training, some metrics were collected to measure the predictive performan
     \label{fig:unet_train_metrics}
 \end{figure}
 
-It is clearly visible that \texttt{U-Net-28D} does not perform well. For all three metrics it yields the worst results. Also, it does not show any significant improvement over time, which is why the training was stopped after five epochs. On a closer investigation of the bad performance, it was found that the model always predicts the \texttt{agriculture} class for every pixel. It might be the case that because of the additional convolution layers the architecture became to deep, so that the correlation between input and output values got lost on their way.
+It is clearly visible that \texttt{U-Net-28D} does perform rather bad. For all three metrics it yields the worst results. Also, it shows no significant improvement over time, which is why the training was stopped after five epochs. On a closer investigation of the bad performance, it was found that the model always predicts the \texttt{agriculture} class for every pixel. It might be the case that because of the additional convolution layers the architecture became to deep, so that the correlation between input and output values got lost on their way.
 
-The configuration \texttt{U-Net-18D} shows some improvements regarding the metrics in the first few epochs of training. After the fifth epoch the graphs flatten out and show only minor improvements. The training was stopped after ten epochs in total, where it hits around $60.8\%$ categorical accuracy and $21.6\%$ mean IoU. The \texttt{U-Net-18D} configuration was the one with the least number of parameters. Fewer parameters directly affect the ability to learn and generalize a broad range of features. The assumption is that the capacity of the model is not sufficient to comprehend the full space of features involved in this challenge.
+The configuration \texttt{U-Net-18D} shows some improvements regarding the metrics in the first few epochs of training. After the fifth epoch the graphs flatten out and show only minor improvements. The training was stopped after ten epochs in total, where it hits around $60.8\%$ categorical accuracy and $21.6\%$ mean IoU. The \texttt{U-Net-18D} configuration was the one with the least number of parameters. Fewer parameters directly affect the ability to learn and generalize a broad range of features. The assumption is that the capacity of the model is insufficient to comprehend the full space of features involved in this challenge.
 
 The best results with regards to the metrics achieve both \texttt{U-Net-23D} and \texttt{U-Net-23}. They both show similar rates of improvements, which level out after $25$ epochs. The configuration with dropout layers features a slightly faster learning behavior, but both arrive at around $74\%$ categorical accuracy and $42.2\%$ mean IoU in the end.
 
 The metrics already allow to draw some conclusions about the configurations. However, it is useful to also look at the visual results before starting the discussion.
 
 \subsubsection{Images}
-While the metrics provide a quick overview over larger parts of the dataset, looking at concrete samples offers a deeper insight into the model's behavior in certain situations. Figure~\ref{fig:unet_prediction_images} depicts predictions in the test set from some configurations, together with the original image and the ground truth. The red square in the original image indicates the area that is covered in the prediction. As already raised in section~\ref{sec:dataset_considerations}, the ground truth labels are not super accurate with regards to the original image.
+While the metrics provide a quick overview over larger parts of the dataset, looking at concrete samples offers a deeper insight into the model's behavior in certain situations. Figure~\ref{fig:unet_prediction_images} depicts predictions in the test set from some configurations, together with the original image and the ground truth. The red square in the original image indicates the area that is covered in the prediction. As already raised in section~\ref{sec:dataset_considerations}, the ground truth labels sometimes are inaccurate with regards to the original image.
 
 \begin{figure}[h]
     \newcommand{\UnetPredictionsImageWidth}{0.18\textwidth}
@@ -106,13 +106,13 @@ While the metrics provide a quick overview over larger parts of the dataset, loo
     \label{fig:unet_prediction_images}
 \end{figure}
 
-The third column of the figure visualizes predictions of the \texttt{U-Net-18D} configuration. The predictions do not contain any \texttt{water} class. Instead, water bodies are predicted to be either \texttt{forest} or \texttt{buildings}. This explains why the categorical accuracy and mean IoU are lower compared to the \texttt{U-Net-23} configurations.
+The third column of the figure visualizes predictions of the \texttt{U-Net-18D} configuration. The predictions omit the \texttt{water} class completely. Instead, water bodies are predicted to be either \texttt{forest} or \texttt{buildings}. This explains why the categorical accuracy and mean IoU are lower compared to the \texttt{U-Net-23} configurations.
 
 Both \texttt{U-Net-23} and \texttt{U-Net-23D} show better results for the \texttt{water} class. They are able to detect water surfaces correctly. However, sometimes shadows of other objects are also considered to be \texttt{water} (middle row). The first row shows that in some cases the predictions are even better than the labels.
 
 All configurations struggle with the \texttt{traffic} class. In most situations, roads are incorrectly projected to \texttt{buildings}. Only \texttt{U-Net-23} has some correct predictions for the \texttt{traffic} class.
 
-Based on the images shown in Fig.~\ref{fig:unet_prediction_images}, it is not possible to analyze the predictions with regards to the distinction between \texttt{forest} and \texttt{agriculture}. This will be considered later on in section~\ref{sec:segmentation_discussion}.
+Based on the images shown in Fig.~\ref{fig:unet_prediction_images}, it is hardly possible to analyze the predictions with regards to the distinction between \texttt{forest} and \texttt{agriculture}. This will be considered later on in section~\ref{sec:segmentation_discussion}.
 
 \subsection{Experiments with FC-DenseNet}
 \label{sec:densenet_experiments}
@@ -200,7 +200,7 @@ Figure~\ref{fig:densenet_prediction_images} shows some sample predictions made b
     \label{fig:densenet_prediction_images}
 \end{figure}
 
-While \texttt{FCDN-103D} performed very well in the metrics, the actual results have some shortcomings. The segments are not separated clearly and form some very fragmented regions. In order to use these predictions meaningfully, they would first have to be smoothed out. The same observations apply in an attenuated form to \texttt{FCDN-56D}. The  other two configurations do not exhibit this behavior.
+While \texttt{FCDN-103D} performed very well in the metrics, the actual results have some shortcomings. The segments are not separated clearly and form some very fragmented regions. In order to use these predictions meaningfully, they would first have to be smoothed out. The same observations apply in an attenuated form to \texttt{FCDN-56D}. The other two configurations do not exhibit this behavior.
 
 None of the configurations was able to predict the \texttt{traffic} class correctly. Mostly it is confused with the \texttt{buildings} class.
 
@@ -212,18 +212,18 @@ The differentiation between the \texttt{agriculture} and \texttt{forest} classes
 \label{sec:wnet_experiments}
 Lastly, the W-Net architecture presented in section~\ref{sec:w-net} is implemented. For that, big parts of the U-Net implementation could be reused, because W-Net essentially consists of two subsequent U-Nets. In contrast to the original U-Net architecture however, the W-Net employs zero padding for the convolution layers, so that input and output dimensions are equal.
 
-The W-Net architecture was designed for unsupervised training. This means, the labels of the dataset are not consulted during training. Instead, the original images are used as both input and desired output. This way, the model has to learn an appropriate distribution of classes all by itself. Since this setup allows for arbitrary numbers of classes, the number is appended to the model name as a suffix. Otherwise, the naming convention is the same as for U-Net in section~\ref{sec:unet_experiments}.
+The W-Net architecture was designed for unsupervised training. This means, the labels of the dataset are ignored during training. Instead, the original images are used as both input and desired output. This way, the model has to learn an appropriate distribution of classes all by itself. Since this setup allows for arbitrary numbers of classes, the number is appended to the model name as a suffix. Otherwise, the naming convention is the same as for U-Net in section~\ref{sec:unet_experiments}.
 
 Unlike the original architecture proposed in~\cite{wnet17} the training function was not split in two parts. Instead, the output of the encoder was altered to represent a clean one-hot encoding of the class with the highest prediction. This was done for two reasons.
 
-First, that way the decoder only has $n$ distinct values from which it has to reconstruct the image (where $n$ is the number of classes). Thus, it is not possible to use intermediate vectors to encode additional states. This makes image reconstruction for the decoder a lot harder.
+First, that way the decoder only has $n$ distinct values from which it has to reconstruct the image (where $n$ is the number of classes). This prevents the decoder from using intermediate vectors to encode additional states. This makes image reconstruction for the decoder a lot harder.
 
 Additionally, the classes predicted by the encoder have to be picked very carefully in order to allow any meaningful reconstruction of the images at all. The goal is that the encoder is really sophisticated with regards to class predictions.
 
 As a part of the thesis, many different options were explored for the optimizer and loss function to use for training. In the end, the results were all equally weak. The configurations presented in the next sections were trained using an Adam optimizer with a learning rate of $0.001$ and a categorical crossentropy loss function.
 
 \subsubsection{Metrics}
-The metrics for W-Net are different from the ones presented for U-Net and FC-DenseNet. Since no labels were used during training, it is not possible to calculate the categorical accuracy and mean IoU. This is because the class predictions learned by the encoder do not necessarily match with the predefined classes in the labels.
+The metrics for W-Net are different from the ones presented for U-Net and FC-DenseNet. Since no labels were used during training, it is impossible to calculate the categorical accuracy and mean IoU. This is because the class predictions learned by the encoder can be very different compared to the predefined classes in the labels.
 
 \begin{figure}[h]
     \centering
@@ -308,7 +308,7 @@ Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net c
     \label{fig:wnet_prediction_images}
 \end{figure}
 
-It is clearly visible that most configurations did not learn a broad variety of classes. The predictions show mostly one dominant class and sporadic occurances of other classes. Especially for the configurations with 20 available classes this is surprising. They do not make use of the available feature space to encode more information of the original image. This is probably the reason why those configuration also were not able to reconstruct the original images properly.
+It is clearly visible that most configurations did not learn a broad variety of classes. The predictions show mostly one dominant class and sporadic occurances of other classes. Especially for the configurations with 20 available classes this is surprising. They use only a small part of the available feature space to encode the information of the original image. This is probably the reason why those configuration also were incapable of reconstructing the original images properly.
 
 For the configurations with 6 available classes, the reconstructions look much better. Especially \texttt{W-Net-46D-6} reassembles the rough structure of the original image. This is also the only configuration that makes notable use of at least two of the available classes. But still, four classes remain mostly unused.
 
@@ -316,7 +316,7 @@ In summary, the results of W-Net were very disappointing. Before any of the resu
 
 \subsection{Discussion}
 \label{sec:segmentation_discussion}
-The W-Net reference architecture turned out to perform very poorly. With the unsupervised training, the goal was to come up with segmentation classes that were not bound to any human preconceptions. This should also help to gather more insight into the dataset in order to uncover potential improvements. However, the W-Net models did not learn any clear differentiation between classes and did not even consume the whole feature space that they were assigned. For those reasons, the W-Net approach was not very effective and is not pursued any further throughout the thesis.
+The W-Net reference architecture turned out to perform very poorly. With the unsupervised training, the goal was to come up with segmentation classes that were independent of any human preconceptions. This should also help to gather more insight into the dataset in order to uncover potential improvements. However, the W-Net models were incapable of learning a clear differentiation between classes and did not even consume the whole feature space that they were assigned. For those reasons, the W-Net approach is considered to be ineffective for the purpose of this research and is not pursued any further throughout the thesis.
 
 The results of both U-Net and FC-DenseNet were much better in general. The experiments showed that both reference architectures are capable to provide decent predictions. Looking at the plain metrics, there is still some space for improvement in both of them. However, this could also be affected by the inaccuracies in the labels (see section~\ref{sec:dataset_considerations}). The visual results show that the predictions in some cases are even more accurate than the labels.
 
@@ -358,7 +358,7 @@ The similarities between the labels and \texttt{U-Net-23D} predictions are clear
 
 Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it comes to highly saturated green grass, such as on sports fields.
 
-The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are not predicted properly by \texttt{U-Net-23D}. For both classes this matches the expectations, since they were labelled rather poorly in the dataset. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar. Since this class mostly includes parks and sports facilities, it is easily confused with the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
+The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are predicted poorly by \texttt{U-Net-23D}. For both classes this matches the expectations, since they were labelled rather poorly in the dataset. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar. Since this class mostly includes parks and sports facilities, it is easily confused with the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
 
 With regards to the classes, the predictions of \texttt{FCDN-67D} can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the dataset.
 

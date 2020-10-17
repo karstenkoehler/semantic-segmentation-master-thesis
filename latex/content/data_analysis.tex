@@ -62,7 +62,7 @@ After the tables are created, the script loops through all the GeoTiff files and
 
 The \texttt{raster2pgsql} tool provides a lot of arguments to properly configure the import of the data. Obviously it needs to know the name of the file to import and the name of the database table to insert the data to. For performance reasons it is very important to set an appropriate tile size for the raster. The original tile size of the GeoTiff files ($10000\times 10000$ pixels) was assessed to be too large. After some experiments, a tile size of $1000\times 1000$ pixels was found to work best for both the initial import and the later processing of the raster.
 
-Another major configuration is the \emph{spatial reference id} (SRID). It also has to be passed as an argument, to ensure the data is imported correctly. The SRID indicates the map projection that is used to map the raster to the earth's surface. The dataset is provided with the SRID 25832. This SRID does not cover the entire globe, but only a rectangular area on the European continent. Therefore it offers a high precision without much distortion in that area and is widely used for maps in Central Europe.
+Another major configuration is the \emph{spatial reference id} (SRID). It also has to be passed as an argument, to ensure the data is imported correctly. The SRID indicates the map projection that is used to map the raster to the earth's surface. The dataset is provided with the SRID 25832. This SRID only covers a rectangular area on the European continent. Therefore it offers a high precision without much distortion in that area and is widely used for maps in Central Europe.
 
 After all GeoTiff files are imported, the Python script creates a Generalized Search Tree (GiST) index for both tables. This takes into account the spatial character of the data and thus speeds up spatial queries like merging and intersecting on the tables significantly. For the same reason, the Python script also enforces some constraints on the raster columns of the tables. This makes sure that all the raster tiles share common properties like tile size, SRID and the number of raster bands.
 
@@ -138,7 +138,7 @@ In one-hot encoding, each pixel is assigned a vector with one value per class. T
 
 While the exact tile and label size depends on the network architecture, there is a general process how the image tiles are extracted from the database. This process is automated with multiple Python scripts (see \texttt{scripts} folder in~\cite{thesis-code20}).
 
-The first step is to define the bounding boxes of the tiles for each architecture in separate tables within the database. Each bounding box is represented by a  PostGIS geometry object. Figure~\ref{fig:geom_tiles_entities} shows the full structure of the tables. The images and labels are defined by two separate geometry objects, because for some architectures the dimensions of the predictions do not match the dimensions of the input.
+The first step is to define the bounding boxes of the tiles for each architecture in separate tables within the database. Each bounding box is represented by a  PostGIS geometry object. Figure~\ref{fig:geom_tiles_entities} shows the full structure of the tables. The images and labels are defined by two separate geometry objects, because for some architectures the dimensions of the predictions are different compared to the input.
 
 \begin{figure}[h]
     \centering
@@ -147,7 +147,7 @@ The first step is to define the bounding boxes of the tiles for each architectur
     \label{fig:geom_tiles_entities}
 \end{figure}
 
-It is important to line up the tiles precisely with the DOP raster, so that the raster pixels are not distorted or cut off during the export. This does not matter for the labels, because they are stored in a vector format which is not based on pixels.
+It is important to line up the tiles precisely with the DOP raster, so that the raster pixels are not distorted or cut off during the export. This does irrelevant for the labels, because they are stored in a vector format which is not based on pixels.
 
 To extract the image files for those tile definitions, one straightforward way would be to join the raster table \texttt{dop\_rgb} with tile table containing the tile geometries using the PostGIS \texttt{ST\_Union} and \texttt{ST\_Intersection} functions. However, this was found to take a very long time to compute. Instead, a geospatial visualization software called \emph{QGIS} was used to do those computations. It offers a Python API which allows to run batch exports of a PostGIS raster table according to the bounding boxes defining the tiles.
 
@@ -263,6 +263,6 @@ The first two examples demonstrate that the \texttt{buildings} class not only in
 
 The third example in Fig.~\ref{fig:label_considerations} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. The last example depicts that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
 
-To get excellent predictions, training should ideally be performed with pixel-perfect labels. For this thesis, pixel-perfect predictions are not aspired. To identify emergency landing fields, we are looking for large contiguous areas, so minor inaccuracies at the edges might not be an issue. However, it is very likely that the inaccurate training data affects the quality of the predictions. This is something to keep in mind when evaluating the performance of the trained models, because it will also affect the metrics.
+To get excellent predictions, training should ideally be performed with pixel-perfect labels. For this thesis, pixel-perfect predictions are not aspired. To identify emergency landing fields, we are looking for large contiguous areas, so minor inaccuracies at the edges are within tolerance. However, it is very likely that the inaccurate training data affects the quality of the predictions. This is something to keep in mind when evaluating the performance of the trained models, because it will also affect the metrics.
 
 \clearpage

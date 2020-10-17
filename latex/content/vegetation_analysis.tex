@@ -23,7 +23,7 @@ The simplest SVI is the \emph{Ratio Vegetation Index} (RVI). It is represented b
 
 Non-vegetated areas typically are below or near $1$. In that case the reflectance for NIR and red light are in the same order of magnitude. With increasing vegetation density, the amount of reflected red light shrinks, causing the index to grow. Extremely dense vegetation reaches a size of up to $30$.
 
-The lower bound for the index is $0$, because negative values for the reflectances are not possible. On the other hand, there is no upper limit for the index. This makes it difficult to define from when exactly a vegetation is considered to be dense.
+The lower bound for the index is $0$, because negative values for the reflectances are impossible. On the other hand, there is no upper limit for the index. This makes it difficult to define from when exactly a vegetation is considered to be dense.
 
 \subsubsection{Normalized Difference Vegetation Index}
 One of the first approaches to monitor changes in global vegetation was driven by the National Oceanic and Atmospheric Administration, a US agency focusing on the conditions of the environment. With the help of satellites and high-resolution radiometers they measured the earth's reflectance in five spectral bands, including red and NIR wavelengths. To support their analysis, they introduced a new vegetation index called the \emph{Normalized Difference Vegetation Index} (NDVI)~\cite{measuring_vegetation00}.
@@ -88,7 +88,7 @@ One issue with SAVI is, that proper soil adjustment also depends on vegetation d
 \subsection{Experiments}
 To evaluate the usability of the SVIs this section focuses on applying them to some images picked from the dataset. The images mostly consist of agricultural and forest areas. Special care was taken to ensure that the images contain many variations of vegetation.
 
-For the purpose of visualization, the output values of the indices are mapped to represent an 8-bit grayscale image. The brightness of the image indicates the density of the vegetation, with brighter patches implying denser vegetation. For the indices that do not have fixed limits, the ranges were selected in a way that resulted in a meaningful visualization. 
+For the purpose of visualization, the output values of the indices are mapped to represent an 8-bit grayscale image. The brightness of the image indicates the density of the vegetation, with brighter patches implying denser vegetation. For the indices that have no fixed limits, the ranges were selected in a way that resulted in a meaningful visualization.
 
 Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection calculated with the RVI. Over the entire dataset, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization.
 
@@ -99,7 +99,7 @@ Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection
     \label{fig:vegetation_rvi_examples}
 \end{figure}
 
-In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is not so straightforward but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields. 
+In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is less pronounced, but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields.
 
 In Fig.~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualizations also express that range. As can be seen, the projection for the two indices are quite different.
 
@@ -125,19 +125,19 @@ Lastly, Fig.~\ref{fig:vegetation_savi_examples} presents the visualizations for 
     \label{fig:vegetation_savi_examples}
 \end{figure}
 
-Both SAVI and MSAVI do not tell a big difference about forest areas. Regardless of any foliage, the indices always show similar projections.
+The SAVI tells no big difference about forest areas. Regardless of any foliage, the index always show similar projections. With MSAVI a very subtle variation is noticeable.
 
 For agriculture however, both indices are very opinionated. Even in spots where the original images hardly show any differences, SAVI and MSAVI project a considerable contrast in vegetation density. Again, the second and fifth image show this very clearly.
 
 \subsection{Discussion}
-The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels can only be estimated based on the image data. The dataset itself does not contain any direct information about the vegetation situation. For this reason it is hard to judge whether the projections of the SVIs are valid.
+The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels can only be estimated based on the image data. The dataset itself contains no direct information about the vegetation situation. For this reason it is hard to judge whether the projections of the SVIs are valid.
 
-Additionally, various cameras and sensors were used to record the data (see section~\ref{sec:dataset_analysis}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the dataset used for this thesis might not be well-suited for the use with SVIs.
+Additionally, various cameras and sensors were used to record the data (see section~\ref{sec:dataset_analysis}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the dataset used for this thesis might be inappropriate for the use with SVIs.
 
-A straight comparison of the individual SVI projections leads to contradictory results in some cases. This means that, depending on the SVI, the predicted locations of areas with high vegetation density differ. Without clear evidence about the actual vegetation situation in the dataset, no conclusions can be drawn about the accuracy of the SVIs. With the given information, it is not possible to determine which projection is the correct one.
+A straight comparison of the individual SVI projections leads to contradictory results in some cases. This means that, depending on the SVI, the predicted locations of areas with high vegetation density differ. Without clear evidence about the actual vegetation situation in the dataset, no conclusions can be drawn about the accuracy of the SVIs. With the given information, it is impossible to determine which projection is the correct one.
 
-Regarding the identification of emergency landing fields, the application of SVIs is generally possible, although some restrictions are imposed. First and foremost, it is not recommended to fully rely on the automated assessment only. The SVIs can be used to scan over large regions and filter out some recommended spots with sparse vegetation. In any case, these spots should be checked again manually for their suitability.
+Regarding the identification of emergency landing fields, the application of SVIs is generally possible, although some restrictions are imposed. First and foremost, it is discouraged to fully rely on the automated assessment only. The SVIs can be used to scan over large regions and filter out some recommended spots with sparse vegetation. In any case, these spots should be checked again manually for their suitability.
 
-However, vegetation density on its own is not a good indicator for the identification of suitable emergency landing fields. For example, most SVIs project grasslands as highly vegetated areas. The same applies to many agricultural crops such as corn or hops. With regards to an emergency landing, grasslands are presumably well suited, whereas corn and hops should rather be avoided. While the projections of the SVIs tell about the density, they do not give any information about the height or the robustness of the vegetation.
+However, vegetation density on its own is unreliable indicator for the identification of suitable emergency landing fields. For example, most SVIs project grasslands as highly vegetated areas. The same applies to many agricultural crops such as corn or hops. With regards to an emergency landing, grasslands are presumably well suited, whereas corn and hops should rather be avoided. While the projections of the SVIs tell about the density, they mostly ignore the height or the robustness of the vegetation.
 
 \clearpage
