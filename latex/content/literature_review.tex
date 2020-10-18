@@ -9,7 +9,8 @@ Usually, the neurons are grouped into layers~\cite[p.~125]{nn_intro96} (see Fig.
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/generic_layered_architecture}
-    \caption[A Generic Layered DNN Architecture]{A Generic Layered DNN Architecture~\cite[p.~126]{nn_intro96}}
+    \caption[A traditional Multilayer Perceptron]
+    {\textbf{A traditional Multilayer Perceptron}~\cite[p.~126]{nn_intro96}. It consists of multiple perceptrons which are grouped into layers. Each perceptron from one layer is connected to all perceptrons in the consecutive layer.}
     \label{fig:layered_architecture}
 \end{figure}
 
@@ -20,7 +21,8 @@ The net input is then passed through the activation function whose main purpose 
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/perceptron}
-    \caption[Schematic View of a Perceptron]{Schematic View of a Perceptron~\cite[p.~257, modified]{praxiseinstieg_ml17}}
+    \caption[Schematic View of a Perceptron]
+    {\textbf{Schematic View of a Perceptron}~\cite[p.~257, modified]{praxiseinstieg_ml17}. All inputs are combined with an input function. The net input is then passed through an activation function to produce the output.}
     \label{fig:perceptron}
 \end{figure}
 
@@ -65,13 +67,13 @@ The next level is to not only assign a label to an image, but also detect where 
     \centering
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_1}
-        \caption{Image Classification}
+        \caption{}
         \label{fig:cv_task_imgclass}
     \end{subfigure}
     \hspace{5mm}
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_2}
-        \caption{Object Localization}
+        \caption{}
         \label{fig:cv_task_objloc}
     \end{subfigure}
 
@@ -79,17 +81,22 @@ The next level is to not only assign a label to an image, but also detect where 
     
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_3}
-        \caption{Semantic Segmentation}
+        \caption{}
         \label{fig:cv_task_semseg}
     \end{subfigure}
     \hspace{5mm}
     \begin{subfigure}{\VisionTasksImageWidth}
         \includegraphics[width=\textwidth]{images/vision_task_4}
-        \caption{Instance Segmentation}
+        \caption{}
         \label{fig:cv_task_inseg}
     \end{subfigure}
 
-    \caption[Computer Vision Tasks]{Computer Vision Tasks~\cite{coco14}}
+    \caption[Comparison of Computer Vision Tasks]
+    {\textbf{Comparison of Computer Vision Tasks}~\cite{coco14}.
+    (\subref{fig:cv_task_imgclass})~Image Classification.
+    (\subref{fig:cv_task_objloc})~Object Localization.
+    (\subref{fig:cv_task_semseg})~Semantic Segmentation.
+    (\subref{fig:cv_task_inseg})~Instance Segmentation.}
     \label{fig:cv_tasks}
 \end{figure}
 
@@ -113,7 +120,8 @@ Instead of dense connections, CNNs use operations called \emph{convolution} and 
 \begin{figure}[h]
     \centering
     \include{content/tikz/convolution}
-    \caption[Receptive Field of a Convolution Operation]{Receptive Field of a Convolution Operation~\cite[modified]{github-latex20}}
+    \caption[Receptive Field of a Convolution Operation]
+    {\textbf{Receptive Field of a Convolution Operation}~\cite[modified]{conv_arithmetic18}. The $3\times 3$ kernel is moved across the original image to produce the convoluted image. Zero padding is used to preserve the size of the image.}
     \label{fig:convolution}
 \end{figure}
 
@@ -132,7 +140,8 @@ Because the function to use is predefined, pooling layers do not contain any tra
 \begin{figure}[h]
     \centering
     \include{content/tikz/pooling}
-    \caption[$2\times 2$ Max Pooling Operation]{$2\times 2$ Max Pooling Operation~\cite[modified]{github-latex20}}
+    \caption[$2\times 2$ Max Pooling Operation]
+    {\textbf{$\mathbf{2\times 2}$ Max Pooling Operation}~\cite[modified]{stanford_convnet}. No padding and stride of 2 is used. That way the image size is halved for each dimension.}
     \label{fig:pooling}
 \end{figure}
 
@@ -156,23 +165,24 @@ The \emph{categorical accuracy} measures the ratio between correct label predict
     \hfill
     \begin{subfigure}{\CategoricalAccuracyImageWidth}
         \includegraphics[width=\textwidth]{images/categorical_accuracy_image}
-        \caption{Original Image}
+        \caption{}
         \label{fig:ca_image}
     \end{subfigure}
     \hfill
     \begin{subfigure}{\CategoricalAccuracyImageWidth}
         \includegraphics[width=\textwidth]{images/categorical_accuracy_label}
-        \caption{Ground Truth}
+        \caption{}
         \label{fig:ca_truth}
     \end{subfigure}
     \hfill
     \begin{subfigure}{\CategoricalAccuracyImageWidth}
         \includegraphics[width=\textwidth]{images/categorical_accuracy_prediction}
-        \caption{Model Prediction}
+        \caption{}
         \label{fig:ca_prediction}
     \end{subfigure}
     \hfill
-    \caption[Drawbacks for Categorical Accuracy regarding Dominant Classes]{Drawbacks for Categorical Accuracy regarding Dominant Classes~\cite{tds_segmentation18}}
+    \caption[Drawbacks for Categorical Accuracy regarding Dominant Classes]
+    {\textbf{Drawbacks for Categorical Accuracy regarding Dominant Classes}~\cite{tds_segmentation18}. (\subref{fig:ca_image})~Original Image.  (\subref{fig:ca_truth})~Ground Truth with boats and background class. (\subref{fig:ca_prediction})~Exemplary prediction with high categorical accuracy.}
     \label{fig:categorical_accuracy_drawbacks}
 \end{figure}
 
@@ -214,7 +224,8 @@ For the expansive path, an upsampling layer followed by a $2\times 2$ convolutio
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.8\textwidth]{images/u-net-architecture}
-    \caption[U-Net Reference Architecture]{U-Net Reference Architecture~\cite{unet15}}
+    \caption[U-Net Reference Architecture]
+    {\textbf{U-Net Reference Architecture}~\cite{unet15}. Contracting path with $3\times 3$~convolution and $2\times 2$~pooling on the left. Expansive path with $3\times 3$~convolution and $2\times 2$~upsampling on the right. Skip connections between contracting and expansive path.}
     \label{fig:unet_architecture}
 \end{figure}
 
@@ -229,7 +240,8 @@ Huang et al.\ consider the values passed between layers to be the network's stat
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.7\textwidth]{images/dense-net-architecture}
-    \caption[Connections in a 5-layer Dense Block]{Connections in a 5-layer Dense Block~\cite{densenet17}}
+    \caption[Connections in a 5-layer Dense Block]
+    {\textbf{Connections in a 5-layer Dense Block}~\cite{densenet17}. All feature maps from previous layers are copied to consecutive layers. Each convolution layer generates four new feature maps. All $22$ feature maps are passed to the subsequent transition layer.}
     \label{fig:dense_block}
 \end{figure}
 
@@ -242,7 +254,8 @@ However, it is possible to extend the architecture with an upsampling path at th
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.65\textwidth]{images/dense_segmentation_architecture}
-    \caption[FC-DenseNet Reference Architecture]{FC-DenseNet Reference Architecture~\cite{denseseg17}}
+    \caption[FC-DenseNet Reference Architecture]
+    {\textbf{FC-DenseNet Reference Architecture}~\cite{denseseg17}. Downsampling path with two dense blocks and two transition down layers on the left. One intermediate dense block at the bottom. Upsampling path with two dense blocks and two transition up layers on the right. Skip connections between downsampling and upsampling path.}
     \label{fig:densenet_segmentation}
 \end{figure}
 
@@ -261,7 +274,8 @@ Figure~\ref{fig:wnet_architecture} illustrates the W-Net architecture. The netwo
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.95\textwidth]{images/w-net-architecture}
-    \caption[W-Net Reference Architecture]{W-Net Reference Architecture~\cite{wnet17}}
+    \caption[W-Net Reference Architecture]
+    {\textbf{W-Net Reference Architecture}~\cite[modified]{wnet17}. Encoder $U_{Enc}$ with $K$-class prediction on the left. Decoder $U_{Dec}$ for image reconstruction on the right. Each side has its own contracting and expansive paths.}
     \label{fig:wnet_architecture}
 \end{figure}
 
@@ -277,28 +291,28 @@ Overall, all of the discussed reference architectures follow the \emph{encoder-d
 It is difficult to compare the actual performance of the three architectures, since they were all trained and evaluated on different datasets with differing metrics. However, some metrics are reviewed considering the context and complexity of their particular challenge. Additionally, Fig.~\ref{fig:segmentation_examples} provides visual examples of the segmentation results of the three different approaches.
 
 \begin{figure}
-    \newcommand{\SegmentationExampleImageWidth}{0.3\textwidth}
     \centering
     \hfill
-    \begin{subfigure}{\SegmentationExampleImageWidth}
+    \begin{subfigure}{0.35\textwidth}
         \includegraphics[width=\textwidth]{images/segmentation_example_unet}
-        \caption{U-Net~\cite{unet15}}
+        \caption{}
         \label{fig:exseg_unet}
     \end{subfigure}
     \hfill
-    \begin{subfigure}{0.4\textwidth}
+    \begin{subfigure}{0.35\textwidth}
         \includegraphics[width=\textwidth]{images/segmentation_example_densenet}
-        \caption{DenseNet~\cite{denseseg17}}
+        \caption{}
         \label{fig:exseg_densenet}
     \end{subfigure}
     \hfill
     \begin{subfigure}{0.21\textwidth}
         \includegraphics[width=\textwidth]{images/segmentation_example_wnet}
-        \caption{W-Net~\cite{wnet17}}
+        \caption{}
         \label{fig:exseg_wnet}
     \end{subfigure}
     \hfill
-    \caption{Segmentation Results from the Reference Architectures}
+    \caption[Segmentation Results from the Reference Architectures]
+    {\textbf{Segmentation Results from the Reference Architectures}. (\subref{fig:exseg_unet})~U-Net on the PhC-U373 dataset~\cite{unet15}. (\subref{fig:exseg_densenet})~FC-DenseNet on the CamVid dataset~\cite{denseseg17}. (\subref{fig:exseg_wnet})~W-Net on the BSDS500 dataset~\cite{wnet17}.}
     \label{fig:segmentation_examples}
 \end{figure}
 
