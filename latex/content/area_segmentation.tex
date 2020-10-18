@@ -42,7 +42,8 @@ During training, some metrics were collected to measure the predictive performan
     \newcommand{\UnetMetricsImageWidth}{0.32\textwidth}
     \centering
     \input{content/tikz/unet_metrics}
-    \caption{Validation Set Metrics of U-Net Configurations}
+    \caption[Metrics of U-Net Configurations]
+    {\textbf{Metrics of U-Net Configurations}. Calculated per epoch during training from validation set. (\subref{fig:metrics_unet_loss})~Loss. (\subref{fig:metrics_unet_catacc})~Categorical Accuracy. (\subref{fig:metrics_unet_iou})~Mean IoU. }
     \label{fig:unet_train_metrics}
 \end{figure}
 
@@ -58,51 +59,42 @@ The metrics already allow to draw some conclusions about the configurations. How
 While the metrics provide a quick overview over larger parts of the dataset, looking at concrete samples offers a deeper insight into the model's behavior in certain situations. Figure~\ref{fig:unet_prediction_images} depicts predictions in the test set from some configurations, together with the original image and the ground truth. The red square in the original image indicates the area that is covered in the prediction. As already raised in section~\ref{sec:dataset_considerations}, the ground truth labels sometimes are inaccurate with regards to the original image.
 
 \begin{figure}[h]
-    \newcommand{\UnetPredictionsImageWidth}{0.18\textwidth}
+    \newcommand{\UnetPredictionsImageWidth}{0.15\textwidth}
     \centering
 
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/82607-image} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/82607-label} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/82607-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/82607-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/82607-prediction}
+    \begin{subfigure}{\UnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/unet/originals}
+        \caption{}
+        \label{fig:unet_pred_original}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\UnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/unet/labels}
+        \caption{}
+        \label{fig:unet_pred_label}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\UnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/unet/unet-18D}
+        \caption{}
+        \label{fig:unet_pred_18d}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\UnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/unet/unet-23}
+        \caption{}
+        \label{fig:unet_pred_23}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\UnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/unet/unet-23D}
+        \caption{}
+        \label{fig:unet_pred_23d}
+    \end{subfigure}
 
-    \vspace{4mm}
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/104483-image} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/104483-label} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/104483-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/104483-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/104483-prediction}
-
-    \vspace{4mm}
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/114975-image} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/114975-label} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/114975-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/114975-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/114975-prediction}
-
-    \vspace{4mm}
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/138625-image} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/138625-label} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/138625-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/138625-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/138625-prediction}
-
-    \vspace{4mm}
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/147352-image} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/147352-label} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-18D/147352-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23/147352-prediction} \hfill
-    \includegraphics[width=\UnetPredictionsImageWidth]{images/unet/unet-23D/147352-prediction}
-
-    \begin{tikzpicture}
-        \node[align=center] at (-1.2, 0) {\tiny Input};
-        \node[align=center] at (2.0, 0) {\tiny Ground Truth};
-        \node[align=center] at (5.0, 0) {\tiny U-Net-18D};
-        \node[align=center] at (8.1, 0) {\tiny U-Net-23};
-        \node[align=center] at (11, 0) {\tiny U-Net-23D};
-    \end{tikzpicture}
-    \caption{Selected Test Set Predictions of U-Net Configurations}
+    \caption[Selected Test Set Predictions of U-Net Configurations]
+    {\textbf{Selected Test Set Predictions of U-Net Configurations}. Prediction sizes vary depending on number of convolution layers.
+    (\subref{fig:unet_pred_original})~Original Image, red border delineates label size.
+    (\subref{fig:unet_pred_label})~Ground Truth.
+    (\subref{fig:unet_pred_18d})~\texttt{U-Net-18D}.
+    (\subref{fig:unet_pred_23})~\texttt{U-Net-23}.
+    (\subref{fig:unet_pred_23d})~\texttt{U-Net-23D}.}
     \label{fig:unet_prediction_images}
 \end{figure}
 
@@ -131,7 +123,8 @@ The training metrics for all FC-DenseNet configurations are presented in Fig.~\r
     \newcommand{\DensenetMetricsImageWidth}{0.32\textwidth}
     \centering
             \input{content/tikz/densenet_metrics}
-    \caption{Validation Set Metrics of FC-DenseNet Configurations}
+    \caption[Metrics of FC-DenseNet Configurations]
+    {Calculated per epoch during training from validation set. (\subref{fig:metrics_densenet_loss})~Loss. (\subref{fig:metrics_densenet_catacc})~Categorical Accuracy. (\subref{fig:metrics_densenet_iou})~Mean IoU.}
     \label{fig:densenet_train_metrics}
 \end{figure}
 
@@ -145,58 +138,48 @@ The other three configurations report fairly uniform results in terms of metrics
 Figure~\ref{fig:densenet_prediction_images} shows some sample predictions made by the FC-DenseNet configuration. The original images and ground truth labels are included for reference. All images were taken from the test set.
 
 \begin{figure}[h]
-    \newcommand{\DensenetPredictionsImageWidth}{0.15\textwidth}
+    \newcommand{\DensenetPredictionsImageWidth}{0.13\textwidth}
     \centering
 
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/101444-image} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/101444-label} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/101444-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/101444-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/101444-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/101444-prediction}
+    \begin{subfigure}{\DensenetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/densenet/originals}
+        \caption{}
+        \label{fig:densenet_pred_original}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DensenetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/densenet/labels}
+        \caption{}
+        \label{fig:densenet_pred_label}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DensenetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/densenet/56d}
+        \caption{}
+        \label{fig:densenet_pred_56d}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DensenetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/densenet/67d}
+        \caption{}
+        \label{fig:densenet_pred_67d}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DensenetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/densenet/103d}
+        \caption{}
+        \label{fig:densenet_pred_103d}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DensenetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/densenet/103cd}
+        \caption{}
+        \label{fig:densenet_pred_103cd}
+    \end{subfigure}
 
-    \vspace{3mm}
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/291991-image} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/291991-label} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/291991-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/291991-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/291991-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/291991-prediction}
-
-    \vspace{3mm}
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/436897-image} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/436897-label} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/436897-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/436897-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/436897-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/436897-prediction}
-
-    \vspace{3mm}
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/626312-image} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/626312-label} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/626312-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/626312-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/626312-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/626312-prediction}
-
-    \vspace{3mm}
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/768909-image} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/768909-label} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103D/768909-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-103CD/768909-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-67D/768909-prediction} \hfill
-    \includegraphics[width=\DensenetPredictionsImageWidth]{images/densenet/densenet-56D/768909-prediction}
-
-    \begin{tikzpicture}
-        \node[align=center] at (0, 0) {};
-        \node[align=center] at (0.8, 0) {\tiny Input};
-        \node[align=center] at (3.35, 0) {\tiny Ground Truth};
-        \node[align=center] at (5.95, 0) {\tiny FCDN-103D};
-        \node[align=center] at (8.45, 0) {\tiny FCDN-103CD};
-        \node[align=center] at (10.9, 0) {\tiny FCDN-67D};
-        \node[align=center] at (13.5, 0) {\tiny FCDN-56D};
-    \end{tikzpicture}
-    \caption{Selected Test Set Predictions of FC-DenseNet Configurations}
+    \caption[Selected Test Set Predictions of FC-DenseNet Configurations]
+    {\textbf{Selected Test Set Predictions of FC-DenseNet Configurations}.
+    (\subref{fig:densenet_pred_original})~Original Image.
+    (\subref{fig:densenet_pred_label})~Ground Truth.
+    (\subref{fig:densenet_pred_56d})~\texttt{FC-DenseNet-56D}.
+    (\subref{fig:densenet_pred_67d})~\texttt{FC-DenseNet-67D}.
+    (\subref{fig:densenet_pred_103d})~\texttt{FC-DenseNet-103D}.
+    (\subref{fig:densenet_pred_103cd})~\texttt{FC-DenseNet-103CD}.}
     \label{fig:densenet_prediction_images}
 \end{figure}
 
@@ -240,71 +223,42 @@ All configurations show similar behavior during the training. Over the first few
 Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net configurations extracted from the test set. For each configuration two images are displayed. The first one is the predicted class segmentation. The class colors in the predictions are not related to any of the classes mentioned earlier. They rather represent what the respective encoder learned to differentiate in the images. The second image is the reconstruction of the original image predicted by the decoder from the class segmentation.
 
 \begin{figure}[h]
-    \newcommand{\WnetPredictionsImageWidth}{0.10\textwidth}
+    \newcommand{\WnetPredictionsImageWidth}{0.18\textwidth}
     \centering
 
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/19743-image} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/19743-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/19743-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/19743-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/19743-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/19743-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/19743-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/19743-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/19743-restored}
+    \begin{subfigure}{0.0866\textwidth}
+        \includegraphics[width=\textwidth]{images/wnet/original}
+        \caption{}
+        \label{fig:wnet_pred_original}
+    \end{subfigure} \hspace{3mm}
+    \begin{subfigure}{\WnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/wnet/36d-6}
+        \caption{}
+        \label{fig:wnet_pred_36d-6}
+    \end{subfigure} \hspace{3mm}
+    \begin{subfigure}{\WnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/wnet/46d-6}
+        \caption{}
+        \label{fig:wnet_pred_46d-6}
+    \end{subfigure} \hspace{3mm}
+    \begin{subfigure}{\WnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/wnet/36d-20}
+        \caption{}
+        \label{fig:wnet_pred_36d-20}
+    \end{subfigure} \hspace{3mm}
+    \begin{subfigure}{\WnetPredictionsImageWidth}
+        \includegraphics[width=\textwidth]{images/wnet/46d-20}
+        \caption{}
+        \label{fig:wnet_pred_46d-20}
+    \end{subfigure}
 
-    \vspace{2mm}
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/63585-image} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/63585-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/63585-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/63585-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/63585-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/63585-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/63585-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/63585-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/63585-restored}
-
-    \vspace{2mm}
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/78905-image} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/78905-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/78905-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/78905-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/78905-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/78905-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/78905-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/78905-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/78905-restored}
-
-    \vspace{2mm}
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/102574-image} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/102574-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/102574-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/102574-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/102574-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/102574-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/102574-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/102574-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/102574-restored}
-
-    \vspace{2mm}
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/original/224817-image} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/224817-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-6/224817-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/224817-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-6/224817-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/224817-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/36d-20/224817-restored} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/224817-prediction} \hfill
-    \includegraphics[width=\WnetPredictionsImageWidth]{images/wnet/46d-20/224817-restored}
-
-    \begin{tikzpicture}
-        \node[align=center] at (-4, 0) {\tiny Input};
-        \node[align=center] at (-1.5, 0) {\tiny W-Net-36D-6};
-        \node[align=center] at (1.9, 0) {\tiny W-Net-46D-6};
-        \node[align=center] at (5.3, 0) {\tiny W-Net-36D-20};
-        \node[align=center] at (8.8, 0) {\tiny W-Net-46D-20};
-    \end{tikzpicture}
-    \caption{Selected Test Set Predictions of W-Net Configurations}
+    \caption[Selected Test Set Predictions of W-Net Configurations]
+    {\textbf{Selected Test Set Predictions of W-Net Configurations}. Predictions are split into class predictions (left) and restoration predictions (right).
+    (\subref{fig:wnet_pred_original})~Original Image.
+    (\subref{fig:wnet_pred_36d-6})~\texttt{W-Net-36D-6}.
+    (\subref{fig:wnet_pred_46d-6})~\texttt{W-Net-46D-6}.
+    (\subref{fig:wnet_pred_36d-20})~\texttt{W-Net-36D-20}.
+    (\subref{fig:wnet_pred_46d-20})~\texttt{W-Net-46D-20}.}
     \label{fig:wnet_prediction_images}
 \end{figure}
 
@@ -324,31 +278,34 @@ The results of both U-Net and FC-DenseNet were much better in general. The exper
     \newcommand{\DiscussionImageWidth}{0.23\textwidth}
     \centering
 
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/1.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/1.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/1.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/1.png}
+    \begin{subfigure}{\DiscussionImageWidth}
+        \includegraphics[width=\textwidth]{images/segmentation_discussion/original}
+        \caption{}
+        \label{fig:segdiscuss_original}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DiscussionImageWidth}
+        \includegraphics[width=\textwidth]{images/segmentation_discussion/label}
+        \caption{}
+        \label{fig:segdiscuss_label}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DiscussionImageWidth}
+        \includegraphics[width=\textwidth]{images/segmentation_discussion/unet}
+        \caption{}
+        \label{fig:segdiscuss_unet}
+    \end{subfigure} \hspace{1mm}
+    \begin{subfigure}{\DiscussionImageWidth}
+        \includegraphics[width=\textwidth]{images/segmentation_discussion/densenet}
+        \caption{}
+        \label{fig:segdiscuss_densenet}
+    \end{subfigure}
 
-    \vspace{2mm}
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/2.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/2.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/2.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/2.png}
-
-    \vspace{2mm}
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/images/3.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/labels/3.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/unet/3.png} \hfill
-    \includegraphics[width=\DiscussionImageWidth]{images/segmentation_discussion/densenet/3.png}
-
-    \begin{tikzpicture}
-        \node[align=center] at (0, 0) {};
-        \node[align=center] at (0.5, 0) {\tiny Input};
-        \node[align=center] at (4.4, 0) {\tiny Label};
-        \node[align=center] at (8.3, 0) {\tiny U-Net-23D};
-        \node[align=center] at (12, 0) {\tiny FCDN-67D};
-    \end{tikzpicture}
-    \caption{Large Scale Predictions of \texttt{FC-DenseNet-67D} and \texttt{U-Net-23D}}
+    \caption[Large Scale Predictions of \texttt{FC-DenseNet-67D} and \texttt{U-Net-23D}]
+    {\textbf{Large Scale Predictions of \texttt{FC-DenseNet-67D} and \texttt{U-Net-23D}}. Images cover around $580\times 580~\text{meters}$.
+    (\subref{fig:segdiscuss_original})~Original Image.
+    (\subref{fig:segdiscuss_label})~Ground Truth.
+    (\subref{fig:segdiscuss_unet})~\texttt{U-Net-23D}.
+    (\subref{fig:segdiscuss_densenet})~\texttt{FC-DenseNet-67D}.
+    }
     \label{fig:segmentation_discussion}
 \end{figure}
 
