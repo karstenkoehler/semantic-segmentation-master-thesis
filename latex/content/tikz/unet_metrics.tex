@@ -1,10 +1,15 @@
-\begin{scaletikzpicturetowidth}{\textwidth}
-\begin{tikzpicture}[scale=\tikzscale]
+\begin{subfigure}{0.32\textwidth}
+\resizebox{\textwidth}{!}{\begin{tikzpicture}
     \begin{axis}[
         mark=x,
         cycle list name=mycolorlist,
         name=unetplot1,
         xmin=1, xmax=20,
+        ymin=0.6, ymax=1.5,
+        xlabel={\scriptsize epoch},
+        ylabel={\scriptsize loss},
+        x label style={at={(axis description cs:0.5,0.05)}},
+        y label style={at={(axis description cs:0.08,0.5)}},
     ]
 
     \addplot
@@ -79,13 +84,24 @@
     };
 
     \end{axis}
+\end{tikzpicture}}
+    \caption{}
+    \label{fig:metrics_unet_loss}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\resizebox{\textwidth}{!}{\begin{tikzpicture}
      \begin{axis}[
         mark=x,
         cycle list name=mycolorlist,
         name=unetplot2,
         at=(unetplot1.right of south east), anchor=left of south west,
-        legend style={at={(0.5,-0.25)},anchor=north},
+        legend style={at={(0.80,0.33)},anchor=north},
         xmin=1, xmax=20,
+        ymin=0.3, ymax=0.8,
+        xlabel={\scriptsize epoch},
+        ylabel={\scriptsize cat. accuracy [$\%$]},
+        x label style={at={(axis description cs:0.5,0.05)}},
+        y label style={at={(axis description cs:0.08,0.5)}},
     ]
 
     \addplot
@@ -111,7 +127,7 @@
         (19, 0.7461361289024353)
         (20, 0.744171679019928)
     };
-    \addlegendentry{U-Net-23D}
+    \addlegendentry{\scriptsize U-Net-23D}
 
     \addplot
     coordinates{
@@ -136,7 +152,7 @@
         (19, 0.7386317253112793)
         (20, 0.7358725666999817)
     };
-    \addlegendentry{U-Net-23}
+    \addlegendentry{\scriptsize U-Net-23}
 
     \addplot
     coordinates{
@@ -151,7 +167,7 @@
         (9, 0.6079839468002319)
         (10, 0.6088585257530212)
     };
-    \addlegendentry{U-Net-18D}
+    \addlegendentry{\scriptsize U-Net-18D}
 
     \addplot
     coordinates{
@@ -161,15 +177,25 @@
         (4, 0.3549674451351166)
         (5, 0.3638293445110321)
     };
-    \addlegendentry{U-Net-28D}
+    \addlegendentry{\scriptsize U-Net-28D}
 
     \end{axis}
-
+\end{tikzpicture}}
+    \caption{}
+    \label{fig:metrics_unet_catacc}
+\end{subfigure}
+\begin{subfigure}{0.32\textwidth}
+\resizebox{\textwidth}{!}{\begin{tikzpicture}
     \begin{axis}[
         mark=x,
         cycle list name=mycolorlist,
         at=(unetplot2.right of south east), anchor=left of south west,
         xmin=1, xmax=20,
+        ymin=0.0, ymax=0.5,
+        xlabel={\scriptsize epoch},
+        ylabel={\scriptsize mean IoU [$\%$]},
+        x label style={at={(axis description cs:0.5,0.05)}},
+        y label style={at={(axis description cs:0.08,0.5)}},
     ]
 
     \addplot
@@ -244,9 +270,7 @@
     };
 
     \end{axis}
-
-    \node[align=center] at (3.3, -0.65) {\tiny loss};
-    \node[align=center] at (11, -0.65) {\tiny cat. accuracy};
-    \node[align=center] at (19, -0.65) {\tiny mean IoU};
-\end{tikzpicture}
-\end{scaletikzpicturetowidth}
+\end{tikzpicture}}
+    \caption{}
+    \label{fig:metrics_unet_iou}
+\end{subfigure}

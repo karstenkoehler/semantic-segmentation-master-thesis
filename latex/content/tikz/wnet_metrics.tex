@@ -1,10 +1,14 @@
-\begin{scaletikzpicturetowidth}{\textwidth}
 \begin{tikzpicture}[scale=0.65]
      \begin{axis}[
         mark=x,
         cycle list name=mycolorlist,
-        legend style={at={(0.5,-0.25)},anchor=north},
+        legend style={at={(0.77,0.33)},anchor=north},
         xmin=0, xmax=5000,
+        ymin=1.48, ymax=1.55,
+        xlabel={\scriptsize batch},
+        ylabel={\scriptsize loss},
+        x label style={at={(axis description cs:0.5,0.05)}},
+        y label style={at={(axis description cs:0.05,0.5)}},
     ]
 
     \addplot
@@ -30,7 +34,7 @@
         (4500, 1.514070868)
         (4750, 1.514217734)
     };
-    \addlegendentry{W-Net-36D-6}
+    \addlegendentry{\scriptsize W-Net-36D-6}
 
     \addplot
     coordinates{
@@ -55,7 +59,7 @@
         (4500, 1.514142394)
         (4750, 1.515447481)
     };
-    \addlegendentry{W-Net-46D-6}
+    \addlegendentry{\scriptsize W-Net-46D-6}
 
     \addplot
     coordinates{
@@ -80,7 +84,7 @@
         (4500, 1.512521386)
         (4750, 1.513722123)
     };
-    \addlegendentry{W-Net-36D-20}
+    \addlegendentry{\scriptsize W-Net-36D-20}
 
     \addplot
     coordinates{
@@ -105,10 +109,7 @@
         (4500, 1.514057517)
         (4750, 1.514203548)
     };
-    \addlegendentry{W-Net-46D-20}
+    \addlegendentry{\scriptsize W-Net-46D-20}
 
     \end{axis}
-
-    \node[align=center] at (3.3, -0.65) {\tiny loss};
 \end{tikzpicture}
-\end{scaletikzpicturetowidth}
