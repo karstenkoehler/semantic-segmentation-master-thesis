@@ -2,32 +2,51 @@
 \label{sec:dataset_analysis}
 The dataset which is used throughout this thesis is provided by the Ministry of the Interior of the State of North Rhine-Westphalia in Germany. With the platform GEOportal~\cite{geoportal20} they offer various types of maps, like topographical maps, elevation data and orthographical footage. Most of the data is available for free download in batches. The batches used in this thesis are released under the dl-de/zero-2-0 licence. This means that the data can be used for any purpose without any restrictions or conditions.
 
-For the purpose of this thesis there are two types of maps which prove useful. First, there is a map assembled of digital orthophotos (DOPs). A DOP is an aerial photograph of the surface of the earth (see Fig.~\ref{fig:dop_rgb_nir_example}, left). It is processed to hide effects like perspective distortions or topographic features of the landscape. Also it follows a specific map projection to denote the exact spatial extents of the photograph on the earth's surface. Because of that, DOPs are great to analyze terrain types and conditions. In section~\ref{sec:segmentation} DOPs are used to perform a semantic segmentation based on the terrain surface.
+For the purpose of this thesis there are two types of maps which prove useful. First, there is a map assembled of digital orthophotos (DOPs). A DOP is an aerial photograph of the surface of the earth (see Fig.~\ref{fig:rgb_example}). It is processed to hide effects like perspective distortions or topographic features of the landscape. Also it follows a specific map projection to denote the exact spatial extents of the photograph on the earth's surface. Because of that, DOPs are great to analyze terrain types and conditions. In section~\ref{sec:segmentation} DOPs are used to perform a semantic segmentation based on the terrain surface.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.6\textwidth]{images/dop_rgb_nir_example}
-    \caption{Example DOP with RGB and NIR Data}
+    \begin{subfigure}{0.35\textwidth}
+        \includegraphics[width=\textwidth]{images/dop_example/rgb}
+        \caption{}
+        \label{fig:rgb_example}
+    \end{subfigure}
+    \begin{subfigure}{0.35\textwidth}
+        \includegraphics[width=\textwidth]{images/dop_example/nir}
+        \caption{}
+        \label{fig:nir_example}
+    \end{subfigure}
+    \caption[Example DOP with RGB and NIR Data]
+    {\textbf{Example DOP with RGB and NIR Data}. It represents a $50\times 50~\text{meters}$ cutout of the dataset.(\subref{fig:rgb_example})~RGB color. (\subref{fig:nir_example})~NIR values.}
     \label{fig:dop_rgb_nir_example}
 \end{figure}
 
-The second map explored in this thesis contains imagery obtained by near-infrared (NIR) spectroscopy (see Fig.~\ref{fig:dop_rgb_nir_example}, right). They are processed in the same way as the DOPs, so they are also projected onto the earth's surface with a specific map projection. NIR data is widely applied in agriculture to monitor the cultivation of herbal products like forages and vegetables. In this thesis the NIR imagery is used to approximate vegetation density for specific regions (see section~\ref{sec:vegetation_analysis}).
+The second map explored in this thesis contains imagery obtained by near-infrared (NIR) spectroscopy (see Fig.~\ref{fig:nir_example}). They are processed in the same way as the DOPs, so they are also projected onto the earth's surface with a specific map projection. NIR data is widely applied in agriculture to monitor the cultivation of herbal products like forages and vegetables. In this thesis the NIR imagery is used to approximate vegetation density for specific regions (see section~\ref{sec:vegetation_analysis}).
 
-The data for the maps is collected by airplanes with special cameras pointing vertically downwards. With straight east-west flight paths and significant overlap in the photographic coverage, the airplanes scan the areas. In this way, a seamless image of the earth's surface is created. The ground sample distance of the dataset is $10~\text{cm}$, i.~e. each pixel represents a $10\times 10~\text{cm}$ square in real-world scale. The recent data is captured with different cameras like for example the Leica DMC III or the Vexcel UltraCam UCXp~\cite{topo-image16}. Therefore, small color differences in the dataset can be expected.
+The data for the maps is collected by airplanes with special cameras pointing vertically downwards. With straight east-west flight paths and significant overlap in the photographic coverage, the airplanes scan the areas. In this way, a seamless image of the earth's surface is created. The ground sample distance of the dataset is $10~\text{cm}$, i.~e. each pixel in Fig.~\ref{fig:dop_rgb_nir_example} represents a $10\times 10~\text{cm}$ square in real-world scale. With such a high resolution it is easily possible to detect objects like trees, cars or buildings. Therefore, the data provides sufficient information for the segmentation of terrain types. The recent data is captured with different cameras like for example the Leica DMC III or the Vexcel UltraCam UCXp~\cite{topo-image16}. Therefore, small color differences in the dataset can be expected.
 
 \subsection{Getting the Dataset}
 Both the DOP and NIR datasets are provided by the Ministry of the Interior in a few different ways. To get a quick overview, there is an online viewer~\cite{tim_online20} for most of the map types. For some specific maps like the DOPs they host a Web Map Tile Service, which allows to access the data with geographic information systems (GIS) like QGIS. Since these options require a continuous network connection, it is preferred to get a local copy of the dataset and work with that.
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/dop_rgb_all}
-    \caption{DOP Dataset Location and Resolution}
-    \label{fig:dop_rgb_all}
+    \begin{subfigure}{0.70\textwidth}
+        \includegraphics[width=\textwidth]{images/dop_rgb_all}
+        \caption{}
+        \label{fig:dop_all}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.25\textwidth}
+        \includegraphics[width=\textwidth]{images/germany_location}
+        \caption{}
+        \label{fig:dop_location}
+    \end{subfigure}
+    \caption[DOP Dataset and Location in Germany]
+    {\textbf{DOP Dataset and Location in Germany}. (\subref{fig:dop_all})~The entire $248.49~\text{km}^2$ of RGB data. (\subref{fig:dop_location})~The precise location of the dataset in Germany.}
+    \label{fig:all_rgb_location}
 \end{figure}
 
-For that purpose, the GEOportal has a separate download section. From there the relevant regions and map types can be selected and downloaded in a compressed bundle. The bundle contains map tiles in the JPEG 2000 file format. This is an image format that has a dense compression rate and directly contains the georeferencing information for each tile. To have a wide range of terrain types with broad variety included, we use the data for the Municipality of Arnsberg and its surroundings. This concludes to a download size of $11.5~\text{Gigabytes}$ with around $248.49~\text{km}^2$ of terrain, where each pixel represents a $10\times 10~\text{cm}$ square in scale.
-
-Figure~\ref{fig:dop_rgb_all} shows the color bands of the whole dataset and its location in Germany. To show the granularity of the data, one region is enlarged and shown in higher resolution. One pixel in the dataset represents $10\times 10$ centimeters in real-world scale. As can be seen in Fig.~\ref{fig:dop_rgb_all}, it is easily possible to detect objects like trees, cars or buildings with such a high resolution. Therefore, the data provides sufficient information for the segmentation of land usage.
+For that purpose, the GEOportal has a separate download section. From there the relevant regions and map types can be selected and downloaded in a compressed bundle. The bundle contains map tiles in the JPEG 2000 file format. This is an image format that has a dense compression rate and directly contains the georeferencing information for each tile. To have a wide range of terrain types with broad variety included, we use the data for the Municipality of Arnsberg and its surroundings. This concludes to a download size of $11.5~\text{Gigabytes}$ with around $248.49~\text{km}^2$ of terrain, where each pixel represents a $10\times 10~\text{cm}$ square in scale. Figure~\ref{fig:all_rgb_location} shows the color bands of the whole dataset and its location in Germany.
 
 It is possible to download both DOP and NIR data together in a single bundle. The JPEG files then contain four channels of pixel information. The first three channels make up the red, green and blue colors for the DOPs. And the last channel provides the scalar output of the NIR spectroscopy scan.
 
@@ -37,7 +56,8 @@ Before the data is ready to be used for training the models, some preprocessing 
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/data_preprocessing}
-    \caption{Summary of the Data Preprocessing Steps}
+    \caption[Summary of the Data Preprocessing Steps]
+    {\textbf{Summary of the Data Preprocessing Steps}. Raw data is downloaded from the GEOportal platform. Several Python scripts import the data into a PostgreSQL database. A QGIS rendering process extracts three differently sized datasets from the database.}
     \label{fig:data_preprocessing}
 \end{figure}
 
@@ -54,7 +74,8 @@ In the first step, the script creates two database tables named \texttt{dop\_rgb
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.6\textwidth]{images/dop_entities}
-    \caption{Database Table Structure for \texttt{dop\_rgb} and \texttt{dop\_nir}}
+    \caption[Database Table Structure for \texttt{dop\_rgb} and \texttt{dop\_nir}]
+    {\textbf{Database Table Structure for \texttt{dop\_rgb} and \texttt{dop\_nir}}. Both tables share the same table layout. The \texttt{rast} columns store the raster information with SRID $25832$.}
     \label{fig:dop_entities}
 \end{figure}
 
@@ -86,7 +107,8 @@ The Shapefiles contain a few more categories than the segmentation in this thesi
 \begin{table}[]
 \centering
 \small
-\caption{Mapping from Shapefile Categories to Segmentation Classes}
+\caption[Mapping from Shapefile Categories to Segmentation Classes]
+{\textbf{Mapping from Shapefile Categories to Segmentation Classes}. The initial label set differentiates between more categories than needed. Therefore, some categories are merged into shared segmentation classes.}
 \label{tab:category_mapping}
 \begin{tabular}{|l|l|l|l|}
 \hline
@@ -118,7 +140,8 @@ Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset wi
 \begin{figure}[h]
     \centering
     \includegraphics[width=0.9\textwidth]{images/dop_label_all}
-    \caption{The Labels in the Dataset}
+    \caption[The Labels in the Dataset]
+    {\textbf{The Labels in the Dataset}. Six predefined classes are used. Area distribution among classes is unbalanced. Dominant classes are \texttt{forest}, \texttt{buildings} and \texttt{agriculture}.}
     \label{fig:dop_label_all}
 \end{figure}
 
@@ -143,7 +166,8 @@ The first step is to define the bounding boxes of the tiles for each architectur
 \begin{figure}[h]
     \centering
     \includegraphics[width=\textwidth]{images/geom_tiles_entities}
-    \caption{Database Table Structure for \texttt{geom\_tiles\_*}}
+    \caption[Database Table Structure for \texttt{geom\_tiles\_*}]
+    {\textbf{Database Table Structure for \texttt{geom\_tiles\_*}}. Each reference architecture uses a unique arrangement of the dataset. Tables layouts are the same, but the image and labels sizes are different.}
     \label{fig:geom_tiles_entities}
 \end{figure}
 
@@ -160,47 +184,10 @@ Since the tiles have been precisely aligned with the raster data, the RGB and NI
 Because of that process, it can happen that the segmentation maps in the exported label files slightly deviate from the labels provided in the initial dataset. However, in any case the difference is less than a few centimeters, which is acceptable in the context of this thesis. Figure~\ref{fig:dop_with_labels} shows some examples of images with their respective labels.
 
 \begin{figure}
-    \newcommand{\DopLabelImageWidth}{0.20\textwidth}
     \centering
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/186_image}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/583_image}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/2281_image}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/3589_image}
-    \end{subfigure}
-    \hfill
-
-    \vspace{3mm}
-
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/186_label}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/583_label}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/2281_label}
-    \end{subfigure}
-    \hfill
-    \begin{subfigure}{\DopLabelImageWidth}
-        \includegraphics[width=\textwidth]{images/3589_label}
-    \end{subfigure}
-    \hfill
-
-    \caption{Selected DOPs with the respective Labels}
+    \includegraphics[width=0.9\textwidth]{images/dop_plus_label}
+    \caption[Selected DOPs with the Respective Labels]
+    {\textbf{Selected DOPs with the Respective Labels}. Each image represents a cutout of $275\times 275~\text{meters}$ from the dataset. }
     \label{fig:dop_with_labels}
 \end{figure}
 
@@ -213,7 +200,8 @@ Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area cov
 
 \begin{table}[h]
 \centering
-\caption{Class Proportions measured over the entire Dataset}
+\caption[Class Proportions measured over the entire Dataset]
+{\textbf{Class Proportions measured over the entire Dataset}. Emphasizes imbalance between classes. \texttt{forest} class is overrepresented. \texttt{urban greens}, \texttt{water} and \texttt{traffic} classes are underrepresented.}
 \label{tab:seg-breakdown}
 \begin{tabular}{|l|r|r|r|r|r|}
 \hline
@@ -235,33 +223,39 @@ In general, such a striking imbalance between classes can have a significant imp
 The second concern to raise about the dataset is about the label precision at the edges between adjacent segments. On a large scale, the labels match with the respective DOP footage. In detail, however, most edges between the segments are only roughly sketched. Figure~\ref{fig:label_considerations} shows some examples with common inaccuracies that appear throughout the whole set of labels.
 
 \begin{figure}[h]
-    \newcommand{\LabelConsiderationImageWidth}{0.17\textwidth}
     \centering
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/44883}
-    \hspace{1mm}
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/150815}
-    \hspace{1mm}
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/69493}
-    \hspace{1mm}
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/71270}
+    \begin{subfigure}{0.22\textwidth}
+        \includegraphics[width=\textwidth]{images/consideration_labels/44883}
+        \caption{}
+        \label{fig:label_considerations_a}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.22\textwidth}
+        \includegraphics[width=\textwidth]{images/consideration_labels/150815}
+        \caption{}
+        \label{fig:label_considerations_b}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.22\textwidth}
+        \includegraphics[width=\textwidth]{images/consideration_labels/69493}
+        \caption{}
+        \label{fig:label_considerations_c}
+    \end{subfigure}
+    \hfill
+    \begin{subfigure}{0.22\textwidth}
+        \includegraphics[width=\textwidth]{images/consideration_labels/71270}
+        \caption{}
+        \label{fig:label_considerations_d}
+    \end{subfigure}
 
-    \vspace{3mm}
-
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/44883-label}
-    \hspace{1mm}
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/150815-label}
-    \hspace{1mm}
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/69493-label}
-    \hspace{1mm}
-    \includegraphics[width=\LabelConsiderationImageWidth]{images/consideration_labels/71270-label}
-
-    \caption{Poorly Outlined Edges on Adjacent Segments}
+    \caption[Poorly Outlined Edges on Adjacent Segments]
+    {\textbf{Poorly Outlined Edges on Adjacent Segments}. The subfigures show common inaccuracies in the labels. This will have a negative effect on training outcome.}
     \label{fig:label_considerations}
 \end{figure}
 
-The first two examples demonstrate that the \texttt{buildings} class not only includes houses, but the entire land parcel that belongs to the houses. In some cases, also the roads leading to the buildings are considered as buildings. For towns and villages, oftentimes the whole area is labelled with the \texttt{buildings} class, including gardens and streets.
+Figures~\ref{fig:label_considerations_a} and~\ref{fig:label_considerations_b} demonstrate that the \texttt{buildings} class not only includes houses, but the entire land parcel that belongs to the houses. In some cases, also the roads leading to the buildings are considered as buildings. For towns and villages, oftentimes the whole area is labelled with the \texttt{buildings} class, including gardens and streets.
 
-The third example in Fig.~\ref{fig:label_considerations} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. The last example depicts that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
+Figure~\ref{fig:label_considerations_c} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. Figure~\ref{fig:label_considerations_d} depicts that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
 
 To get excellent predictions, training should ideally be performed with pixel-perfect labels. For this thesis, pixel-perfect predictions are not aspired. To identify emergency landing fields, we are looking for large contiguous areas, so minor inaccuracies at the edges are within tolerance. However, it is very likely that the inaccurate training data affects the quality of the predictions. This is something to keep in mind when evaluating the performance of the trained models, because it will also affect the metrics.
 
