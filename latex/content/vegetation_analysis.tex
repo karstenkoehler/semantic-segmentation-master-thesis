@@ -94,21 +94,53 @@ Figure~\ref{fig:vegetation_rvi_examples} shows the vegetation density projection
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\textwidth]{images/vegetation/evi}
-    \caption{Vegetation Analysis using RVI}
+    \newcommand{\VegetationImageWidth}{0.13\textwidth}
+
+    \begin{subfigure}{\VegetationImageWidth}
+        \includegraphics[width=\textwidth]{images/vegetation/original}
+        \caption{}
+        \label{fig:svi_original}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\VegetationImageWidth}
+        \includegraphics[width=\textwidth]{images/vegetation/rvi}
+        \caption{}
+        \label{fig:svi_rvi}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\VegetationImageWidth}
+        \includegraphics[width=\textwidth]{images/vegetation/ndvi}
+        \caption{}
+        \label{fig:svi_ndvi}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\VegetationImageWidth}
+        \includegraphics[width=\textwidth]{images/vegetation/evi}
+        \caption{}
+        \label{fig:svi_evi}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\VegetationImageWidth}
+        \includegraphics[width=\textwidth]{images/vegetation/savi}
+        \caption{}
+        \label{fig:svi_savi}
+    \end{subfigure} \hspace{2mm}
+    \begin{subfigure}{\VegetationImageWidth}
+        \includegraphics[width=\textwidth]{images/vegetation/msavi}
+        \caption{}
+        \label{fig:svi_msavi}
+    \end{subfigure}
+
+    \caption[Vegetation Density Analysis using SVIs]
+    {\textbf{Vegetation Density Analysis using SVIs}. Images cover $300\times 300~\text{meters}$.
+    (\subref{fig:svi_original})~Original Image.
+    (\subref{fig:svi_rvi})~RVI.
+    (\subref{fig:svi_ndvi})~NDVI.
+    (\subref{fig:svi_evi})~EVI.
+    (\subref{fig:svi_savi})~SAVI.
+    (\subref{fig:svi_msavi})~MSAVI.}
     \label{fig:vegetation_rvi_examples}
 \end{figure}
 
 In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see middle column). For agricultural fields the separation is less pronounced, but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields.
 
 In Fig.~\ref{fig:vegetation_ndvi_examples}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualizations also express that range. As can be seen, the projection for the two indices are quite different.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{images/vegetation/ndvi_evi}
-    \caption{Vegetation Analysis using NDVI and EVI}
-    \label{fig:vegetation_ndvi_examples}
-\end{figure}
 
 For example, the leftmost image is very bright for NDVI but rather dark for EVI. In fact, EVI's results are almost the exact opposite of NDVI for this image. While the lane tracks in this image are dark for NDVI, they are actually brighter in the EVI. These conflicting results for agricultural fields are also visible in the other images. 
 
@@ -117,13 +149,6 @@ Although the results contradict each other, when viewed for each index separatel
 With regards to forests, NDVI performs rather bad. The middle image shows that there is almost no difference in the projection, regardless of the foliage. In contrast, EVI is able to make a clear distinction. For trees with foliage there are large bright spots in the projections.
 
 Lastly, Fig.~\ref{fig:vegetation_savi_examples} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yield much higher values than SAVI. That is why the visualizations of MSAVI are much brighter.
-
-\begin{figure}[h]
-    \centering
-    \includegraphics[width=\textwidth]{images/vegetation/savi_msavi}
-    \caption{Vegetation Analysis using SAVI and MSAVI}
-    \label{fig:vegetation_savi_examples}
-\end{figure}
 
 The SAVI tells no big difference about forest areas. Regardless of any foliage, the index always show similar projections. With MSAVI a very subtle variation is noticeable.
 
