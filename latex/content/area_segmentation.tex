@@ -43,7 +43,7 @@ During training, some metrics were collected to measure the predictive performan
     \centering
     \input{content/tikz/unet_metrics}
     \caption[Metrics of U-Net Configurations]
-    {\textbf{Metrics of U-Net Configurations}. Calculated per epoch during training from validation set. (\subref{fig:metrics_unet_loss})~Loss. (\subref{fig:metrics_unet_catacc})~Categorical Accuracy. (\subref{fig:metrics_unet_iou})~Mean IoU. }
+    {\textbf{Metrics of U-Net Configurations}. Calculated per epoch during training from validation set. (\subref{fig:metrics_unet_loss})~Categorical Crossentropy Loss. (\subref{fig:metrics_unet_catacc})~Categorical Accuracy. (\subref{fig:metrics_unet_iou})~Mean IoU. }
     \label{fig:unet_train_metrics}
 \end{figure}
 
@@ -98,9 +98,9 @@ While the metrics provide a quick overview over larger parts of the dataset, loo
     \label{fig:unet_prediction_images}
 \end{figure}
 
-The third column of the figure visualizes predictions of the \texttt{U-Net-18D} configuration. The predictions omit the \texttt{water} class completely. Instead, water bodies are predicted to be either \texttt{forest} or \texttt{buildings}. This explains why the categorical accuracy and mean IoU are lower compared to the \texttt{U-Net-23} configurations.
+Figure~\ref{fig:unet_pred_18d} visualizes the predictions of the \texttt{U-Net-18D} configuration. The predictions omit the \texttt{water} class completely. Instead, water bodies are predicted to be either \texttt{forest} or \texttt{buildings}. This explains why the categorical accuracy and mean IoU are lower compared to the \texttt{U-Net-23} configurations.
 
-Both \texttt{U-Net-23} and \texttt{U-Net-23D} show better results for the \texttt{water} class. They are able to detect water surfaces correctly. However, sometimes shadows of other objects are also considered to be \texttt{water} (middle row). The first row shows that in some cases the predictions are even better than the labels.
+Both \texttt{U-Net-23} in Fig~\ref{fig:unet_pred_23} and \texttt{U-Net-23D} in Fig.~\ref{fig:unet_pred_23d} show better results for the \texttt{water} class. They are able to detect water surfaces correctly. However, sometimes shadows of other objects are also considered to be \texttt{water} (middle row). The first row shows that in some cases the predictions are even better than the labels.
 
 All configurations struggle with the \texttt{traffic} class. In most situations, roads are incorrectly projected to \texttt{buildings}. Only \texttt{U-Net-23} has some correct predictions for the \texttt{traffic} class.
 
@@ -124,7 +124,7 @@ The training metrics for all FC-DenseNet configurations are presented in Fig.~\r
     \centering
             \input{content/tikz/densenet_metrics}
     \caption[Metrics of FC-DenseNet Configurations]
-    {Calculated per epoch during training from validation set. (\subref{fig:metrics_densenet_loss})~Loss. (\subref{fig:metrics_densenet_catacc})~Categorical Accuracy. (\subref{fig:metrics_densenet_iou})~Mean IoU.}
+    {\textbf{Metrics of FC-DenseNet Configurations}. Calculated per epoch during training from validation set. (\subref{fig:metrics_densenet_loss})~Categorical Crossentropy Loss. (\subref{fig:metrics_densenet_catacc})~Categorical Accuracy. (\subref{fig:metrics_densenet_iou})~Mean IoU.}
     \label{fig:densenet_train_metrics}
 \end{figure}
 
@@ -183,11 +183,11 @@ Figure~\ref{fig:densenet_prediction_images} shows some sample predictions made b
     \label{fig:densenet_prediction_images}
 \end{figure}
 
-While \texttt{FCDN-103D} performed very well in the metrics, the actual results have some shortcomings. The segments are not separated clearly and form some very fragmented regions. In order to use these predictions meaningfully, they would first have to be smoothed out. The same observations apply in an attenuated form to \texttt{FCDN-56D}. The other two configurations do not exhibit this behavior.
+While \texttt{FCDN-103D} performed very well in the metrics, the actual results have some shortcomings. The segments are not separated clearly and form some very fragmented regions (Fig.~\ref{fig:densenet_pred_103d}). In order to use these predictions meaningfully, they would first have to be smoothed out. The same observations apply in an attenuated form to \texttt{FCDN-56D} (Fig.~\ref{fig:densenet_pred_56d}). The other two configurations do not exhibit this behavior.
 
-None of the configurations was able to predict the \texttt{traffic} class correctly. Mostly it is confused with the \texttt{buildings} class.
+None of the configurations was able to predict the \texttt{traffic} class correctly. Mostly it is confused with the \texttt{buildings} class. Since the same observations were made for the U-Net models, this is presumably caused by the few training examples for the \texttt{traffic} class.
 
-From a purely visual point of view \texttt{FCDN-103CD} and \texttt{FCDN-67D} deliver the best results. Especially the predictions for the \texttt{water} class seem very promising.
+From a purely visual point of view \texttt{FCDN-67D} (Fig.~\ref{fig:densenet_pred_67d}) and \texttt{FCDN-103CD} (Fig.~\ref{fig:densenet_pred_103cd}) deliver the best results. Especially the predictions for the \texttt{water} class seem very promising.
 
 The differentiation between the \texttt{agriculture} and \texttt{forest} classes is noticeable. In reality, the transition between those two classes is seamless and hardly perceivable. So it is expected that the predictions are subject to minor fluctuations.
 
@@ -211,13 +211,14 @@ The metrics for W-Net are different from the ones presented for U-Net and FC-Den
 \begin{figure}[h]
     \centering
             \input{content/tikz/wnet_metrics}
-    \caption{Training Set Metrics of W-Net Configurations}
+    \caption[Metrics of W-Net Configurations]
+    {\textbf{Metrics of W-Net Configurations}. Categorical Crossentropy Loss. Calculated per batch during training from training set.}
     \label{fig:wnet_train_metrics}
 \end{figure}
 
 The only metric shown in Fig.~\ref{fig:wnet_train_metrics} is the categorical crossentropy loss during training. Since no configuration has major improvements (note the small range on the y-axis), training is stopped after a single epoch. Thus, the graph plots the loss per batch in the training set.
 
-All configurations show similar behavior during the training. Over the first few batches of data, there is an adequate improvement on the loss. Only after a few more batches, the predictions become worse again. Interestingly, the graphs for all configurations look like they all follow the same pattern. At the time of writing, no satisfying explanation can be given for those incidents.
+All configurations show similar behavior during the training. Over the first few batches of data, there is an adequate improvement on the loss. Only after a few more batches, the predictions become worse again. Interestingly, the graphs for all configurations look like they follow the same pattern. At the time of writing, no satisfying explanation can be given for those incidents.
 
 \subsubsection{Images}
 Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net configurations extracted from the test set. For each configuration two images are displayed. The first one is the predicted class segmentation. The class colors in the predictions are not related to any of the classes mentioned earlier. They rather represent what the respective encoder learned to differentiate in the images. The second image is the reconstruction of the original image predicted by the decoder from the class segmentation.
@@ -262,9 +263,9 @@ Figure~\ref{fig:wnet_prediction_images} lists some visual results of the W-Net c
     \label{fig:wnet_prediction_images}
 \end{figure}
 
-It is clearly visible that most configurations did not learn a broad variety of classes. The predictions show mostly one dominant class and sporadic occurances of other classes. Especially for the configurations with 20 available classes this is surprising. They use only a small part of the available feature space to encode the information of the original image. This is probably the reason why those configuration also were incapable of reconstructing the original images properly.
+It is clearly visible that most configurations did not learn a broad variety of classes. The predictions show mostly one dominant class and sporadic occurances of other classes. Especially for the configurations with 20 available classes (Figs.~\ref{fig:wnet_pred_36d-20} and~\ref{fig:wnet_pred_46d-20}) this is surprising. They use only a small part of the available feature space to encode the information of the original image. This is probably the reason why those configuration also were incapable of reconstructing the original images properly.
 
-For the configurations with 6 available classes, the reconstructions look much better. Especially \texttt{W-Net-46D-6} reassembles the rough structure of the original image. This is also the only configuration that makes notable use of at least two of the available classes. But still, four classes remain mostly unused.
+For the configurations with 6 available classes the reconstructions look much better (Figs.~\ref{fig:wnet_pred_36d-6} and~\ref{fig:wnet_pred_46d-6}). Especially \texttt{W-Net-46D-6} reassembles the rough structure of the original image. This is also the only configuration that makes notable use of at least two of the available classes. But still, four classes remain mostly unused.
 
 In summary, the results of W-Net were very disappointing. Before any of the results could be used to solve the real segmentation challenge, the output would have to be post-processed. This includes e.~g. mapping the identified classes to the predefined ones. Due to the poor segmentation results this step was omitted.
 
@@ -299,8 +300,8 @@ The results of both U-Net and FC-DenseNet were much better in general. The exper
         \label{fig:segdiscuss_densenet}
     \end{subfigure}
 
-    \caption[Large Scale Predictions of \texttt{FC-DenseNet-67D} and \texttt{U-Net-23D}]
-    {\textbf{Large Scale Predictions of \texttt{FC-DenseNet-67D} and \texttt{U-Net-23D}}. Images cover around $580\times 580~\text{meters}$.
+    \caption[Large Scale Predictions of \texttt{U-Net-23D} and \texttt{FC-DenseNet-67D}]
+    {\textbf{Large Scale Predictions of \texttt{U-Net-23D} and \texttt{FC-DenseNet-67D}}. Images cover around $580\times 580~\text{meters}$.
     (\subref{fig:segdiscuss_original})~Original Image.
     (\subref{fig:segdiscuss_label})~Ground Truth.
     (\subref{fig:segdiscuss_unet})~\texttt{U-Net-23D}.
@@ -311,19 +312,19 @@ The results of both U-Net and FC-DenseNet were much better in general. The exper
 
 So far, only very small areas have been looked at. In a more practical use case, the predictions would cover huge areas. Hence, Fig.~\ref{fig:segmentation_discussion} depict the predictions of larger areas, where each of the images covers around $580\times 580$ meters. It shows the original image and label, as well as the visualized predictions of \texttt{U-Net-23D} and \texttt{FCDN-67D}. Those configurations were chosen because they returned the best results in their individual reference architecture (see sections~\ref{sec:unet_experiments} and~\ref{sec:densenet_experiments}).
 
-The similarities between the labels and \texttt{U-Net-23D} predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three dominant classes throughout the dataset, lots of good training examples are available.
+The similarities between the labels and \texttt{U-Net-23D} (Fig.~\ref{fig:segdiscuss_unet}) predictions are clearly visible. The general outlines of the class segments show only minor differences compared to the labels. This is especially true for the classes \texttt{buildings}, \texttt{forest} and \texttt{agriculture}, which reflects the expected behavior. Since these are the three dominant classes throughout the dataset, lots of good training examples are available.
 
 Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{water} class. In contrast to the labels, even small islands in the river are detected correctly. However, there are some false positives for this class when it comes to highly saturated green grass, such as on sports fields.
 
 The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are predicted poorly by \texttt{U-Net-23D}. For both classes this matches the expectations, since they were labelled rather poorly in the dataset. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar. Since this class mostly includes parks and sports facilities, it is easily confused with the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
 
-With regards to the classes, the predictions of \texttt{FCDN-67D} can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the dataset.
+With regards to the classes, the predictions of \texttt{FCDN-67D} (Fig.~\ref{fig:segdiscuss_densenet})  can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the dataset.
 
 On the other hand, the predictions of \texttt{FCDN-67D} seem very fragmented in some cases, for example between the \texttt{agriculture} and \texttt{forest} classes. The transitions between those two are not really sharp but rather jagged and fissured. To some extent this represents the real situation, because oftentimes there are no clear borders between forest and grassland.
 
 In terms of inference speed \texttt{U-Net-23D} is slightly faster than \texttt{FCDN-67D}. Each image in Fig.~\ref{fig:segmentation_discussion} took around $9$~seconds to process with \texttt{U-Net-23D}. In contrast, \texttt{FCDN-67D} took around $11$~seconds per image. All measurements were executed on a NVIDIA GeForce GTX 1080 Ti graphics card. More details on the hardware can be found in appendix~\ref{app:tools_hardware}.
 
-This is surprising, because \texttt{U-Net-23D} has more than four times the number of parameters compared to \texttt{FCDN-67D} ($16.6~\text{M}$ vs.\ $4.0~\text{M}$). With \texttt{U-Net-23D} however, the parameters are spread across only $23$ convolution layers, whereas in \texttt{FCDN-67D} there are $67$ layers. Therefore, the calculations in \texttt{U-Net-23D} can better be executed in parallel.
+This is surprising, because \texttt{U-Net-23D} has more than four times the number of parameters compared to \texttt{FCDN-67D} ($16.6~\text{M}$ vs.\ $4.0~\text{M}$). With \texttt{U-Net-23D} however, the parameters are spread across only $23$ convolution layers, whereas in \texttt{FCDN-67D} there are $67$ layers. Therefore, the calculations in \texttt{U-Net-23D} can be better executed in parallel.
 
 In total, both configurations yield remarkable results for the segmentation challenge. Since the predictions of \texttt{U-Net-23D} are less fractured, it might be easier to find suitable emergency landing fields in the huge contiguous areas. However, the predictions might lack precise information of rather small objects. In that regard, the predictions from \texttt{FCDN-67D} are more beneficial.
 
