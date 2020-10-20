@@ -29,9 +29,14 @@ For this reason, a different approach was chosen to address the class imbalance 
 
 \subsection{Experiments with U-Net}
 \label{sec:unet_experiments}
-The reference architecture that was explored first is the U-Net as introduced in section~\ref{sec:unet}. The default input size for images was set to $572\times 572$ pixels. Those are the same dimensions as the authors of U-Net used in their initial approach~\cite{unet15}. Because of the unpadded convolution layers, the dimensions of the predictions are smaller than the original input image. For the standard configuration in U-Net the output size is $388\times 388$ pixels. Depending on the number of convolution layers, these dimensions may vary.
+The reference architecture that was explored first is the U-Net as introduced in section~\ref{sec:unet}. The default input size for images was set to $572\times 572$ pixels. Those are the same dimensions as the authors of U-Net used in their initial approach~\cite{unet15}. Because of the unpadded convolution layers, the dimensions of the predictions are smaller than the original input image. For the standard configuration in U-Net the output size is $388\times 388$ pixels. Depending on the number of convolution layers, these dimensions may vary. The specific dataset for U-Net contains $20\,289$ training images.
 
-All U-Net models were trained with a stochastic gradient descent optimizer. The initial learning rate was set to $0.1$ and reduced after every epoch, to finetune the weights towards the end of the training. A batch size of $4$ was used in combination with Nesterov momentum~\cite{nesterov83} of $0.99$ to speed up the training process and avoid oscillations. The loss was computed using a categorical crossentropy function.
+All U-Net models were trained with a stochastic gradient descent optimizer. The initial learning rate was set to $0.1$ and reduced after every epoch, to finetune the weights towards the end of the training according to Eq.~\ref{eq:learning_rate}. A batch size of $4$ was used in combination with Nesterov momentum~\cite{nesterov83} of $0.99$ to speed up the training process and avoid oscillations. The loss was computed using a categorical crossentropy function.
+
+\begin{equation}
+    \text{learning rate}_{\text{epoch}} = \text{learning rate}_1 \cdot \frac{1}{5 \cdot (1 + \text{epoch})^2}
+    \label{eq:learning_rate}
+\end{equation}
 
 Starting from the model with its original hyperparameter configuration, a few other configurations have been explored. To distinguish between the configurations, a naming convention is established. The original configuration is called \texttt{U-Net-23D}, where the number represents the exact number of convolution layers in the model. The suffix \texttt{D} indicates that a dropout layer was added before the expansive path to provide regularization during the training.
 
@@ -110,9 +115,9 @@ Based on the images shown in Fig.~\ref{fig:unet_prediction_images}, it is hardly
 \label{sec:densenet_experiments}
 In the next step, the FC-DenseNet reference architecture is investigated with regards to the segmentation challenge. Again, we analyze the original architecture like described in section~\ref{sec:densenet} as well as some variations with slightly modified hyperparameters.
 
-For this architecture the dimensions of input and output are equally set to $224\times 224$. Since the convolution layers in this architecture use padding, the dimensions are independent from the number of layers.
+For this architecture the dimensions of input and output are equally set to $224\times 224$. Since the convolution layers in this architecture use padding, the dimensions are independent from the number of layers. Thus a total of $38\,367$ images are available in the training set.
 
-The loss is again calculated by a categorical crossentropy function. During training, the weight updates are applied using a RMSprop~\cite{rmsprop14} optimizer. The learning rate is initialized with $0.001$ (according to~\cite{denseseg17}) and decreased after each epoch.
+The loss is again calculated by a categorical crossentropy function. During training, the weight updates are applied using a RMSprop~\cite{rmsprop14} optimizer. The learning rate is initialized with $0.001$ (same as in~\cite{denseseg17}) and decreased after each epoch according to Eq.~\ref{eq:learning_rate}.
 
 Another naming convention is applied to distinguish the variations of the FC-DenseNet models. The reference model is called \texttt{FCDN-103D}, again indicating the number of convolution layers and the use of dropout. The letter \texttt{C} denotes the application of compression layers before transition-down layers to condense the outputs of dense blocks (see~\cite{denseseg17} for details). The compression rate of those layers is set to $0.5$, i.~e. the number of feature maps is halved.
 
@@ -193,7 +198,7 @@ The differentiation between the \texttt{agriculture} and \texttt{forest} classes
 
 \subsection{Experiments with W-Net}
 \label{sec:wnet_experiments}
-Lastly, the W-Net architecture presented in section~\ref{sec:w-net} is implemented. For that, big parts of the U-Net implementation could be reused, because W-Net essentially consists of two subsequent U-Nets. In contrast to the original U-Net architecture however, the W-Net employs zero padding for the convolution layers, so that input and output dimensions are equal.
+Lastly, the W-Net architecture presented in section~\ref{sec:w-net} is implemented. For that, big parts of the U-Net implementation could be reused, because W-Net essentially consists of two subsequent U-Nets. In contrast to the original U-Net architecture however, the W-Net employs zero padding for the convolution layers, so that input and output dimensions are equal. For W-Net an image size of $256\times 256$ pixels was chosen, which resulted in $32\,861$ images in the training set.
 
 The W-Net architecture was designed for unsupervised training. This means, the labels of the dataset are ignored during training. Instead, the original images are used as both input and desired output. This way, the model has to learn an appropriate distribution of classes all by itself. Since this setup allows for arbitrary numbers of classes, the number is appended to the model name as a suffix. Otherwise, the naming convention is the same as for U-Net in section~\ref{sec:unet_experiments}.
 
