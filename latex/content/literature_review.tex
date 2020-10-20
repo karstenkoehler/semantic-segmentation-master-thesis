@@ -26,7 +26,7 @@ The net input is then passed through the activation function whose main purpose 
     \label{fig:perceptron}
 \end{figure}
 
-To adapt a DNN model for a specific task, the weights for all the connections have to be initialized with proper values. Since there are so many weights, it is unrealistic to choose the values by hand, but rather use a process called \emph{training}. To train the DNN model, it is fed with examples of input vectors with their respective output vectors. During this process the weights are adjusted slightly, so that the model better reflects the relations between the input and the output vectors. This is a computationally intensive process that requires a large amount of training data. After repeating this with thousands of training vectors, the weights of the model will eventually converge to fit the task.
+To adapt a DNN model for a specific task, the weights for all the connections have to be initialized with proper values. Since there are so many weights, it is unrealistic to choose the values by hand, but rather use a process called \emph{training}. To train the DNN model, it is fed with examples of input vectors. After propagating the input through the model, the actual output is compared to the desired output for the given input. During this process the weights are adjusted slightly, so that the model better reflects the relations between the input and the output vectors. This is a computationally intensive process that requires a large amount of training data. After repeating this with thousands of training vectors, the weights of the model will eventually converge to fit the task.
 
 \subsubsection{Training with Backpropagation}
 One of the most commonly used algorithms to perform the training is the \emph{backpropagation algorithm}~\cite[pp.~151ff]{nn_intro96}. It relies on an \emph{error function} (sometimes also called \emph{loss function}), which is meant to calculate the deviation between the model's current output vector and the desired output vector. The backpropagation algorithm then searches for a minimum of the error function by adjusting the model's weights according to an \emph{optimization strategy}. Which algorithms to choose for both the error function and the optimization strategy is highly dependent on the task to solve and on the quality requirements for the final predictions.
@@ -100,7 +100,7 @@ The next level is to not only assign a label to an image, but also detect where 
     \label{fig:cv_tasks}
 \end{figure}
 
-Rectangular boxes are fairly inaccurate for expressing the spatial extents of an object. Therefore, another task called \emph{semantic segmentation}~\cite{weakseg15} deals with pixel-level classification of an image (see Fig.~\ref{fig:cv_task_semseg}). This determines a precise mask telling for each pixel of the image the object it belongs to. Since this is one of the main tasks of this thesis, an in-depth discussion of modern solutions to this task follows in section~\ref{sec:ref_archs}. One dataset to measure the performance of the various approaches is the Pascal Visual Object Classes as laid out in~\cite{pascal_voc15}. The scoring is done by calculating the \emph{intersection over union} (IoU) metric, which is explained in detail in section~\ref{sec:metrics}.
+Rectangular boxes are fairly inaccurate for expressing the spatial extents of an object. Therefore, another task called \emph{semantic segmentation}~\cite{weakseg15} deals with pixel-level classification of an image (see Fig.~\ref{fig:cv_task_semseg}). This determines a precise mask telling for each pixel of the image the object it belongs to. Since this is one of the main tasks of this thesis, an in-depth discussion of modern solutions to this task follows in section~\ref{sec:ref_archs}. One dataset to measure the performance of the various approaches is the Pascal Visual Object Classes as laid out in~\cite{pascal_voc15}. The scoring is done by calculating the intersection over union metric, which is explained in detail in section~\ref{sec:metrics}.
 
 The last task to mention here is called \emph{instance segmentation}~\cite{mask-rcnn14}. Whereas previously only one class had to be assigned to each pixel, a distinction is now also made between pixels that belong to the same object class but different instances of an object (see Fig.~\ref{fig:cv_task_inseg}). This task is quite challenging, as for example parts of an instance can be hidden by another instance of the same class, which leads to gaps in the mask. \emph{Mask R-CNN}~\cite{mask-rcnn14} is a widely used meta-algorithm for solving this task. It combines region proposals used for object localization with semantic segmentation processes. A great dataset for this challenge is the \emph{Microsoft Common Objects in Context} set, which can be found in~\cite{coco14}.
 
@@ -135,7 +135,7 @@ As stated by Goodfellow et al.\ in~\cite{DLbook16} the convolution operation has
 \label{sec:pooling}
 Unlike convolution, which is used to extract features from the input, \emph{pooling} removes information from the data to reduce the number of parameters and also to prevent overfitting. The procedure of pooling is similar to convolution. However, it does not use matrix multiplication but instead performs a predefined mathematical function on the input matrix. While any function can be used for the pooling operation, most of the times it is the $\max$ function. Thus, it reduces the available information but still keeps the most important activations~\cite[p.~369 f]{praxiseinstieg_ml17}.
 
-Because the function to use is predefined, pooling layers do not contain any trainable parameters. But still they are configurable with the same hyperparameters as convolution layers, namely kernel size, stride and padding. In addition, pooling can also be performed along the third axis of the input, which contains the feature maps~\cite[p.~370]{praxiseinstieg_ml17}.
+Because the function to use is predefined, pooling layers do not contain any trainable parameters. But still they are configurable with the kernel size, stride and padding hyperparameters. In addition, pooling can also be performed along the third axis of the input, which contains the feature maps~\cite[p.~370]{praxiseinstieg_ml17}.
 
 \begin{figure}[h]
     \centering
@@ -190,13 +190,12 @@ Although this metric is generally useful for a first impression of performance, 
 
 There are some ways to overcome this issue, for example to calculate and check the categorical accuracy for each class separately. This helps to understand which classes the model can predict reliably and which classes causes trouble. In general it is recommended to also integrate other metrics into the evaluation process in order to obtain a wider perspective.
 
-The \emph{intersection over union} (IoU) is another metric which is commonly used to evaluate segmentation results~\cite{pascal_voc15}. It is computed using two values:
-\begin{enumerate}
-    \item the area of intersection of the prediction with the ground truth, which is equal to the number of correctly predicted pixels
+The \emph{Intersection over Union} (IoU) is another metric which is commonly used to evaluate segmentation results~\cite{pascal_voc15}. It is defined by the ratio between
+\begin{itemize}
+    \item the area of intersection of the prediction with the ground truth, which is equal to the number of correctly predicted pixels,
     \item and the area of union of both prediction and ground truth, which includes correct predictions as well as false positives and false negatives.
-\end{enumerate}
-
-The IoU is defined as the ratio between those two values (see equation~\ref{eq:mean_iou}). For multi-class challenges, the IoU is computed separately for each class and then averaged over all classes. This is then called \emph{Mean IoU}.
+\end{itemize}
+The full formula is listed in Eq.~\ref{eq:mean_iou}. For multi-class challenges, the IoU is computed separately for each class and then averaged over all classes. This is then called \emph{Mean~IoU}.
 
 \begin{equation}
     \label{eq:mean_iou}
@@ -233,7 +232,7 @@ The U-Net architecture contains neither fully connected layers nor do they use p
 
 \subsubsection{DenseNet Architecture}
 \label{sec:densenet}
-As the depth of CNN architectures tends to increase, a new challenge arose regarding the training of those networks. Since the hidden layers can be very far away from the input and output layers, the values and gradients passed between the layers can get lost on the way. In an attempt to solve this, Huang et al.\ came up with the idea to directly connect all layers with matching feature map sizes. They published their architecture with the name \emph{DenseNet} in~\cite{densenet17}.
+As the depth of CNN architectures tends to increase, a new challenge arose regarding the training of those networks. Since the hidden layers can be very far away from the input and output layers, the values and gradients passed between the layers can become infinitesimally small. As a result, the correlations between input and output can no longer be obtained. In an attempt to solve this, Huang et al.\ came up with the idea to directly connect all layers with matching feature map sizes. They published their architecture with the name \emph{DenseNet} in~\cite{densenet17}.
 
 Huang et al.\ consider the values passed between layers to be the network's state. To access the state of one of the early layers in the network with a subsequent layer, all the layers in between have to pass the state unchanged, thus creating redundancy. With the DenseNet architecture, the state of all previous layers is explicitly passed to subsequent layers by concatenating the feature maps. This means, the network now differentiates between information that originates from an earlier layer and new information produced in the current layer. It allows to keep the convolution layers narrow (i.~e. the number of feature maps), because each layer only adds information, but never changes information that was previously acquired. This concept leads to having fewer trainable parameters and an improved flow of gradients, which both reduce the effort for training the network~\cite{densenet17}.
 
