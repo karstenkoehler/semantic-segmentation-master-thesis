@@ -2,7 +2,7 @@
 \label{sec:dataset_analysis}
 The dataset which is used throughout this thesis is provided by the Ministry of the Interior of the State of North Rhine-Westphalia in Germany. With the platform GEOportal~\cite{geoportal20} they offer various types of maps, like topographical maps, elevation data and orthographical footage. Most of the data is available for free download in batches. The batches used in this thesis are released under the dl-de/zero-2-0 licence. This means that the data can be used for any purpose without any restrictions or conditions.
 
-For the purpose of this thesis there are two types of maps which prove useful. First, there is a map assembled of digital orthophotos (DOPs). A DOP is an aerial photograph of the surface of the earth (see Fig.~\ref{fig:rgb_example}). It is processed to hide effects like perspective distortions or topographic features of the landscape. Also it follows a specific map projection to denote the exact spatial extents of the photograph on the earth's surface. Because of that, DOPs are great to analyze terrain types and conditions. In Section~\ref{sec:segmentation} DOPs are used to perform a semantic segmentation based on the terrain surface.
+For the purpose of this thesis there are two types of maps which prove useful. First, there is a map assembled of digital orthophotos (DOPs). A DOP is an aerial photograph of the surface of the earth (Fig.~\ref{fig:rgb_example}). It is processed to hide effects like perspective distortions or topographic features of the landscape. Also it follows a specific map projection to denote the exact spatial extents of the photograph on the earth's surface. Because of that, DOPs are great to analyze terrain types and conditions. In Section~\ref{sec:segmentation} DOPs are used to perform a semantic segmentation based on the terrain surface.
 
 \begin{figure}[h]
     \centering
@@ -21,7 +21,7 @@ For the purpose of this thesis there are two types of maps which prove useful. F
     \label{fig:dop_rgb_nir_example}
 \end{figure}
 
-The second map explored in this thesis contains imagery obtained by near-infrared (NIR) spectroscopy (see Fig.~\ref{fig:nir_example}). They are processed in the same way as the DOPs, so they are also projected onto the earth's surface with a specific map projection. NIR data is widely applied in agriculture to monitor the cultivation of herbal products like forages and vegetables. In this thesis the NIR imagery is used to approximate vegetation density for specific regions (Section~\ref{sec:vegetation_analysis}).
+The second map explored in this thesis contains imagery obtained by near-infrared (NIR) spectroscopy (Fig.~\ref{fig:nir_example}). They are processed in the same way as the DOPs, so they are also projected onto the earth's surface with a specific map projection. NIR data is widely applied in agriculture to monitor the cultivation of herbal products like forages and vegetables. In this thesis the NIR imagery is used to approximate vegetation density for specific regions (Section~\ref{sec:vegetation_analysis}).
 
 The data for the maps is collected by airplanes with special cameras pointing vertically downwards. With straight east-west flight paths and significant overlap in the photographic coverage, the airplanes scan the areas. In this way, a seamless image of the earth's surface is created. The ground sample distance of the dataset is $10~\text{cm}$, i.~e. each pixel in Fig.~\ref{fig:dop_rgb_nir_example} represents a $10\times 10~\text{cm}$ square in real-world scale. With such a high resolution it is easily possible to detect objects like trees, cars or buildings. Therefore, the data provides sufficient information for the segmentation of terrain types. The recent data is captured with different cameras like for example the Leica DMC III or the Vexcel UltraCam UCXp~\cite{topo-image16}. Therefore, small color differences in the dataset can be expected.
 
@@ -67,7 +67,7 @@ The PostGIS installation contains a few shell tools to import data into the data
 
 To convert the files from JPEG 2000 to GeoTiff, we use the \emph{Geospatial Data Abstraction Library} (GDAL). This is a tool collection which acts as an abstraction layer for various geospatial data formats. It also includes a shell tool to translate several georeferenced image file formats, including JPEG 2000 and GeoTiff. The file \texttt{jp2\_to\_tif.sh} in~\cite{thesis-code20} shows a bash script using the \texttt{gdal\_translate} tool to convert all the JPEG 2000 files to the GeoTiff format.
 
-With the files in GeoTiff format it is now possible to use the \texttt{raster2pgsql} tool to import them into a PostGIS raster table. The whole import process is automated with a Python script (see file \texttt{tif\_to\_raster.py} in~\cite{thesis-code20}). It assumes that there is a database called \texttt{dop10rgbi\_nrw} with the PostGIS extension enabled.
+With the files in GeoTiff format it is now possible to use the \texttt{raster2pgsql} tool to import them into a PostGIS raster table. The whole import process is automated with a Python script (file \texttt{tif\_to\_raster.py} in~\cite{thesis-code20}). It assumes that there is a database called \texttt{dop10rgbi\_nrw} with the PostGIS extension enabled.
 
 In the first step, the script creates two database tables named \texttt{dop\_rgb} and \texttt{dop\_nir}. The \texttt{dop\_rgb} table has a PostGIS raster column with three raster bands to hold the color information for the DOPs. Simultaneously, the \texttt{dop\_nir} table also has a PostGIS raster column with only one raster band for the NIR values. Figure~\ref{fig:dop_entities} illustrates the structure of both tables in detal. It is reasonable to separate the color and NIR values as they will be used for different tasks later on.
 
@@ -95,14 +95,13 @@ For supervised learning, the models need pairs of input with the expected output
 
 Usually this task is done manually by lining out all segments of a tile and then assigning a class to each segment. To reduce the amount of work, we use another dataset from the GEOportal called Digital Basic Landscape Model~\cite{base-dlm20}. It describes topological features of the landscape in a vector data format. The dataset includes regions categorized by their respective terrain type. It is available for free download and also permits any use within the dl-de/zero-2-0 license. With some transformations, the data is well suited for the use as labels during the training of a model.
 
-The categorized regions are provided as Shapefiles. Shapefile is a specific data format for vector-based geospatial objects. To have all data in a single source system, the Shapefiles are also imported into the PostGIS database. This also makes it easier to export the segmentation information later on for different tile sizes. Again, the import process is automated with a Python script (see file \texttt{shp\_to\_geom.py} in~\cite{thesis-code20}).
+The categorized regions are provided as Shapefiles. Shapefile is a specific data format for vector-based geospatial objects. To have all data in a single source system, the Shapefiles are also imported into the PostGIS database. This also makes it easier to export the segmentation information later on for different tile sizes. Again, the import process is automated with a Python script (file \texttt{shp\_to\_geom.py} in~\cite{thesis-code20}).
 
 PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a database table with a PostGIS geometry column. It takes into account all the metadata that is listed in the Shapefile and creates separate columns for those values. The Python script loops over all the required Shapesfiles and calls the \texttt{shp2pgsql} tool passing some arguments like the target SRID. At first, each file is imported in its own database table. This is because each file contains a specific set of meta information resulting in different table layout for each file. The categorized regions are now represented as PostGIS geometry objects.
 
 The original Shapesfiles enclose all regions of the State of North Rhine-Westphalia. Since the DOP und NIR datasets only consist of a smaller subregion, all geometry objects are cropped to that subregion in the next step. Geometry objects that are located outside of the boundaries are dropped entirely. During this process, the database tables of the different Shapefiles are merged into one single table. This resulting table has columns for an internal id, the object type, a textual object description and for the geometry object itself. As all the other meta information contained in the Shapefiles is not needed, it is dropped in this step.
-\clearpage
 
-The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes (see also Fig.~\ref{fig:dop_label_all}). The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
+The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes (Fig.~\ref{fig:dop_label_all}). The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
 
 \begin{table}[]
 \centering
@@ -139,7 +138,7 @@ Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset wi
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/dop_label_all}
+    \includegraphics[width=0.8\textwidth]{images/dop_label_all}
     \caption[The Labels in the Dataset]
     {\textbf{The Labels in the Dataset}. Six predefined classes are used. Area distribution among classes is unbalanced. Dominant classes are \texttt{forest}, \texttt{buildings} and \texttt{agriculture}.}
     \label{fig:dop_label_all}
@@ -159,7 +158,7 @@ In the image files the labels use color-encoding to differentiate between the cl
 
 In one-hot encoding, each pixel is assigned a vector with one value per class. The value for the class is set to $1$ if the pixel belongs to that specific class, and $0$ otherwise. That way, the distance between the classes is equal for each pair of classes, i.~e. there is no correlation between classes. The translation from color-encoding to one-hot encoding is done by simply mapping the color vectors to their respective one-hot encoded representation.
 
-While the exact tile and label size depends on the network architecture, there is a general process how the image tiles are extracted from the database. This process is automated with multiple Python scripts (see \texttt{scripts} folder in~\cite{thesis-code20}).
+While the exact tile and label size depends on the network architecture, there is a general process how the image tiles are extracted from the database. This process is automated with multiple Python scripts (\texttt{scripts} folder in~\cite{thesis-code20}).
 
 The first step is to define the bounding boxes of the tiles for each architecture in separate tables within the database. Each bounding box is represented by a  PostGIS geometry object. Figure~\ref{fig:geom_tiles_entities} shows the full structure of the tables. The images and labels are defined by two separate geometry objects, because for some architectures the dimensions of the predictions are different compared to the input.
 
@@ -183,9 +182,9 @@ Since the tiles have been precisely aligned with the raster data, the RGB and NI
 
 Because of that process, it can happen that the segmentation maps in the exported label files slightly deviate from the labels provided in the initial dataset. However, in any case the difference is less than a few centimeters, which is acceptable in the context of this thesis. Figure~\ref{fig:dop_with_labels} shows some examples of images with their respective labels.
 
-\begin{figure}
+\begin{figure}[b]
     \centering
-    \includegraphics[width=0.9\textwidth]{images/dop_plus_label}
+    \includegraphics[width=0.8\textwidth]{images/dop_plus_label}
     \caption[Selected DOPs with the Respective Labels]
     {\textbf{Selected DOPs with the Respective Labels}. Each image represents a cutout of $275\times 275~\text{meters}$ from the dataset. }
     \label{fig:dop_with_labels}
@@ -216,7 +215,6 @@ water        & 1,344,467   & 0.54   \\ \hline
 traffic      & 788,878     & 0.32   \\ \hline
 \end{tabular}
 \end{table}
-\clearpage
 
 In general, such a striking imbalance between classes can have a significant impact on the model if not properly addressed. For example, it could happen that the model predicts the dominant class for all pixels all the time. In fact, a model can achieve $65\%$ categorical accuracy for the chosen dataset if it only predicts the \texttt{forest} class for every input. Obviously, this prediction would be useless for production use. There are many ways to tackle this issue, some common ways are shown in~\cite{imbalanced_data09}. Section~\ref{sec:prepare_train_test} will further elaborate on this topic.
 

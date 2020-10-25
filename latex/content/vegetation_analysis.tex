@@ -1,6 +1,6 @@
 \section{Analysis of Vegetation Density}
 \label{sec:vegetation_analysis}
-After the segmentation of the terrain type into different classes, the second objective of this thesis is to draw conclusions on vegetation density. Vegetation is one of the main factors to consider when looking for suitable emergency landing fields. Lower vegetation density increases the chances of a successful emergency landing.
+After the segmentation of the terrain into different classes, the second objective of this thesis is to draw conclusions on vegetation density. Vegetation is one of the main factors to consider when looking for suitable emergency landing fields. Lower vegetation density increases the chances of a successful emergency landing.
 
 One method for analyzing vegetation density with remotely sensed data are \emph{spectral vegetation indices} (SVIs). This chapter focuses on investigating several spectral vegetation indices and their usefulness with the dataset presented in chapter~\ref{sec:dataset_analysis}.
 
@@ -14,7 +14,7 @@ Most SVIs compare the difference between visible red light and NIR light~\cite{g
 There are various indices that each combine the spectral bands in unique ways and perform slightly different color corrections. Most of the indices use simple algebraic formulas. In the end, they all produce a single scalar value indicating the density of the vegetation. The next sections introduce some of the widely used vegetation indices.
 
 \subsubsection{Ratio Vegetation Index}
-The simplest SVI is the \emph{Ratio Vegetation Index} (RVI). It is represented by the ratio between NIR and red light~\cite{glv03} (see equation~\ref{eq:rvi}). Higher values indicate denser vegetation.
+The simplest SVI is the \emph{Ratio Vegetation Index} (RVI). It is represented by the ratio between NIR and red light~\cite{glv03} (Eq.~\ref{eq:rvi}). Higher values indicate denser vegetation.
 
 \begin{equation}
     \text{RVI} = \frac{\text{NIR}}{\text{Red}}
@@ -28,7 +28,7 @@ The lower bound for the index is $0$, because negative values for the reflectanc
 \subsubsection{Normalized Difference Vegetation Index}
 One of the first approaches to monitor changes in global vegetation was driven by the National Oceanic and Atmospheric Administration, a US agency focusing on the conditions of the environment. With the help of satellites and high-resolution radiometers they measured the earth's reflectance in five spectral bands, including red and NIR wavelengths. To support their analysis, they introduced a new vegetation index called the \emph{Normalized Difference Vegetation Index} (NDVI)~\cite{measuring_vegetation00}.
 
-The NDVI was able to solve some of the shortcomings of the RVI. For example, because of the way it is calculated (see equation~\ref{eq:ndvi}), it is limited to the range of $-1$ to $1$. This makes it easier to categorize density levels for vegetation.
+The NDVI was able to solve some of the shortcomings of the RVI. For example, because of the way it is calculated (Eq.~\ref{eq:ndvi}), it is limited to the range of $-1$ to $1$. This makes it easier to categorize density levels for vegetation.
 
 \begin{equation}
     \text{NDVI} = \frac{\text{NIR}-\text{Red}}{\text{NIR}+\text{Red}}
@@ -41,7 +41,7 @@ Values close to $1$ indicate a high probability for dense, green vegetation~\cit
 As time passes, improved measuring instruments were launched, like the Terra mission of the National Aeronautics and Space Administration. The new instruments not only increased the resolution but also the precision of the spectral analysis. The more accurate data led to adjustments in the calculations for vegetation density, eventually resulting in the \emph{Enhanced Vegetation Index} (EVI)~\cite{modis2002}.
 \clearpage
 
-The EVI is calculated similarly to the NDVI, but has some additional factors to correct the influence of atmospheric conditions and background noise (see equation~\ref{eq:evi}). This means that EVI is more sensitive and offers more reliable information about the vegetation.
+The EVI is calculated similarly to the NDVI, but has some additional factors to correct the influence of atmospheric conditions and background noise (Eq.~\ref{eq:evi}). This means that EVI is more sensitive and offers more reliable information about the vegetation.
 
 \begin{equation}
     \text{EVI} = G \cdot \frac{
@@ -67,9 +67,9 @@ Another approach to improve the NDVI was made $1988$ by Alfredo Huete. He found 
     \label{eq:savi}
 \end{equation}
 
-As can be seen in equation~\ref{eq:savi}, Huete added a factor $L$ to correct unwanted influences of soil variations. In his experiments, he found $L=0.5$ to work best as a generic factor without further calibration~\cite{savi88}.
+As can be seen in Eq.~\ref{eq:savi}, Huete added a factor $L$ to correct unwanted influences of soil variations. In his experiments, he found $L=0.5$ to work best as a generic factor without further calibration~\cite{savi88}.
 
-One issue with SAVI is, that proper soil adjustment also depends on vegetation density. Without any prior knowledge regarding vegetation it is difficult to find a value of $L$ that fits every situation. Qi et~al. presented another variation of SAVI, where they expressed $L$ with functional elements only~\cite{msavi94}. This version is called \emph{Modified Soil-Adjusted Vegetation Index} (MSAVI). It is listed in equation~\ref{eq:msavi}.
+One issue with SAVI is, that proper soil adjustment also depends on vegetation density. Without any prior knowledge regarding vegetation it is difficult to find a value of $L$ that fits every situation. Qi et~al. presented another variation of SAVI, where they expressed $L$ with functional elements only~\cite{msavi94}. This version is called \emph{Modified Soil-Adjusted Vegetation Index} (MSAVI). It is listed in Eq.~\ref{eq:msavi}.
 
 \begin{equation}
     \displaystyle
@@ -92,7 +92,9 @@ For the purpose of visualization, the output values of the indices are mapped to
 
 Figure~\ref{fig:svi_rvi} shows the vegetation density projection calculated with the RVI. Over the entire dataset, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization.
 
-\begin{figure}
+In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (third row). For agricultural fields the separation is less pronounced, but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields.
+
+\begin{figure}[h]
     \centering
     \newcommand{\VegetationImageWidth}{0.13\textwidth}
 
@@ -138,8 +140,6 @@ Figure~\ref{fig:svi_rvi} shows the vegetation density projection calculated with
     \label{fig:vegetation_examples}
 \end{figure}
 
-In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (see third row). For agricultural fields the separation is less pronounced, but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields.
-
 In Figs.~\ref{fig:svi_ndvi} and~\ref{fig:svi_evi}, the projections of NDVI and EVI are presented. Both indices range from $-1$ to $1$, so the visualizations also express that range. As can be seen, the projection for the two indices are quite different.
 
 For example, the first image is very bright for NDVI but rather dark for EVI. In fact, EVI's results are almost the exact opposite of NDVI for this image. While the lane tracks in this image are dark for NDVI, they are actually brighter in the EVI. These conflicting results for agricultural fields are also visible in the other images.
@@ -157,7 +157,7 @@ For agriculture however, both indices are very opinionated. Even in spots where 
 \subsection{Discussion}
 The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels can only be estimated based on the image data. The dataset itself contains no direct information about the vegetation situation. For this reason it is hard to judge whether the projections of the SVIs are valid.
 
-Additionally, various cameras and sensors were used to record the data (see Section~\ref{sec:dataset_analysis}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the dataset used for this thesis might be inappropriate for the use with SVIs.
+Additionally, various cameras and sensors were used to record the data (Section~\ref{sec:dataset_analysis}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the dataset used for this thesis might be inappropriate for the use with SVIs.
 
 A straight comparison of the individual SVI projections leads to contradictory results in some cases. This means that, depending on the SVI, the predicted locations of areas with high vegetation density differ. Without clear evidence about the actual vegetation situation in the dataset, no conclusions can be drawn about the accuracy of the SVIs. With the given information, it is impossible to determine which projection is the correct one.
 

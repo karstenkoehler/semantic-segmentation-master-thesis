@@ -314,7 +314,7 @@ Also, \texttt{U-Net-23D} provides very accurate predictions for the \texttt{wate
 
 The other two classes, namely \texttt{traffic} and \texttt{urban greens}, are predicted poorly by \texttt{U-Net-23D}. For both classes this matches the expectations, since they were labelled rather poorly in the dataset. Most roads and traffic areas were not even labelled as \texttt{traffic} class, which makes it almost impossible for the models to learn the correlations correctly. For \texttt{urban greens} the reasoning is similar. Since this class mostly includes parks and sports facilities, it is easily confused with the \texttt{agriculture} or \texttt{buildings} classes. This is exactly what happens in the model's predictions.
 
-With regards to the classes, the predictions of \texttt{FCDN-67D} (Fig.~\ref{fig:segdiscuss_densenet})  can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive to fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the dataset.
+With regards to the classes, the predictions of \texttt{FCDN-67D} (Fig.~\ref{fig:segdiscuss_densenet})  can be explained in the same way. However, there is one major difference in the predictions of the two models: \texttt{FCDN-67D} is much more sensitive towards fine-grained segments. Especially for the \texttt{buildings} class this can be observed. \texttt{FCDN-67D} distinguishes between single houses and the green spaces between them. In this aspect the predictions are even better than the labels in the dataset.
 
 On the other hand, the predictions of \texttt{FCDN-67D} seem very fragmented in some cases, for example between the \texttt{agriculture} and \texttt{forest} classes. The transitions between those two are not really sharp but rather jagged and fissured. To some extent this represents the real situation, because oftentimes there are no clear borders between forest and grassland.
 
@@ -331,7 +331,7 @@ The functionality of the images was deliberately kept simple, as they are for de
 
 For this process, two directories have to be mounted when running a container from the Docker image. The \texttt{/images} directory should contain all input images. All PNG files in this directory will be fed into the model once the container is ready. The predicted results are then written to the \texttt{/predictions} directory. For each input file, a corresponding output file with the same name is created. The container is shut down as soon as all given images are processed. The full Docker command to utilize the images can be seen in Fig.~\ref{fig:docker_inference}.
 
-\begin{figure}
+\begin{figure}[h]
 \begin{lstlisting}
 $> docker run --rm -d \
      -v $(pwd)/images:/images \
