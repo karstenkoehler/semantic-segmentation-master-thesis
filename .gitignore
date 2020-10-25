@@ -23,3 +23,6 @@ thesis.pdf
 
 *.blend
 *.xcf
+
+presentation/node_modules
+presentation/dist
