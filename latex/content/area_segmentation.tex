@@ -329,7 +329,24 @@ The two models \texttt{U-Net-23D} and \texttt{FCDN-67D} are also provided as Doc
 
 The functionality of the images was deliberately kept simple, as they are for demonstration purposes only. The input consists of PNG files with RGB color scheme. The output is also rendered in PNG files, where the class segments are color-encoded as explained in Section~\ref{sec:prepare_labels}. All pre- and postprocessing steps are performed automatically inside the Docker container.
 
-For this process, two directories have to be mounted when running a container from the Docker image. The \texttt{/images} directory should contain all input images. All PNG files in this directory will be fed into the model once the container is ready. The predicted results are then written to the \texttt{/predictions} directory. For each input file, a corresponding output file with the same name is created. The container is shut down as soon as all given images are processed.
+For this process, two directories have to be mounted when running a container from the Docker image. The \texttt{/images} directory should contain all input images. All PNG files in this directory will be fed into the model once the container is ready. The predicted results are then written to the \texttt{/predictions} directory. For each input file, a corresponding output file with the same name is created. The container is shut down as soon as all given images are processed. The full Docker command to utilize the images can be seen in Fig.~\ref{fig:docker_inference}.
+
+\begin{figure}
+\begin{lstlisting}
+$> docker run --rm -d \
+     -v $(pwd)/images:/images \
+     -v $(pwd)/predictions-unet:/predictions \
+     imageseg/terrain-segmentation:unet-23D
+
+$> docker run --rm -d \
+     -v $(pwd)/images:/images \
+     -v $(pwd)/predictions-densenet:/predictions \
+     imageseg/terrain-segmentation:densenet-67D
+\end{lstlisting}
+\caption[Use Docker Images for Inference]
+{\textbf{Use Docker Images for Inference}. Create Predictions with \texttt{U-Net-23D} and \texttt{FC-DenseNet-67D} inside a Docker Container. Predictions are saved as color-encoded PNG files in respective folders.}
+\label{fig:docker_inference}
+\end{figure}
 
 This workflow is for demonstration purposes only and is not optimized for production use. Starting and stopping Docker containers is a big overhead, because TensorFlow needs some time to ramp up and load the models. For that reason, other options have to be evaluated for production use of the models, like e.~g. TensorFlow Serving~\cite{tf_serving20}. This is a production-ready system for serving TensorFlow models with a standardized interface.
 
