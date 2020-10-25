@@ -216,7 +216,7 @@ traffic      & 788,878     & 0.32   \\ \hline
 \end{tabular}
 \end{table}
 
-In general, such a striking imbalance between classes can have a significant impact on the model if not properly addressed. For example, it could happen that the model predicts the dominant class for all pixels all the time. In fact, a model can achieve $65\%$ categorical accuracy for the chosen dataset if it only predicts the \texttt{forest} class for every input. Obviously, this prediction would be useless for production use. There are many ways to tackle this issue, some common ways are shown in~\cite{imbalanced_data09}. Section~\ref{sec:prepare_train_test} will further elaborate on this topic.
+In general, such a striking imbalance between classes can have a significant impact on the model if not properly addressed. For example, it could happen that the model predicts the dominant class for all pixels all the time. In fact, a model can achieve $65\%$ categorical accuracy for the chosen dataset if it only predicts the \texttt{forest} class for every input. Obviously, this prediction would be useless for production use. There are many ways to handle this issue, some common ways are shown in~\cite{imbalanced_data09}. Section~\ref{sec:prepare_train_test} will further elaborate on this topic.
 
 The second concern to raise about the dataset is about the label precision at the edges between adjacent segments. On a large scale, the labels match with the respective DOP footage. In detail, however, most edges between the segments are only roughly sketched. Figure~\ref{fig:label_considerations} shows some examples with common inaccuracies that appear throughout the whole set of labels.
 
