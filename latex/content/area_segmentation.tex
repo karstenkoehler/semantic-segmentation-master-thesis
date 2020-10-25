@@ -1,10 +1,10 @@
 \section{Segmentation of Terrain Types}
 \label{sec:segmentation}
-Now that all fundamentals are covered, this chapter focuses on the implementation of the neural networks. Each reference architecture from Section~\ref{sec:ref_archs} will be trained and evaluated with the original hyperparameters first. Afterwards, slight modifications are applied to the architectures, to look for optimization opportunities for the terrain segmentation challenge.
+Now that all fundamentals are covered, this chapter focuses on the implementation of the neural networks. Each reference architecture from Section~\ref{sec:ref_archs} is trained and evaluated with the original hyperparameters first. Afterwards, slight modifications are applied to the architectures, to look for optimization opportunities for the terrain segmentation challenge.
 
 All implementations are done in Python with the popular Keras framework backed by TensorFlow~\cite{tf_whitepaper15}. It is a well established framework with extensive tooling, lots of documentation and a great open-source community. Also it is proven to be production-ready by a broad variety of companies for all kinds of tasks. Case studies can be found in~\cite{tf_casestudy20}. More information about tools and hardware used throughout this thesis is listed in appendix~\ref{app:tools_hardware}.
 
-\subsection{Preparing the training and test dataset}
+\subsection{Preparing the Training and Test Dataset}
 \label{sec:prepare_train_test}
 Since the goal is to have a model that is able to generalize, it is recommended to measure its performance on data that it has not seen during training. Therefore, the dataset is split in two disjoint sets of data called \emph{training set} and \emph{test set}~\cite[p.~101f]{DLbook16}. During training, only samples from the training set are presented to the model. Afterwards, the performance is measured with samples from the test set. That way, models which just memorize the training examples perform worse compared to models which learn features on a generalized level.
 
@@ -12,7 +12,7 @@ The test set should only be used to evaluate the performance, but not to decide 
 
 There are many ways to pick the samples for the test and validation sets. \cite{val_split18}~provides an insight into commonly used techniques. For this thesis, the test set respects the class imbalance that is found within the full dataset (Section~\ref{sec:dataset_considerations}). This is to achieve fair evaluation results which are unbiased towards all classes. For each class, $10\%$ of the samples containing this class were chosen and added to the test set. The remaining samples are randomly distributed among training and validation set at a ratio of $9:1$.
 
-\subsection{Tackling class imbalance}
+\subsection{Addressing the Class Imbalance}
 \label{sec:class_imbalance}
 As already expressed in Section~\ref{sec:dataset_considerations}, there is a substantial imbalance between the segmentation classes in the dataset. This can lead to undesirable biases when training a model with such a dataset. For example, if the model predicts the \texttt{forest} class for every pixel all the time, the categorical accuracy would be at $65\%$ measured over the entire dataset. While this number sounds quite promising, the actual segmentation results would be useless.
 
@@ -267,7 +267,7 @@ In summary, the results of W-Net were very disappointing. Before any of the resu
 
 \subsection{Discussion}
 \label{sec:segmentation_discussion}
-The W-Net reference architecture turned out to perform very poorly. With the unsupervised training, the goal was to come up with segmentation classes that were independent of any human preconceptions. This was done to gather more insight into the dataset in order to uncover potential improvements. However, the W-Net models were incapable of learning a clear differentiation between classes and did not even consume the whole feature space that they were assigned. For those reasons, the W-Net approach is considered to be ineffective for the purpose of this research and is not pursued any further throughout the thesis.
+The W-Net reference architecture turned out to perform very poorly. With the unsupervised training, the goal was to come up with segmentation classes that are independent of any human preconceptions. This was done to gather more insight into the dataset in order to uncover potential improvements. However, the W-Net models are incapable of learning a clear differentiation between classes and do not even consume the whole feature space that they are assigned. For those reasons, the W-Net approach is considered to be ineffective for the purpose of this research and is not pursued any further throughout the thesis.
 
 The results of both U-Net and FC-DenseNet are much better in general. The experiments show that both reference architectures are capable of providing decent predictions. Looking at the plain metrics, there is still some space for improvement in both of them. However, this could also be affected by the inaccuracies in the labels, since in some cases the predictions are even better than the ground truth. This is demonstrated by the visualizations.
 
