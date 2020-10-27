@@ -114,7 +114,7 @@ For this architecture the input dimensions are set to $224\times 224$. Since the
 
 The loss is again calculated by a categorical crossentropy function. During training, the weight updates are applied using a RMSprop~\cite{rmsprop14} optimizer. The learning rate is initialized with $0.001$ (same as in~\cite{denseseg17}) and decreased after each epoch according to Eq.~\ref{eq:learning_rate} in Section~\ref{sec:unet_experiments}.
 
-Another naming convention is applied to distinguish the variations of the FC-DenseNet models. The reference model is called \texttt{FCDN-103D}, again indicating the number of convolution layers and the use of dropout. The letter \texttt{C} denotes the application of compression layers before transition-down layers to condense the outputs of dense blocks (see~\cite{denseseg17} for details). The compression rate of those layers is set to $0.5$, i.~e. the number of feature maps is halved.
+Another naming convention is applied to distinguish the variations of the FC-DenseNet models. The reference model is called \texttt{FCDN-103D}, again indicating the number of convolution layers and the use of dropout. The letter \texttt{C} denotes the application of compression layers~\cite{denseseg17} before transition-down layers to condense the outputs of dense blocks. The compression rate of those layers is set to $0.5$, i.~e. the number of feature maps is halved.
 
 \subsubsection{Metrics}
 The training metrics for all FC-DenseNet configurations are presented in Fig.~\ref{fig:densenet_train_metrics}. Although there are some strong oscillations, most of the configurations show ongoing improvements over the course of 20 epochs. Towards the end of the training the oscillations faint and the graphs converge.
