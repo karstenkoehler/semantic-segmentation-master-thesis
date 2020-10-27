@@ -208,7 +208,7 @@ CNNs play a key role in all computer vision tasks. While a DNN is able to comput
 
 The idea of fully convolutional networks (FCNs) was first introduced by Long et al.\ in~\cite{fcn15}. They took existing CNN architectures like AlexNet~\cite{alexnet12} and transformed them to the FCN concept by replacing all fully-connected layers with $1\times 1$ convolution layers. That way, the spatial nature of the input was preserved and the output formed a heatmap highlighting the parts of the input that the prediction was based on. Later on, they used convolution layers with fractional strides as a way to upsample the resolution with trainable filters. Eventually, this led from the coarse heatmaps to class predictions at the pixel level, which is essentially a semantic segmentation.
 
-Since then, many network architectures have been explored. The architecture affects the quality of the network significantly, thus it is important to choose a matching architecture for the question at hand. There is plenty of research going on for architectural patterns that benefit towards semantic segmentation. In this thesis, three well-performing network architectures have been picked to explore their capabilities of carrying out terrain type segmentation. The following subsections will present these architectures in detail.
+Since then, many network architectures have been explored. The architecture affects the quality of the network significantly, thus it is important to choose a matching architecture for the question at hand. There is plenty of research going on for architectural patterns that benefit towards semantic segmentation. In this thesis, three well-performing network architectures have been picked to explore their capabilities of carrying out land use segmentation. The following subsections will present these architectures in detail.
 
 \subsubsection{U-Net Architecture}
 \label{sec:unet}
@@ -321,6 +321,6 @@ W-Net was trained on the PASCAL VOC 2012 dataset~\cite{pascal_voc10} and evaluat
 
 Without postprocessing, W-Net scores $62\%$ SC on the BSDS500 dataset. Again, according to the plain numbers this seems worse than the results of U-Net and DenseNet. But taking into account, that W-Net was trained with unsupervised learning, i.~e. it did not receive any labelling information during training, the results are quite remarkable. Figure~\ref{fig:exseg_wnet} presents a segmentation map predicted by W-Net.
 
-Overall, it is difficult to judge which architecture has delivered the best results in general. Likewise, it is impossible to draw conclusions about which architecture works best on the given problem of terrain type segmentation. Therefore in Section~\ref{sec:segmentation} all three architectures are implemented and evaluated for this specific task.
+Overall, it is difficult to judge which architecture has delivered the best results in general. Likewise, it is impossible to draw conclusions about which architecture works best on the given problem of land use segmentation. Therefore in Section~\ref{sec:segmentation} all three architectures are implemented and evaluated for this specific task.
 
 \clearpage
