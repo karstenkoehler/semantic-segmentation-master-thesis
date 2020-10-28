@@ -1,9 +1,7 @@
 \section{Conclusion}
-The main objective of this thesis was to advance the identification of emergency landing fields with the given dataset. This goal was achieved by a variety of approaches.
+The main objective of this thesis was to perform a semantic segmentation of land use with deep learning methods. For this purpose, three renowned reference architectures have been studied thoroughly. Each architecture was analyzed and presented in detail. The architectures were tested extensively with regards to the segmentation challenge.
 
-For the semantic segmentation of land use, three renowned reference architectures have been studied thoroughly. Each architecture was analyzed and presented in detail. The architectures were tested extensively with regards to the segmentation challenge.
-
-The experiments proved that the W-Net architecture is ineffective on the given dataset. The unsupervised training approach generated no new insights on the data and did not lead to a adequate differentiation of class segments. For that reason, it is recommended to not conduct further research on this architecture in the given context.
+The experiments proved that the W-Net architecture is ineffective on the given dataset. The unsupervised training approach generated no new insights on the data and did not lead to a adequate differentiation of class segments. For that reason, it is recommended to discard the unsupervised training setup in this specific case. However, other ways to utilize the W-Net architecture can still be explored. For example, the training could be conducted in a semi-supervised manner. This means most of the training still happens in an unsupervised environment, but a few labels are used to guide the model to the desired outcome.
 
 By contrast, both U-Net and FC-DenseNet architectures have shown great success for the class segmentation. The predictions of U-Net were more contiguous and therefore closer to the labels used for training. On the other hand, the predictions of FC-DenseNet are closer to reality, because they represent very detailed segments. 
 
