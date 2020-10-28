@@ -10,8 +10,18 @@
 \usepackage{comment}
 \usepackage[font=footnotesize,format=hang,justification=justified]{caption}
 \usepackage{subcaption}
-\usepackage[style=numeric,sorting=nyt]{biblatex}
+
+\usepackage[style=numeric,sorting=nyt,maxbibnames=99]{biblatex}
 \addbibresource{references.bib}
+\DeclareFieldFormat[inproceedings]{volume}{\bibstring{jourvol}\addnbspace #1}
+\DeclareFieldFormat[inproceedings]{number}{\bibstring{number}\addnbspace #1}
+\renewbibmacro*{volume+number+eid}{
+  \printfield{volume}
+  \setunit{\addcomma\space}
+  \printfield{number}
+  \setunit{\addcomma\space}
+  \printfield{eid}
+}
 
 \myauthor{Karsten Köhler}
 \mytopic{Semantic Segmentation of Land Use with High-Resolution Orthophotos and Convolutional Neural Networks}
