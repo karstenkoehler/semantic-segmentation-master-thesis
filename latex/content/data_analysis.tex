@@ -25,7 +25,7 @@ The second map explored in this thesis contains imagery obtained by near-infrare
 
 The data for the maps is collected by airplanes with special cameras pointing vertically downwards. With straight east-west flight paths and significant overlap in the photographic coverage, the airplanes scan the areas. In this way, a seamless image of the earth's surface is created. The ground sample distance of the dataset is $10~\text{cm}$, i.~e. each pixel in Fig.~\ref{fig:dop_rgb_nir_example} represents a $10\times 10~\text{cm}$ square in real-world scale. With such a high resolution it is easily possible to detect objects like trees, cars or buildings. Therefore, the data provides sufficient information for the segmentation of land use. The recent data is captured with different cameras like for example the Leica DMC III or the Vexcel UltraCam UCXp~\cite{topo-image16}. Therefore, small color differences in the dataset can be expected.
 
-\subsection{Getting the Dataset}
+\subsection{Retrieval of the Dataset}
 Both the DOP and NIR datasets are provided by the Ministry of the Interior in a few different ways. To get a quick overview, there is an online viewer~\cite{tim_online20} for most of the map types. For some specific maps like the DOPs they host a Web Map Tile Service, which allows to access the data with geographic information systems (GIS) like QGIS. Since these options require a continuous network connection, it is preferred to get a local copy of the dataset and work with that.
 
 \begin{figure}[h]
@@ -50,7 +50,7 @@ For that purpose, the GEOportal has a separate download section. From there the 
 
 It is possible to download both DOP and NIR data together in a single bundle. The JPEG files then contain four channels of pixel information. The first three channels make up the red, green and blue colors for the DOPs. And the last channel provides the scalar output of the NIR spectroscopy scan.
 
-\subsection{Preparing the Dataset}
+\subsection{Dataset Preparations}
 Before the data is ready to be used for training the models, some preprocessing steps have to be performed. In Fig.~\ref{fig:data_preprocessing} the whole preparation process is summarized briefly. The present and following sections focus on importing the whole dataset into a standardized database using various tools. Afterwards, Section~\ref{sec:image_export} explains the steps to prepare the data for the use of training. This includes rendering image tiles from the raster in the database. All preparation scripts can be found in~\cite{thesis-code20}.
 
 \begin{figure}[h]
@@ -61,7 +61,7 @@ Before the data is ready to be used for training the models, some preprocessing 
     \label{fig:data_preprocessing}
 \end{figure}
 
-As a first step, the whole dataset is imported into a spatial database system. By doing that, it is very easy to export the data in various data formats and tile sizes required by the reference architectures (Section~\ref{sec:ref_archs}). PostgreSQL is a powerful open-source database system. Together with PostGIS, a free and open-source extension for PostgreSQL, it is capable of performing spatial operations on image rasters and vector objects. For example, it adds database functions to merge raster tiles, calculate intersection regions or determine bounding boxes.
+As a first step, the whole dataset is imported into a spatial database system. By doing that, it is easy to export the data to various data formats and tile sizes required by the reference architectures (Section~\ref{sec:ref_archs}). PostgreSQL is a powerful open-source database system. Together with PostGIS, a free and open-source extension for PostgreSQL, it is capable of performing spatial operations on image rasters and vector objects. For example, it adds database functions to merge raster tiles, calculate intersection regions or determine bounding boxes.
 
 The PostGIS installation contains a few shell tools to import data into the database. Unfortunately, they do not support the JPEG 2000 image file format. Before the import of the data can take place, it has to be translated to one of the supported formats first. One of the most widely used formats is GeoTiff. The Tiff file standard is great, because it consists of a baseline section which contains the image information, and a meta section which can contain all kinds of meta information. For example, it can be used to store georeferencing information, which PostGIS is able to use for importing GeoTiff files.
 
@@ -79,62 +79,29 @@ In the first step, the script creates two database tables named \texttt{dop\_rgb
     \label{fig:dop_entities}
 \end{figure}
 
-After the tables are created, the script loops through all the GeoTiff files and calls the \texttt{raster2pgsql} tool for every single one. That call returns a SQL insert statements enriched with the raster information in a binary representation. To execute those statements, it is possible to simply pipe the output of \texttt{raster2pgsql} into a \texttt{psql} command which is connected to the database.
+After the tables are created, the script loops through all the GeoTiff files and calls the \texttt{raster2pgsql} tool for each one. That call returns a SQL insert statements enriched with the raster information in a binary representation. To execute those statements, it is possible to simply pipe the output of \texttt{raster2pgsql} into a \texttt{psql} command which is connected to the database.
 
-The \texttt{raster2pgsql} tool provides a lot of arguments to properly configure the import of the data. Obviously it needs to know the name of the file to import and the name of the database table to insert the data to. For performance reasons it is very important to set an appropriate tile size for the raster. The original tile size of the GeoTiff files ($10000\times 10000$ pixels) was assessed to be too large. After some experiments, a tile size of $1000\times 1000$ pixels was found to work best for both the initial import and the later processing of the raster.
+The \texttt{raster2pgsql} tool provides a lot of arguments to properly configure the import of the data. Obviously it needs to know the name of the file to import and the name of the database table to insert the data to. For performance reasons it is important to set an appropriate tile size for the raster. The original tile size of the GeoTiff files ($10000\times 10000$ pixels) was assessed to be too large. After some experiments, a tile size of $1000\times 1000$ pixels was found to work best for both the initial import and the later processing of the raster.
 
 Another major configuration is the \emph{spatial reference id} (SRID). It also has to be passed as an argument, to ensure the data is imported correctly. The SRID indicates the map projection that is used to map the raster to the earth's surface. The dataset is provided with the SRID 25832. This SRID only covers a rectangular area on the European continent. Therefore it offers a high precision without much distortion in that area and is widely used for maps in Central Europe.
 
 After all GeoTiff files are imported, the Python script creates a Generalized Search Tree (GiST) index for both tables. This takes into account the spatial character of the data and thus speeds up spatial queries like merging and intersecting on the tables significantly. For the same reason, the Python script also enforces some constraints on the raster columns of the tables. This makes sure that all the raster tiles share common properties like tile size, SRID and the number of raster bands.
 
-As a last step of the Python script, it creates one last table named \texttt{geom\_bounds}. This table holds a single PostGIS geometry object defining the exact boundaries of the raster tiles. That allows for a quick way to calculate if a given region is included in the spatial extents of the raster without having to process the whole raster table all the time.
+As a last step of the Python script, it creates a table named \texttt{geom\_bounds}. This table holds a single PostGIS geometry object defining the exact boundaries of the raster tiles. That allows for a quick way to calculate if a given region is included in the spatial extents of the raster without having to process the whole raster table all the time.
 
-\subsection{Preparing the Labels}
+\subsection{Label Preparations}
 \label{sec:prepare_labels}
-For supervised learning, the models need pairs of input with the expected output. As described in the previous section, the DOPs serve as the input for the models. This section now explains how the labels for training were obtained.
+For supervised learning, the models need pairs of input and output, which represent the relation the models needs to learn. As described in the previous section, the DOPs serve as the input for the models. This section now explains how the labels for training were obtained.
 
 Usually this task is done manually by lining out all segments of a tile and then assigning a class to each segment. To reduce the amount of work, we use another dataset from the GEOportal called Digital Basic Landscape Model~\cite{base-dlm20}. It describes topological features of the landscape in a vector data format. The dataset includes regions categorized by their respective land use. It is available for free download and also permits any use within the dl-de/zero-2-0 license. With some transformations, the data is well suited for the use as labels during the training of a model.
 
 The categorized regions are provided as Shapefiles. Shapefile is a specific data format for vector-based geospatial objects. To have all data in a single source system, the Shapefiles are also imported into the PostGIS database. This also makes it easier to export the segmentation information later on for different tile sizes. Again, the import process is automated with a Python script~\cite[\texttt{shp\_to\_geom.py}]{thesis-code20}.
 
-PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a database table with a PostGIS geometry column. It takes into account all the metadata that is listed in the Shapefile and creates separate columns for those values. The Python script loops over all the required Shapesfiles and calls the \texttt{shp2pgsql} tool passing some arguments like the target SRID. At first, each file is imported in its own database table. This is because each file contains a specific set of meta information resulting in different table layout for each file. The categorized regions are now represented as PostGIS geometry objects.
+PostGIS includes a tool called \texttt{shp2pgsql} to import Shapefiles into a database table with a PostGIS geometry column. It takes into account all the metadata that is listed in the Shapefile and creates separate columns for those values. The Python script loops over all the required Shapesfiles and calls the \texttt{shp2pgsql} tool passing some arguments like the target SRID. At first, each file is imported to its own database table. This is because each file contains a specific set of meta information resulting in different table layout for each file. The categorized regions are then represented as PostGIS geometry objects.
 
 The original Shapesfiles enclose all regions of the State of North Rhine-Westphalia. Since the DOP und NIR datasets only consist of a smaller subregion, all geometry objects are cropped to that subregion in the next step. Geometry objects that are located outside of the boundaries are dropped entirely. During this process, the database tables of the different Shapefiles are merged into one single table. This resulting table has columns for an internal id, the object type, a textual object description and for the geometry object itself. As all the other meta information contained in the Shapefiles is not needed, it is dropped in this step.
 
-The Shapefiles contain a few more categories than the segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined classes (Fig.~\ref{fig:dop_label_all}). The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
-
-\begin{table}[]
-\centering
-\small
-\caption[Mapping from Shapefile Categories to Segmentation Classes]
-{\textbf{Mapping from Shapefile Categories to Segmentation Classes}. The initial label set differentiates between more categories than needed. Therefore, some categories are merged into shared segmentation classes.}
-\label{tab:category_mapping}
-\begin{tabular}{|l|l|l|l|}
-\hline
-\textbf{Shapefile} & \textbf{Object Code} & \textbf{Object Description}    & \textbf{Segmentation Class} \\ \hline
-gew01\_f           & 44001                & running water                  & water                          \\ \hline
-gew01\_f           & 44005                & harbor dock                    & water                          \\ \hline
-gew01\_f           & 44006                & stagnant water                 & water                          \\ \hline
-sie02\_f           & 41007                & specialized regions            & buildings                      \\ \hline
-sie02\_f           & 41009                & cemetery                       & urban greens                   \\ \hline
-sie02\_f           & 41002                & industrial zone                & buildings                      \\ \hline
-sie02\_f           & 41010                & housing zone                   & buildings                      \\ \hline
-sie02\_f           & 41008                & sports, recreation          & urban greens                   \\ \hline
-sie02\_f           & 41005                & quarry, surface mining         & buildings                      \\ \hline
-veg01\_f           & 43001                & agriculture                    & agriculture                    \\ \hline
-veg02\_f           & 43002                & forest                         & forest                         \\ \hline
-veg03\_f           & 43003                & woody, undergrowth             & forest                         \\ \hline
-veg03\_f           & 43004                & heath                          & forest                         \\ \hline
-veg03\_f           & 43007                & uncultivated zones             & agriculture                    \\ \hline
-ver01\_f           & 42009                & urban squares                  & traffic                        \\ \hline
-ver01\_f           & 42001                & road traffic                   & traffic                        \\ \hline
-ver03\_f           & 42010                & rail traffic                   & traffic                        \\ \hline
-\end{tabular}
-\end{table}
-
-The last step is to merge all geometry objects of the same class. The final table \texttt{geom\_segments} only contains six geometry objects, one for each class. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same class.
-
-Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant classes are clearly forest and buildings. Water and traffic zones only take up a very small area and both are barely visible because of the scale of the illustration. The imbalance of the classes is an issue which is further addressed in Section~\ref{sec:dataset_considerations}
+The Shapefiles contain more categories than the semantic segmentation in this thesis aims for. For example, the difference between industrial zones and housing zones is negligible for the purpose of emergency landings. Thus, the categories are mapped to six predefined segmentation classes (Fig.~\ref{fig:dop_label_all}). The mapping between the categories of the Shapefiles and the chosen classes is to be found in table~\ref{tab:category_mapping}.
 
 \begin{figure}[h]
     \centering
@@ -143,6 +110,39 @@ Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset wi
     {\textbf{The Labels in the Dataset}. Six predefined classes are used. Area distribution among classes is unbalanced. Dominant classes are \texttt{forest}, \texttt{buildings} and \texttt{agriculture}.}
     \label{fig:dop_label_all}
 \end{figure}
+
+The last step is to merge all geometry objects of the same class. The final table \texttt{geom\_segments} only contains six geometry objects, one for each class. This was done for convenience and performance reasons, since almost all operations performed on this table include some way of merging the geometry objects of the same class.
+
+Figure~\ref{fig:dop_label_all} depicts the segmentation for the whole dataset with a color encoding. The most dominant classes are clearly \texttt{forest} and \texttt{buildings}. \texttt{Water} and \texttt{traffic} only take up a very small area and both are barely visible because of the scale of the illustration. The imbalance of the classes is an issue which is further addressed in Section~\ref{sec:dataset_considerations}
+
+\begin{table}[h]
+\centering
+\small
+\caption[Mapping from Shapefile Categories to Segmentation Classes]
+{\textbf{Mapping from Shapefile Categories to Segmentation Classes}. The initial label set differentiates between more categories than needed. Therefore, some categories are merged into shared segmentation classes.}
+\label{tab:category_mapping}
+\begin{tabular}{|l|l|l|l|}
+\hline
+\textbf{Shapefile} & \textbf{Object Code} & \textbf{Object Description}    & \textbf{Segmentation Class} \\ \hline
+gew01\_f           & 44001                & running water                  & water                       \\ \hline
+gew01\_f           & 44005                & harbor dock                    & water                       \\ \hline
+gew01\_f           & 44006                & stagnant water                 & water                       \\ \hline
+sie02\_f           & 41007                & specialized regions            & buildings                   \\ \hline
+sie02\_f           & 41009                & cemetery                       & urban greens                \\ \hline
+sie02\_f           & 41002                & industrial zone                & buildings                   \\ \hline
+sie02\_f           & 41010                & housing zone                   & buildings                   \\ \hline
+sie02\_f           & 41008                & sports, recreation             & urban greens                \\ \hline
+sie02\_f           & 41005                & quarry, surface mining         & buildings                   \\ \hline
+veg01\_f           & 43001                & agriculture                    & agriculture                 \\ \hline
+veg02\_f           & 43002                & forest                         & forest                      \\ \hline
+veg03\_f           & 43003                & woody, undergrowth             & forest                      \\ \hline
+veg03\_f           & 43004                & heath                          & forest                      \\ \hline
+veg03\_f           & 43007                & uncultivated zones             & agriculture                 \\ \hline
+ver01\_f           & 42009                & urban squares                  & forest                      \\ \hline
+ver01\_f           & 42001                & road traffic                   & forest                      \\ \hline
+ver03\_f           & 42010                & rail traffic                   & forest                      \\ \hline
+\end{tabular}
+\end{table}
 
 \subsection{Export Images for Training}
 \label{sec:image_export}
@@ -156,7 +156,7 @@ The PNG image format is used for both the DOP footage and the segmentation label
 
 In the image files the labels use color-encoding to differentiate between the classes. However, this is a bad representation for training, since the distance of the colors in the color space does not correlate with the similarity of the land use. This means the colors chosen for the classes would influence the segmentation predictions made by the network. Thus, after reading a label from a PNG file it is transformed to one-hot encoding.
 
-In one-hot encoding, each pixel is assigned a vector with one value per class. The value for the class is set to $1$ if the pixel belongs to that specific class, and $0$ otherwise. That way, the distance between the classes is equal for each pair of classes, i.~e. there is no correlation between classes. The translation from color-encoding to one-hot encoding is done by simply mapping the color vectors to their respective one-hot encoded representation.
+In one-hot encoding, each pixel is assigned a vector with one value per class. The value for the class is set to $1$ if the pixel belongs to that specific class, and $0$ otherwise. That way, the distance between the classes is equal for each pair of classes, i.~e. there is no correlation between classes. The translation from color-encoding to one-hot encoding is done by mapping the color vectors to their respective one-hot encoded representation.
 
 While the exact tile and label size depends on the network architecture, there is a general process how the image tiles are extracted from the database. This process is automated with multiple Python scripts~\cite[\texttt{scripts} folder]{thesis-code20}.
 
@@ -170,11 +170,11 @@ The first step is to define the bounding boxes of the tiles for each architectur
     \label{fig:geom_tiles_entities}
 \end{figure}
 
-It is important to line up the tiles precisely with the DOP raster, so that the raster pixels are not distorted or cut off during the export. This does irrelevant for the labels, because they are stored in a vector format which is not based on pixels.
+It is important to line up the tiles precisely with the DOP raster, so that the raster pixels are not distorted or cut off during the export. This is irrelevant for the labels, because they are stored in a vector format which is not based on pixels.
 
 To extract the image files for those tile definitions, one straightforward way would be to join the raster table \texttt{dop\_rgb} with tile table containing the tile geometries using the PostGIS \texttt{ST\_Union} and \texttt{ST\_Intersection} functions. However, this was found to take a very long time to compute. Instead, a geospatial visualization software called \emph{QGIS} was used to do those computations. It offers a Python API which allows to run batch exports of a PostGIS raster table according to the bounding boxes defining the tiles.
 
-The Python script to export all image files with QGIS can be found in~\cite[\texttt{scripts} folder]{thesis-code20}. Before running the script, QGIS has to be configured with all the layers necessary to render the tiles. QGIS offers to connect directly to a PostgreSQL database with the PostGIS extension. The raster columns from the database tables \texttt{dop\_rgb} and \texttt{dop\_nir} can simply be loaded as raster layers. For the segmentation labels multiple layers are required, each representing one class with a specified color. Thus, the geometry column from the \texttt{geom\_segments} table is loaded multiple times, each time filtered by a different segmentation class.
+The Python script to export all image files with QGIS can be found in~\cite[\texttt{scripts} folder]{thesis-code20}. Before running the script, QGIS has to be configured with all the layers necessary to render the tiles. It offers to connect directly to a PostgreSQL database with the PostGIS extension. The raster columns from the database tables \texttt{dop\_rgb} and \texttt{dop\_nir} can be loaded as raster layers. For the segmentation labels multiple layers are required, each representing one class with a specified color. Thus, the geometry column from the \texttt{geom\_segments} table is loaded multiple times, each time filtered by a different segmentation class.
 
 After all the layers have been configured, the script for the export can be executed. It reads all the tiling information from the database and distributes the rendering tasks to a few QGIS worker threads. Each worker thread is responsible for rendering the specific part of the map layers and saving it as PNG image file.
 
@@ -195,7 +195,7 @@ Because of that process, it can happen that the segmentation maps in the exporte
 
 Even though the chosen dataset generally offers many advantages, it still has some downsides. The two main points of concern are on one side the imbalanced distribution of classes and on the other side the label precision at segment edges.
 
-Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area coverages of the classes in the dataset. Around $65\%$ of the dataset consists of area covered by forest. Furthermore, both traffic zones and water are below $1\%$ respectively. Forest, buildings and agriculture are the three dominant classes in this dataset. In total, those three classes make up almost $97\%$ of the dataset. This can also be seen in Fig.~\ref{fig:dop_label_all} on page~\pageref{fig:dop_label_all}.
+Table~\ref{tab:seg-breakdown} shows the absolute and relative shares in area coverages of the classes in the dataset. Around $65\%$ of the dataset consists of area covered by \texttt{forest}. Furthermore, both \texttt{traffic} and \texttt{water} are below $1\%$ respectively. \texttt{Forest}, \texttt{buildings} and \texttt{agriculture} are the three dominant classes in this dataset. In total, those three classes make up almost $97\%$ of the dataset. This can also be seen in Fig.~\ref{fig:dop_label_all} on page~\pageref{fig:dop_label_all}.
 
 \begin{table}[h]
 \centering
@@ -251,7 +251,7 @@ The second concern to raise about the dataset is about the label precision at th
     \label{fig:label_considerations}
 \end{figure}
 
-Figures~\ref{fig:label_considerations_a} and~\ref{fig:label_considerations_b} demonstrate that the \texttt{buildings} class not only includes houses, but the entire land parcel that belongs to the houses. In some cases, also the roads leading to the buildings are considered as buildings. For towns and villages, oftentimes the whole area is labelled with the \texttt{buildings} class, including gardens and streets.
+Figures~\ref{fig:label_considerations_a} and~\ref{fig:label_considerations_b} demonstrate that the \texttt{buildings} class not only includes houses, but the entire land parcel that belongs to the houses. In some cases, also the roads leading to the buildings are considered as \texttt{buildings}. For towns and villages, oftentimes the whole area is labelled with the \texttt{buildings} class, including gardens and streets.
 
 Figure~\ref{fig:label_considerations_c} shows that roads and rails are ignored sometimes. Instead, the ground truth defines them as the same class as their surroundings. Figure~\ref{fig:label_considerations_d} depicts that rivers are mostly labelled as \texttt{water} correctly, but the riverbanks and small islands are outlined only roughly.
 
