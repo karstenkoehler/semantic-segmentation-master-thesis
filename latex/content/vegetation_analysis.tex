@@ -57,6 +57,8 @@ $C_1$ and $C_2$ are coefficients to reduce the effects of aerosols. To filter ou
 \subsubsection{Soil-Adjusted Vegetation Indices}
 Another approach to improve the NDVI was made $1988$ by Alfredo Huete. He found NDVI to be unstable with factors like the soil color and moisture. Thus, he introduced the \emph{Soil-Adjusted Vegetation Index} (SAVI)~\cite{savi88} as another way to estimate vegetation density.
 
+As can be seen in Eq.~\ref{eq:savi}, Huete added a factor $L$ to correct unwanted influences of soil variations. In his experiments, he found $L=0.5$ to work best as a generic factor without further calibration~\cite{savi88}.
+
 \begin{equation}
     \displaystyle
     \text{SAVI} =
@@ -66,8 +68,6 @@ Another approach to improve the NDVI was made $1988$ by Alfredo Huete. He found 
     \bigg) \cdot \big(1 + L \big)
     \label{eq:savi}
 \end{equation}
-
-As can be seen in Eq.~\ref{eq:savi}, Huete added a factor $L$ to correct unwanted influences of soil variations. In his experiments, he found $L=0.5$ to work best as a generic factor without further calibration~\cite{savi88}.
 
 One issue with SAVI is, that proper soil adjustment also depends on vegetation density. Without any prior knowledge regarding vegetation it is difficult to find a value of $L$ that fits every situation. Qi et~al. presented another variation of SAVI, where they expressed $L$ with functional elements only~\cite{msavi94}. This version is called \emph{Modified Soil-Adjusted Vegetation Index} (MSAVI). It is listed in Eq.~\ref{eq:msavi}.
 
@@ -92,7 +92,7 @@ For the purpose of visualization, the output values of the indices are mapped to
 
 Figure~\ref{fig:svi_rvi} shows the vegetation density projection calculated with the RVI. Over the entire dataset, RVI returned values in the range from $0$ to up to around $100$. Not taking outliers into account, most of the values were in range $0$ to $20$. This is also the range picked for the visualization.
 
-In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (third row). For agricultural fields the separation is less pronounced, but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the leftmost image show up very bright compared to all other fields.
+In the RVI the spots with most vegetation are green forests. Forests without foliage are clearly less vegetated according to the index (third row). For agricultural fields the separation is less pronounced, but still visible. For example, the fields in the last image shows only slightly different shades of gray. Interestingly, the fields in the topmost image show up very bright compared to all other fields.
 
 \begin{figure}[h]
     \centering
@@ -148,7 +148,7 @@ Although the results contradict each other, when viewed for each index separatel
 
 With regards to forests, NDVI performs rather bad. The third image shows that there is almost no difference in the projection, regardless of the foliage. In contrast, EVI is able to make a clear distinction. For trees with foliage there are large bright spots in the projections.
 
-Lastly, Figs.~\ref{fig:svi_savi} and~\ref{fig:svi_savi} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yield much higher values than SAVI. That is why the visualizations of MSAVI are much brighter.
+Lastly, Figs.~\ref{fig:svi_savi} and~\ref{fig:svi_msavi} presents the visualizations for SAVI and MSAVI. For SAVI the ranges from $0$ to $20$ and for MSAVI from $0$ to $80$ are visualized. In general, the projections of MSAVI yield much higher values than SAVI. That is why the visualizations of MSAVI are much brighter.
 
 The SAVI tells no big difference about forest areas. Regardless of any foliage, the index always show similar projections. With MSAVI a very subtle variation is noticeable.
 
@@ -157,9 +157,9 @@ For agriculture however, both indices are very opinionated. Even in spots where 
 \subsection{Discussion}
 The goal of the vegetation analysis using SVIs is to estimate the vegetation density in given areas. In general, there are several factors which make it difficult to evaluate this goal. For example, the real vegetation levels can only be estimated based on the image data. The dataset itself contains no direct information about the vegetation situation. For this reason it is hard to judge whether the projections of the SVIs are valid.
 
-Additionally, various cameras and sensors were used to record the data (Section~\ref{sec:dataset_analysis}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the dataset used for this thesis might be inappropriate for the use with SVIs.
+Additionally, various cameras and sensors were used to record the data (Section~\ref{sec:dataset_analysis}). So it is possible that there are minor variations in the measurements and in the ranges for the spectral bands. In contrast, most of the SVIs are created and calibrated for a specific set of hardware instruments. These instruments are often deployed on earth satellites, that is why some SVIs also take into account various atmospheric effects. Therefore, the dataset used for this thesis might be inappropriate for the use with SVIs.
 
-A straight comparison of the individual SVI projections leads to contradictory results in some cases. This means that, depending on the SVI, the predicted locations of areas with high vegetation density differ. Without clear evidence about the actual vegetation situation in the dataset, no conclusions can be drawn about the accuracy of the SVIs. With the given information, it is impossible to determine which projection is the correct one.
+A straight comparison of the individual SVI projections leads to contradictory results in many cases. This means that, depending on the SVI, the predicted locations of areas with high vegetation density differ. Without clear evidence about the actual vegetation situation in the dataset, no conclusions can be drawn about the accuracy of the SVIs. With the given information, it is impossible to determine which projection is the correct one.
 
 Regarding the identification of emergency landing fields, the application of SVIs is generally possible, although some restrictions are imposed. First and foremost, it is discouraged to fully rely on the automated assessment only. The SVIs can be used to scan over large regions and filter out some recommended spots with sparse vegetation. In any case, these spots should be checked again manually for their suitability.
 
