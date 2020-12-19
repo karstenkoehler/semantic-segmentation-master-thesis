@@ -67,7 +67,7 @@ Overall, this thesis offers a valuable contribution to the improvement of the au
 1. R. Rojas. _Neural Networks - A Systematic Introduction_. Springer-Verlag, Berlin. 1996. ISBN 978-3-642-61068-4.
 1. O. Ronneberger, P. Fischer, T. Brox. _U-Net: Convolutional Networks for Biomedical Image Segmentation_. 2015. [arXiv:1505.04597](https://arxiv.org/abs/1505.04597).
 1. Ch. Szegedy, A. Toshev, D. Erhan. _Deep Neural Networks for Object Detection_. NIPS Proceedings: vol. 26, pp. 2553 - 2561, 2013. [DOI: 10.5555/2999792.2999897](https://dl.acm.org/doi/10.5555/2999792.2999897)
-1. E. Tiu. _Metrics to Evaluate your Semantic Segmentation Model_. 2019. [[Online]]({https://towardsdatascience.com/metrics-to-evaluate-your-semantic-segmentation-model-6bcb99639aa2).
+1. E. Tiu. _Metrics to Evaluate your Semantic Segmentation Model_. 2019. [[Online]](https://towardsdatascience.com/metrics-to-evaluate-your-semantic-segmentation-model-6bcb99639aa2).
 1. Stanford University. _Convolutional Neural Networks for Visual Recognition_. Lecture Notes. 2020. [[Online]](https://cs231n.github.io/).
 1. J. Weier, D. Herring. _Measuring Vegetation (NDVI \& EVI)_. 2000. [[Online]](https://earthobservatory.nasa.gov/features/MeasuringVegetation).
 1. X. Xia, B. Kulis. _W-Net: A Deep Model for Fully Unsupervised Image Segmentation_. 2017. [arXiv:1711.08506](https://arxiv.org/abs/1711.08506).
