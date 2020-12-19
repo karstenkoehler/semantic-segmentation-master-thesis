@@ -1,4 +1,6 @@
 # Semantic Segmentation of Land Use
+The full text together with a short presentation is available in [this release](https://github.com/SchiffFlieger/semantic-segmentation-master-thesis/releases/tag/v255).
+
 ### Abstract
 The automated identification of emergency landing fields is a complex challenge which requires to process huge quantities of information.
 This thesis explores the use of convolutional neural networks to perform a classification of land use through semantic segmentation to support the identification process.
@@ -7,6 +9,11 @@ The experiments show that U-Net and FC-DenseNet achieve adequate segmentation re
 In a second step, several spectral vegetation indices are investigated whether they are applicable to further narrow down the number of suitable emergency landing fields.
 It is demonstrated that with the given dataset, the indices do not provide any meaningful information.
 Overall, this thesis offers a valuable contribution to the improvement of the automatic identification of emergency landing fields.
+
+### Segmetation Results
+| ![image](https://github.com/SchiffFlieger/semantic-segmentation-master-thesis/blob/master/latex/images/segmentation_discussion/images/1.png) | ![label](https://github.com/SchiffFlieger/semantic-segmentation-master-thesis/blob/master/latex/images/segmentation_discussion/labels/1.png) | ![unet](https://github.com/SchiffFlieger/semantic-segmentation-master-thesis/blob/master/latex/images/segmentation_discussion/unet/1.png) | ![densenet](https://github.com/SchiffFlieger/semantic-segmentation-master-thesis/blob/master/latex/images/segmentation_discussion/densenet/1.png) |
+|:---:|:---:|:---:|:---:|
+| Original Image | Ground Truth | U-Net | FC-DenseNet |
 
 ### References
 1. M. Abadi, A. Agarwal, P. Barham, E. Brevdo, et al. _TensorFlow: Large-Scale Machine Learning on Heterogeneous Systems_. 2015. [[Online]](https://tensorflow.org).
